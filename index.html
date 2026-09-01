@@ -2440,6 +2440,7 @@
   .dash-content.dash-content-inbox-mode { max-width: none; margin: 0; padding: 0; }
   .dash-content.dash-content-full { max-width: none; margin: 0; }
   .dash-content.dash-content-narrow-pad { padding-left: 16px; padding-right: 16px; }
+  .dash-content.dash-content-full-bleed { max-width: none; margin: 0; }
   @keyframes pmViewFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   .pm-view-animate { animation: pmViewFadeIn 300ms ease-out; }
   @keyframes pmTabFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
@@ -2914,6 +2915,9 @@
   .sinb-system-card { max-width: 560px; width: 100%; text-align: center; }
   .sinb-system-card-inner { background: #eef2ff; border: 1px solid #dbe3fb; border-radius: 12px; padding: 12px 18px; }
   .sinb-system-card-inner.warn { background: #fef2f2; border-color: #fbd9d6; }
+  .sinb-system-card-inner.positive { background: #e3f9e9; border-color: #bfe3cc; }
+  .sinb-system-card-inner.positive .sinb-system-card-title { color: #1a7a3e; }
+  .sinb-system-card-inner.positive .sinb-system-card-body { color: #1f6b3f; }
   .sinb-system-card-title { font-size: 12.5px; font-weight: 800; color: #22447f; }
   .sinb-system-card-inner.warn .sinb-system-card-title { color: #b91c1c; }
   .sinb-system-card-body { font-size: 12px; color: #334876; margin-top: 3px; }
@@ -3034,6 +3038,180 @@
        fraction \u2014 same treatment as the Supplier Applicant detail page's chat on mobile. */
     #ainChatScroll .sinb-msg-stack { max-width: none; }
   }
+
+  /* ==========================================================================
+     PM INBOX — same two-pane shell as Admin's Inbox (ain-layout dimensions),
+     the same ain-conv-* list items, and the same sinb-* chat/composer for the
+     thread itself; only the filter dropdown, tabs, job-context bar and
+     read-only footer below are new to this dashboard.
+     ========================================================================== */
+  .pminb-layout { display: flex; gap: 0; background: #fff; border: 1px solid var(--border-subtle); border-radius: 16px; overflow: hidden; height: calc(100vh - 200px); min-height: 480px; }
+  .pminb-list-panel { width: 360px; flex-shrink: 0; border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column; min-height: 0; }
+  .pminb-detail-panel { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+  .pminb-thread-view { flex: 1; display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+  .pminb-search-row { display: flex; align-items: center; gap: 8px; padding: 14px 16px 12px; flex-shrink: 0; }
+  .pminb-filter-btn { width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--border-subtle); background: #fff; color: var(--text-body-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+  .pminb-filter-btn:hover { background: var(--surface-soft); }
+  .pminb-filter-btn.active { border-color: var(--accent-blue); background: var(--icon-tint-bg); color: var(--accent-blue); }
+  .pminb-filter-panel { display: none; position: absolute; top: calc(100% + 6px); right: 0; width: 280px; background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; box-shadow: 0 12px 32px rgba(16,24,40,0.14); padding: 14px; z-index: 40; }
+  .pminb-filter-panel.open { display: block; }
+  .pminb-filter-panel-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; color: #94a3b8; text-transform: uppercase; margin-bottom: 10px; }
+  .pminb-filter-type-btn { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 9px 12px; border-radius: 9px; border: 1px solid var(--border-subtle); background: #fff; color: var(--text-heading); font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .pminb-filter-type-btn:hover { background: var(--surface-soft); }
+  .pminb-filter-type-btn.active { border-color: var(--accent-blue); background: var(--icon-tint-bg); color: var(--accent-blue); }
+  .pminb-filter-sub-menu { display: none; position: absolute; top: calc(100% + 4px); left: 0; width: 220px; max-height: 260px; overflow-y: auto; background: #fff; border: 1px solid var(--border-subtle); border-radius: 12px; box-shadow: 0 12px 32px rgba(16,24,40,0.14); padding: 6px; z-index: 41; }
+  .pminb-filter-sub-menu.open { display: block; }
+  .pminb-filter-sub-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; border-radius: 8px; font-size: 12.5px; font-weight: 600; color: var(--text-heading); cursor: pointer; }
+  .pminb-filter-sub-item:hover { background: var(--surface-soft); }
+  .pminb-filter-sub-item.selected { background: var(--icon-tint-bg); color: var(--accent-blue); font-weight: 700; }
+  .pminb-filter-sub-item svg { width: 13px; height: 13px; flex-shrink: 0; color: var(--accent-blue); visibility: hidden; }
+  .pminb-filter-sub-item.selected svg { visibility: visible; }
+  .pminb-clear-filters-btn { display: block; margin-top: 12px; background: none; border: none; padding: 0; font-size: 12px; font-weight: 700; color: var(--accent-blue); cursor: pointer; font-family: inherit; }
+  .pminb-clear-filters-btn:hover { text-decoration: underline; }
+  .pminb-tabs-row { display: flex; gap: 6px; padding: 0 16px 12px; flex-shrink: 0; }
+  .pminb-tab { flex-shrink: 0; padding: 7px 13px; border-radius: 999px; font-size: 12.5px; font-weight: 600; color: var(--text-body-muted); background: var(--surface-soft); cursor: pointer; white-space: nowrap; transition: background-color 150ms ease-out, color 150ms ease-out; }
+  .pminb-tab.active { background: var(--icon-tint-bg); color: var(--accent-blue); font-weight: 700; }
+  .pminb-tab:not(.active):hover { background: #eef1f5; }
+  .pminb-job-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; padding: 12px 22px; background: var(--surface-soft); border-bottom: 1px solid var(--border-subtle); flex-shrink: 0; }
+  .pminb-job-bar-item .lbl { font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; color: #94a3b8; text-transform: uppercase; margin-bottom: 3px; }
+  .pminb-job-bar-item .val { font-size: 12.5px; font-weight: 700; color: var(--text-heading); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pminb-job-bar-item .val.link { color: var(--accent-blue); }
+  .pminb-readonly-footer { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; border-top: 1px solid var(--border-subtle); font-size: 12.5px; font-weight: 600; color: var(--text-body-muted); flex-shrink: 0; }
+  .pminb-thread-header-row { display: flex; align-items: stretch; }
+  .pminb-back-btn { align-self: center; margin-left: 10px; }
+  .pminb-unread-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 700; color: #92620a; background: #fef3c7; border: 1px solid #f5dc9e; padding: 3px 9px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; vertical-align: middle; }
+  .pminb-unread-pill .dot { width: 5px; height: 5px; border-radius: 50%; background: #92620a; flex-shrink: 0; }
+  .pminb-awarded-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: #1a7a3e; background: #e3f9e9; padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
+  .pminb-conv-menu { display: none; position: absolute; top: calc(100% + 6px); right: 0; width: 200px; background: #fff; border: 1px solid var(--border-subtle); border-radius: 12px; box-shadow: 0 12px 32px rgba(16,24,40,0.14); padding: 6px; z-index: 40; }
+  .pminb-conv-menu.open { display: block; }
+  .pminb-conv-menu-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; font-size: 12.5px; font-weight: 600; color: var(--text-heading); cursor: pointer; }
+  .pminb-conv-menu-item:hover { background: var(--surface-soft); }
+  .pminb-conv-menu-item svg { width: 15px; height: 15px; color: var(--text-body-muted); flex-shrink: 0; }
+  @media (max-width: 860px) {
+    .pminb-layout { height: calc(100vh - 200px); min-height: 420px; flex-direction: column; }
+    .pminb-list-panel { width: 100%; max-height: none; border-right: none; border-bottom: none; flex: 1; display: flex; }
+    .pminb-detail-panel { display: none; flex: 1; min-height: 480px; }
+    .pminb-layout.pminb-mobile-thread-open .pminb-list-panel { display: none; }
+    .pminb-layout.pminb-mobile-thread-open .pminb-detail-panel { display: flex; }
+    .pminb-back-btn { display: inline-flex !important; }
+    .pminb-job-bar { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ==========================================================================
+     PM PREFERRED SUPPLIERS
+     ========================================================================== */
+  .pmpref-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+  .pmpref-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 1400px) { .pmpref-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 1080px) { .pmpref-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .pmpref-grid { grid-template-columns: 1fr; } }
+  .pmpref-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; }
+  .pmpref-card-top { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 14px; }
+  .pmpref-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; background: var(--icon-tint-bg); color: var(--accent-blue); overflow: hidden; }
+  .pmpref-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .pmpref-card-name-block { flex: 1; min-width: 0; }
+  .pmpref-card-name { font-size: 14.5px; font-weight: 800; color: var(--text-heading); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pmpref-card-company { font-size: 12px; color: var(--text-body-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 1px; }
+  .pmpref-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-bottom: 14px; }
+  .pmpref-tag { font-size: 11.5px; font-weight: 600; color: var(--text-body-muted); background: var(--surface-soft); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .pmpref-tag.type { font-weight: 800; color: var(--text-heading); }
+  .pmpref-rating { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 700; color: #eab308; white-space: nowrap; }
+  .pmpref-rating .muted { color: var(--text-body-muted); font-weight: 600; }
+  .pmpref-contact-row { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-heading); margin-bottom: 7px; }
+  .pmpref-contact-row svg { width: 13px; height: 13px; color: #94a3b8; flex-shrink: 0; }
+  .pmpref-book-btn { margin-top: auto; padding-top: 14px; }
+  .pmpref-book-btn .btn { width: 100%; justify-content: center; }
+  .pmpref-empty { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-body-muted); font-size: 13px; }
+
+  /* ==========================================================================
+     PM DISPUTES — list + detail. The detail page's progress stepper reuses the
+     exact same .pmjd-dispatch-step / .pmjd-dispatch-line classes as the Job
+     Detail page's own Live Dispatch stepper, just with more steps.
+     ========================================================================== */
+  .pmdsp-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .pmdsp-count { font-size: 13px; color: var(--text-body-muted); margin-bottom: 14px; }
+  .pmdsp-table-wrap { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; overflow: hidden; overflow-x: auto; }
+  .pmdsp-table { width: 100%; border-collapse: collapse; min-width: 760px; }
+  .pmdsp-table th { text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; color: #94a3b8; text-transform: uppercase; padding: 12px 20px; border-bottom: 1px solid var(--border-subtle); background: var(--surface-soft); white-space: nowrap; }
+  .pmdsp-table td { padding: 14px 20px; border-bottom: 1px solid var(--border-subtle); font-size: 13px; color: var(--text-heading); vertical-align: middle; }
+  .pmdsp-table tr:last-child td { border-bottom: none; }
+  .pmdsp-table tr.clickable { cursor: pointer; }
+  .pmdsp-table tr.clickable:hover td { background: var(--surface-soft); }
+  .pmdsp-id-link { font-weight: 800; color: var(--accent-blue); }
+  .pmdsp-job-title { font-weight: 700; color: var(--text-heading); }
+  .pmdsp-job-supplier { font-size: 11.5px; color: var(--text-body-muted); margin-top: 1px; }
+  .pmdsp-amount { font-weight: 800; }
+  .pmdsp-sla-complete { font-weight: 700; color: #1a7a3e; }
+  .pmdsp-footer { text-align: center; font-size: 12.5px; color: var(--text-body-muted); padding: 14px; }
+
+  .pmdsp-breadcrumb-row { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; }
+  .pmdsp-breadcrumb-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: var(--text-heading); background: #fff; border: 1px solid var(--border-subtle); padding: 8px 13px; border-radius: 10px; cursor: pointer; }
+  .pmdsp-breadcrumb-pill:hover { background: var(--surface-soft); }
+  .pmdsp-breadcrumb-sep2 { color: #cbd5e1; font-size: 12.5px; }
+  .pmdsp-breadcrumb-text { font-size: 12.5px; color: var(--text-body-muted); }
+  .pmdsp-breadcrumb-text.strong { font-weight: 800; color: var(--text-heading); }
+  .pmdsp-scenario-tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+  .pmdsp-scenario-tab { padding: 9px 16px; border-radius: 9px; font-size: 12.5px; font-weight: 700; color: var(--text-body-muted); background: var(--surface-soft); cursor: default; }
+  .pmdsp-scenario-tab.active { background: var(--icon-tint-bg); color: var(--accent-blue); }
+  .pmdsp-header-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 16px; flex-wrap: wrap; }
+  .pmdsp-header-id { font-size: 18px; font-weight: 800; color: var(--text-heading); display: inline-flex; align-items: center; gap: 10px; }
+  .pmdsp-header-job { font-size: 13px; color: var(--text-body-muted); margin-top: 4px; }
+  .pmdsp-header-stats { display: flex; align-items: flex-start; gap: 40px; }
+  .pmdsp-header-stat .lbl { font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; }
+  .pmdsp-header-stat .val { font-size: 15px; font-weight: 800; color: var(--text-heading); }
+  .pmdsp-header-stat .val.danger { color: #dc2626; }
+  .pmdsp-progress-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 22px 26px; margin-bottom: 16px; overflow-x: auto; }
+  .pmdsp-progress-card .pmjd-dispatch-steps { min-width: 560px; }
+  .pmdsp-progress-card-title { font-size: 14.5px; font-weight: 800; color: var(--text-heading); margin-bottom: 22px; }
+  .pmdsp-body-grid { display: grid; grid-template-columns: 1fr 340px; gap: 16px; align-items: start; }
+  @media (max-width: 980px) { .pmdsp-body-grid { grid-template-columns: 1fr; } }
+  .pmdsp-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 20px 24px; margin-bottom: 16px; }
+  .pmdsp-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .pmdsp-card-head-icon { width: 30px; height: 30px; border-radius: 8px; background: var(--icon-tint-bg); color: var(--accent-blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pmdsp-card-title { font-size: 14px; font-weight: 800; color: var(--text-heading); }
+  .pmdsp-card-sub { font-size: 12.5px; color: var(--text-body-muted); margin-left: 40px; margin-top: -2px; }
+  .pmdsp-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+  .pmdsp-field-row.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .pmdsp-field-box { background: var(--surface-soft); border-radius: 10px; padding: 12px 14px; }
+  .pmdsp-field-box .lbl { font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; color: #94a3b8; text-transform: uppercase; margin-bottom: 5px; }
+  .pmdsp-field-box .val { font-size: 13.5px; font-weight: 700; color: var(--text-heading); }
+  .pmdsp-sidebar-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 18px 20px; margin-bottom: 16px; }
+  .pmdsp-sidebar-card-head { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: var(--text-heading); margin-bottom: 14px; }
+  .pmdsp-sidebar-card-head svg { color: var(--accent-blue); flex-shrink: 0; }
+  .pmdsp-process-item { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+  .pmdsp-process-item:last-child { margin-bottom: 0; }
+  .pmdsp-process-item .dot { width: 8px; height: 8px; border-radius: 50%; background: #1a7a3e; flex-shrink: 0; margin-top: 5px; }
+  .pmdsp-process-item .txt { flex: 1; min-width: 0; }
+  .pmdsp-process-item .txt .t { font-size: 12.5px; font-weight: 700; color: var(--text-heading); }
+  .pmdsp-process-item .txt .s { font-size: 11.5px; color: var(--text-body-muted); margin-top: 1px; }
+  .pmdsp-process-done { font-size: 11px; font-weight: 700; color: #1a7a3e; flex-shrink: 0; }
+  .pmdsp-process-max { display: flex; align-items: center; justify-content: space-between; background: var(--surface-soft); border-radius: 9px; padding: 10px 13px; font-size: 12px; font-weight: 700; color: var(--text-heading); margin-top: 4px; }
+  .pmdsp-log-item { display: flex; gap: 10px; margin-bottom: 14px; }
+  .pmdsp-log-item:last-child { margin-bottom: 0; }
+  .pmdsp-log-item .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-blue); flex-shrink: 0; margin-top: 5px; }
+  .pmdsp-log-item .dot.resolved { background: #1a7a3e; }
+  .pmdsp-log-item .txt .t { font-size: 12.5px; font-weight: 700; color: var(--text-heading); }
+  .pmdsp-log-item .txt .s { font-size: 11.5px; color: var(--text-body-muted); margin-top: 1px; }
+  .pmdsp-log-item .txt .d { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+  .pmdsp-fin-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; padding: 7px 0; }
+  .pmdsp-fin-row .l { color: var(--text-body-muted); display: flex; align-items: center; gap: 6px; }
+  .pmdsp-fin-row .l .dot { width: 6px; height: 6px; border-radius: 50%; background: #dc2626; flex-shrink: 0; }
+  .pmdsp-fin-row .v { font-weight: 700; color: var(--text-heading); }
+  .pmdsp-fin-row .v.danger { color: #dc2626; }
+  .pmdsp-fin-row.total { border-top: 1px solid var(--border-subtle); margin-top: 4px; padding-top: 12px; }
+  .pmdsp-fin-row.total .v { font-weight: 800; }
+  .pmdsp-link-card { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+  .pmdsp-link-card:hover .pmdsp-card-title { text-decoration: underline; }
+  .pmdsp-link-card-arrow { margin-left: auto; color: #94a3b8; flex-shrink: 0; }
+  /* Dispute stepper reuses .pmjd-dispatch-step/.pmjd-dispatch-line but its "not yet closed" steps
+     show their number (a longer, more formal 5-stage process) rather than staying blank the way
+     the Job Detail page's own dispatch stepper does. */
+  .pmjd-dispatch-step .dot .num { font-size: 10px; font-weight: 800; }
+  .pmjd-dispatch-step.current-numbered .dot { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; }
+  .pmjd-dispatch-step.current-numbered .label { color: var(--accent-blue); }
+  .pmjd-dispatch-step .sub-label { font-size: 10px; color: #94a3b8; margin-top: -4px; }
+  .pmjd-dispatch-step.done .sub-label { color: #1a7a3e; }
+  .pmjd-dispatch-step.current-numbered .sub-label { color: var(--accent-blue); }
 
   /* ==========================================================================
      ONBOARDING — floating "Keylr Support" chat widget (bottom-right FAB).
@@ -4237,7 +4415,8 @@
   .pmbook-sidepanel-body { flex: 1; overflow-y: auto; padding: 22px 24px; }
   .pmbook-sidepanel-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid var(--border-subtle); flex-shrink: 0; }
   .pmbook-booked-icon { width: 56px; height: 56px; border-radius: 50%; background: #e3f9e9; color: #1a7a3e; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
-  .pmjd-dispatch-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 20px 24px 16px; margin-bottom: 16px; }
+  .pmjd-dispatch-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 20px 24px 16px; margin-bottom: 16px; overflow-x: auto; }
+  .pmjd-dispatch-card .pmjd-dispatch-steps { min-width: 480px; }
   .pmjd-dispatch-steps { display: flex; align-items: flex-start; }
   .pmjd-dispatch-step { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 0 0 auto; width: 96px; }
   .pmjd-dispatch-step .dot { width: 22px; height: 22px; border-radius: 50%; background: var(--surface-soft); border: 2px solid var(--border-subtle); display: flex; align-items: center; justify-content: center; color: transparent; flex-shrink: 0; }
@@ -5162,6 +5341,7 @@
     transition: opacity 250ms ease-out, transform 250ms ease-out; z-index: 200; max-width: 380px;
   }
   .toast-rich.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+  .toast-rich.info { background: #0f9488; }
   .toast-rich .tr-icon { flex-shrink: 0; margin-top: 1px; }
   .toast-rich .tr-title { font-weight: 700; }
   .toast-rich .tr-detail { font-size: 12.5px; font-weight: 400; color: rgba(255,255,255,0.9); margin-top: 2px; }
@@ -5954,7 +6134,7 @@
   /* =========================================================
      PM: JOB RESPONSES
   ========================================================== */
-  .pmjr-tabs-row { display: flex; gap: 12px; border-bottom: 1px solid var(--border-subtle); margin-top: 20px; }
+  .pmjr-tabs-row { display: flex; gap: 12px; border-bottom: 1px solid var(--border-subtle); }
   .pmjr-tab { display: flex; align-items: center; gap: 8px; padding: 4px 0 12px; font-size: 14.5px; font-weight: 600; color: var(--text-body-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 120ms ease-out, border-color 120ms ease-out; }
   .pmjr-tab:hover { color: var(--text-heading); }
   .pmjr-tab.active { color: var(--accent-blue); border-bottom-color: var(--accent-blue); }
@@ -12292,6 +12472,26 @@
           <h1>Jobs</h1>
           <div class="dash-content-sub">Manage every job across your portfolio.</div>
         </div>
+        <div id="pmQuotesTopbarTitle" style="display:none;min-width:0;">
+          <h1>Supplier Quotes</h1>
+          <div class="dash-content-sub">Review supplier responses and award jobs.</div>
+        </div>
+        <div id="pmInboxTopbarTitle" style="display:none;min-width:0;">
+          <h1 style="display:inline-flex;align-items:center;gap:10px;">Inbox<span class="pminb-unread-pill" id="pminbUnreadPill" hidden><span class="dot"></span><span id="pminbUnreadPillText">0 unread</span></span></h1>
+          <div class="dash-content-sub">Messages with suppliers, tenants &amp; support — all in one place.</div>
+        </div>
+        <div id="pmPrefSuppliersTopbarTitle" style="display:none;min-width:0;">
+          <h1>Preferred Suppliers</h1>
+          <div class="dash-content-sub">Your trusted supplier list — assign directly when booking a job.</div>
+        </div>
+        <div id="pmDisputesTopbarTitle" style="display:none;min-width:0;">
+          <h1 style="display:inline-flex;align-items:center;gap:10px;">Disputes<span class="pminb-unread-pill" id="pmdspCountPill" style="background:var(--icon-tint-bg);border-color:transparent;color:var(--accent-blue);"><span id="pmdspCountPillText">0 disputes</span></span></h1>
+          <div class="dash-content-sub">Every dispute you've opened, with its status and resolution.</div>
+        </div>
+        <div id="pmDisputeDetailTopbarTitle" style="display:none;min-width:0;">
+          <h1 id="pmDisputeDetailHeading">Dispute DSP-0</h1>
+          <div class="dash-content-sub">Review the thread and respond to keep this dispute moving.</div>
+        </div>
         <div id="pmBookTopbarTitle" class="pmjd-breadcrumb" style="display:none;min-width:0;">
           <button type="button" class="pmjd-breadcrumb-back" id="pmBookTopbarBackLink"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Jobs</button>
           <span class="pmjd-breadcrumb-sep">/</span>
@@ -13277,14 +13477,6 @@
           <!-- Job Responses view -->
           <div id="pmQuotesView" style="display:none;">
             <div class="dash-section">
-            <div class="dash-header">
-                <div>
-                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;color:#94a3b8;margin-bottom:4px;">SUPPLIER QUOTES</div>
-                  <h2 style="background: linear-gradient(135deg, var(--btn-grad-start) 0%, var(--btn-grad-end) 100%); -webkit-background-clip: text; background-clip: text; color: transparent;">Supplier Quotes</h2>
-                  <div class="dash-content-sub">Review supplier responses and award jobs — compare quotes, set a price, and award the winner.</div>
-                </div>
-              </div>
-
               <div class="pmjr-tabs-row" id="pmjrTabs">
                 <div class="pmjr-tab active" data-tab="all">All Requests <span class="pmjr-tab-count" id="pmjrCountAll">0</span></div>
                 <div class="pmjr-tab" data-tab="setprice">Set Price Jobs <span class="pmjr-tab-count" id="pmjrCountSetprice">0</span></div>
@@ -13401,6 +13593,89 @@
                category/service/payment/status filters, a sortable table, and pagination. Row click
                opens the Job Detail page (#pmJobDetailView). The old "Job Responses" quote-comparison
                flow that used to live under this nav item now lives under Supplier Quotes above. -->
+          <!-- PM Inbox: reuses the shared sinb-* chat/composer/system-message components (the same
+               ones Admin's and Supplier's own inboxes use) for the thread itself, and the
+               ain-conv-* list-item classes for the conversation list, so messaging looks and feels
+               identical across every dashboard rather than a fourth, disconnected build. -->
+          <div id="pmInboxView" style="display:none;">
+            <div class="dash-section">
+              <div class="pminb-layout">
+                <div class="pminb-list-panel">
+                  <div class="pminb-search-row">
+                    <div class="ain-search-box" style="flex:1;">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                      <input type="text" id="pminbSearchInput" placeholder="Search conversations...">
+                    </div>
+                    <div style="position:relative;">
+                      <button type="button" class="pminb-filter-btn" id="pminbFilterBtn" aria-label="Filter"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></button>
+                      <div class="pminb-filter-panel" id="pminbFilterPanel">
+                        <div class="pminb-filter-panel-label">Filter By</div>
+                        <div style="position:relative;">
+                          <button type="button" class="pminb-filter-type-btn" id="pminbFilterPropertyBtn">By Property<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                          <div class="pminb-filter-sub-menu" id="pminbFilterPropertyMenu"></div>
+                        </div>
+                        <div style="position:relative;margin-top:8px;">
+                          <button type="button" class="pminb-filter-type-btn" id="pminbFilterSupplierBtn">By Supplier<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                          <div class="pminb-filter-sub-menu" id="pminbFilterSupplierMenu"></div>
+                        </div>
+                        <button type="button" class="pminb-clear-filters-btn" id="pminbClearFiltersBtn" hidden>Clear Filters</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pminb-tabs-row" id="pminbTabsRow">
+                    <div class="pminb-tab active" data-pminb-tab="active">Active</div>
+                    <div class="pminb-tab" data-pminb-tab="archived">Archived</div>
+                    <div class="pminb-tab" data-pminb-tab="completed">Completed</div>
+                  </div>
+                  <div class="ain-conv-list" id="pminbConvList"></div>
+                </div>
+
+                <div class="pminb-detail-panel">
+                  <div class="ain-empty-state" id="pminbEmptyState">
+                    <div class="ain-empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+                    <div class="ain-empty-title">Pick a Conversation</div>
+                    <div class="ain-empty-sub">Select a conversation on the left to read and reply.</div>
+                  </div>
+                  <div class="pminb-thread-view" id="pminbThreadView" style="display:none;">
+                    <div class="pminb-thread-header-row">
+                      <button type="button" class="ain-icon-btn pminb-back-btn" id="pminbBackBtn" aria-label="Back to conversations" style="display:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+                      <div class="sinb-chat-header" id="pminbThreadHeader" style="flex:1;"></div>
+                    </div>
+                    <div class="pminb-job-bar" id="pminbJobBar" hidden></div>
+                    <div class="sinb-chat-thread-wrap">
+                      <div class="sinb-chat-scroll" id="pminbChatScroll">
+                        <div id="pminbMessagesInner"></div>
+                        <div class="sinb-scroll-anchor"><button type="button" class="sinb-scroll-bottom-btn" id="pminbScrollBottomBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg><span>Go to bottom</span></button></div>
+                      </div>
+                    </div>
+                    <div class="sinb-composer" id="pminbComposer">
+                      <div class="sinb-composer-icons">
+                        <div style="position:relative;">
+                          <button type="button" class="sinb-icon-btn" id="pminbEmojiBtn" data-tooltip="Add emoji"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/></svg></button>
+                          <div class="sinb-emoji-popover" id="pminbEmojiPopover">
+                            <span data-emoji="👍">👍</span><span data-emoji="👌">👌</span><span data-emoji="🙂">🙂</span><span data-emoji="😀">😀</span><span data-emoji="🙌">🙌</span><span data-emoji="👋">👋</span>
+                            <span data-emoji="✅">✅</span><span data-emoji="🔧">🔧</span><span data-emoji="🚐">🚐</span><span data-emoji="⏰">⏰</span><span data-emoji="📷">📷</span><span data-emoji="👊">👊</span>
+                          </div>
+                        </div>
+                        <button type="button" class="sinb-icon-btn" id="pminbAttachBtn" data-tooltip="Attach image or PDF"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
+                        <input type="file" id="pminbAttachInput" accept="image/*,video/*,.pdf" style="display:none;">
+                      </div>
+                      <div class="sinb-input-row">
+                        <input type="text" id="pminbMessageInput" placeholder="Message...">
+                        <button type="button" class="sinb-send-btn" id="pminbSendBtn" disabled><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></button>
+                      </div>
+                      <div class="sinb-composer-hint">Enter to send · Shift + Enter for new line · Images, videos + PDFs up to 10 MB.</div>
+                    </div>
+                    <div class="pminb-readonly-footer" id="pminbReadonlyFooter" hidden>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                      <span id="pminbReadonlyText">This conversation is archived — read only.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div id="pmJobsView" style="display:none;">
             <div class="dash-section">
               <div class="pmjobs-filter-card">
@@ -14107,6 +14382,142 @@
           <!-- Properties list view. Its "Properties" heading now lives in the main dash-topbar
                (#pmPropertiesTopbarTitle) — this header row instead leads with search + the result
                count, on the same row as the existing action buttons. -->
+          <div id="pmPrefSuppliersView" style="display:none;">
+            <div class="dash-section">
+              <div class="pmpref-toolbar">
+                <div class="ain-search-box" style="flex:1;max-width:420px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" id="pmprefSearchInput" placeholder="Search suppliers...">
+                </div>
+                <div style="position:relative;">
+                  <button type="button" class="pm-custom-dd-btn ob-select-dd" data-dd="pmprefCategoryFilter" style="min-width:230px;"><span class="cdd-value">All Categories &amp; Services</span><svg class="cdd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                  <div class="pm-custom-dd-menu" data-dd-menu="pmprefCategoryFilter" id="pmprefCategoryFilterMenu" style="max-height:320px;"></div>
+                </div>
+              </div>
+              <div class="pmpref-grid" id="pmprefGrid"></div>
+            </div>
+          </div>
+
+          <div id="pmDisputesView" style="display:none;">
+            <div class="dash-section">
+              <div class="pmdsp-toolbar">
+                <div class="ain-search-box" style="flex:1;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" id="pmdspSearchInput" placeholder="Search dispute, job, property, supplier...">
+                </div>
+                <div style="position:relative;">
+                  <button type="button" class="pm-custom-dd-btn ob-select-dd" data-dd="pmdspStatusFilter" style="min-width:150px;"><span class="cdd-value">All Statuses</span><svg class="cdd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                  <div class="pm-custom-dd-menu" data-dd-menu="pmdspStatusFilter" id="pmdspStatusFilterMenu"></div>
+                </div>
+              </div>
+              <div class="pmdsp-table-wrap">
+                <table class="pmdsp-table">
+                  <thead><tr><th>Dispute</th><th>Job</th><th>In Dispute</th><th>Status</th><th>Opened</th><th>SLA</th></tr></thead>
+                  <tbody id="pmdspTableBody"></tbody>
+                </table>
+              </div>
+              <div class="pmdsp-footer" id="pmdspFooter"></div>
+            </div>
+          </div>
+
+          <div id="pmDisputeDetailView" style="display:none;">
+            <div class="dash-section">
+              <div class="pmdsp-breadcrumb-row">
+                <div class="pmdsp-breadcrumb-pill" id="pmdspBackToListBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Disputes</div>
+                <span class="pmdsp-breadcrumb-sep2">/</span>
+                <span class="pmdsp-breadcrumb-text" id="pmdspBreadcrumbJob">JOB #0</span>
+                <span class="pmdsp-breadcrumb-sep2">/</span>
+                <span class="pmdsp-breadcrumb-text strong" id="pmdspBreadcrumbId">DSP-0</span>
+              </div>
+
+              <div class="pmdsp-scenario-tabs" id="pmdspScenarioTabs">
+                <div class="pmdsp-scenario-tab" data-scenario="review">Review Period</div>
+                <div class="pmdsp-scenario-tab" data-scenario="pre">Pre-Invoice Dispute</div>
+                <div class="pmdsp-scenario-tab" data-scenario="post">Post-Invoice Dispute</div>
+              </div>
+
+              <div class="pmdsp-header-card">
+                <div>
+                  <div class="pmdsp-header-id"><span id="pmdspHeaderId">DSP-0</span><span class="status-pill" id="pmdspHeaderStatusPill">Open</span></div>
+                  <div class="pmdsp-header-job" id="pmdspHeaderJob">JOB #0 \u00b7 Service</div>
+                </div>
+                <div class="pmdsp-header-stats">
+                  <div class="pmdsp-header-stat"><div class="lbl">Current Stage</div><div class="val" id="pmdspHeaderStage">Open</div></div>
+                  <div class="pmdsp-header-stat"><div class="lbl">Amount in Dispute</div><div class="val danger" id="pmdspHeaderAmount">\u00a30.00</div></div>
+                </div>
+              </div>
+
+              <div class="pmdsp-progress-card">
+                <div class="pmdsp-progress-card-title">Dispute Progress</div>
+                <div class="pmjd-dispatch-steps" id="pmdspProgressSteps"></div>
+              </div>
+
+              <div class="pmdsp-body-grid">
+                <div>
+                  <div class="pmdsp-card">
+                    <div class="pmdsp-card-head"><div class="pmdsp-card-head-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="pmdsp-card-title" id="pmdspStageCardTitle">Open</div></div>
+                    <div class="pmdsp-card-sub" id="pmdspStageCardSub">The dispute has been raised.</div>
+                    <div class="pmdsp-field-row cols-3" id="pmdspStageMetaRow" hidden>
+                      <div class="pmdsp-field-box"><div class="lbl">Owner</div><div class="val" id="pmdspStageOwner">\u2014</div></div>
+                      <div class="pmdsp-field-box"><div class="lbl">SLA</div><div class="val" id="pmdspStageSla">\u2014</div></div>
+                      <div class="pmdsp-field-box"><div class="lbl">Due</div><div class="val" id="pmdspStageDue">\u2014</div></div>
+                    </div>
+                  </div>
+
+                  <div class="pmdsp-card">
+                    <div class="pmdsp-card-head"><div class="pmdsp-card-head-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="pmdsp-card-title">Dispute Details</div></div>
+                    <div class="pmdsp-field-row">
+                      <div class="pmdsp-field-box"><div class="lbl">Reason</div><div class="val" id="pmdspReason">\u2014</div></div>
+                      <div class="pmdsp-field-box"><div class="lbl">Desired Outcome</div><div class="val" id="pmdspOutcome">\u2014</div></div>
+                    </div>
+                    <div class="pmdsp-field-box" style="margin-top:14px;"><div class="lbl">What happened</div><div class="val" id="pmdspWhatHappened" style="font-weight:600;">\u2014</div></div>
+                  </div>
+
+                  <div class="pmdsp-card" id="pmdspResolutionCard" hidden>
+                    <div class="pmdsp-card-head"><div class="pmdsp-card-head-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div><div class="pmdsp-card-title">Resolution</div></div>
+                    <div class="pmdsp-field-box" style="margin-top:14px;"><div class="val" id="pmdspResolutionText" style="font-weight:800;">\u2014</div></div>
+                  </div>
+
+                  <div class="pmdsp-card">
+                    <div class="pmdsp-card-head" style="justify-content:space-between;">
+                      <div style="display:flex;align-items:center;gap:10px;"><div class="pmdsp-card-head-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></div><div class="pmdsp-card-title">Evidence</div></div>
+                      <span style="font-size:12px;color:var(--text-body-muted);" id="pmdspEvidenceCount">0 files</span>
+                    </div>
+                    <div class="pmdsp-card-sub" id="pmdspEvidenceEmpty" style="margin-top:10px;">No evidence uploaded yet.</div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="pmdsp-sidebar-card">
+                    <div class="pmdsp-sidebar-card-head"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>Resolution Process</div>
+                    <div id="pmdspProcessList"></div>
+                    <div class="pmdsp-process-max"><span>Maximum Resolution Time</span><span id="pmdspMaxResTime">11 Working Days</span></div>
+                  </div>
+                  <div class="pmdsp-sidebar-card">
+                    <div class="pmdsp-sidebar-card-head"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>Dispute Log</div>
+                    <div id="pmdspLogList"></div>
+                  </div>
+                  <div class="pmdsp-sidebar-card">
+                    <div class="pmdsp-sidebar-card-head"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Financial Summary</div>
+                    <div class="pmdsp-fin-row"><span class="l">Job total</span><span class="v" id="pmdspFinTotal">\u00a30.00</span></div>
+                    <div class="pmdsp-fin-row"><span class="l"><span class="dot"></span>Disputed amount</span><span class="v danger" id="pmdspFinDisputed">\u00a30.00</span></div>
+                    <div class="pmdsp-fin-row total"><span class="l">Net to Supplier</span><span class="v" id="pmdspFinNet">\u00a30.00</span></div>
+                  </div>
+                  <div class="pmdsp-sidebar-card pmdsp-link-card" id="pmdspChatLink">
+                    <div class="pmdsp-card-head-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+                    <div><div class="pmdsp-card-title">Chat Supplier</div><div class="pmdsp-card-sub" style="margin-left:0;" id="pmdspChatSub">0 updates \u00b7 conversation</div></div>
+                    <svg class="pmdsp-link-card-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                  </div>
+                  <div class="pmdsp-sidebar-card pmdsp-link-card" id="pmdspJobLink">
+                    <div class="pmdsp-card-head-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+                    <div><div class="pmdsp-card-title">Job Detail Preview</div><div class="pmdsp-card-sub" style="margin-left:0;">See the original job &amp; cost</div></div>
+                    <svg class="pmdsp-link-card-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div id="pmPropertiesView" style="display:none;">
             <div class="dash-section">
               <div class="dash-header">
@@ -29140,6 +29551,695 @@
     pmbookCloseTplCreate();
   }
 
+  /* =========================================================
+     PM INBOX
+     ---------------------------------------------------------
+     Conversations reference real suppliers/jobs/properties already in PMJOBS_DATA and
+     PMPROP_PROPERTIES rather than inventing a disconnected contact list, and reuse the same
+     sinb-system-card message component (plus the new .positive variant) that Admin's and
+     Supplier's own inboxes already render with.
+  ========================================================== */
+  function pminbSysMsg(tone, title, body, time) { return { kind: 'system', tone: tone, title: title, body: body, time: time }; }
+  function pminbDateDiv(label) { return { kind: 'date', label: label }; }
+
+  var PMINB_CONVERSATIONS = [
+    { id: 'support', kind: 'support', name: 'Keylr Support', jobId: null, lastActive: '4d ago', status: 'active', unread: 1, pinned: false, lastTs: Date.now() - 1000 * 60 * 60 * 20,
+      lastMessageText: 'Your pre-invoice is ready for review \u2014 Your billing period 2026-07-01 \u2013 2026-07-15 is ready.',
+      messages: [
+        pminbSysMsg('positive', 'AC Service / Repair / Refrigerant Top-Up', 'A supplier has accepted your job invite.', '10:17'),
+        pminbSysMsg('warn', 'Post-Build / Upholstery / Oven / Mould Clean', 'A supplier has declined your job invite.', '11:15'),
+        pminbSysMsg('warn', 'Biohazard / Trauma Clean', 'A supplier has declined your job invite.', '19:39'),
+        pminbSysMsg('warn', 'Carpet / Stair Carpet Steam Clean', 'A supplier has declined your job invite.', '19:39'),
+        pminbDateDiv('03/07/2026'),
+        pminbSysMsg('positive', 'Boiler Repair / No Hot Water / Gas Leak Emergency', 'A supplier has accepted your job invite.', '17:13'),
+        pminbDateDiv('FRIDAY'),
+        pminbSysMsg('neutral', 'Your pre-invoice is ready for review', 'Your billing period 2026-07-01 \u2013 2026-07-15 is ready. The total is \u00a33,174.94 and your Direct Debit will be taken on 2026-07-15 unless you dispute a line item within the next 48 hours.', '22:30')
+      ] },
+    { id: 'c-2763', kind: 'supplier', name: 'Liam Greenwood', supplierFull: 'Liam Greenwood Appliance Engineer', jobId: 'JOB-2763', jobTitle: 'End of Tenancy / Deep / Regular / Communal', propertyName: 'Homeland 2', propertyAddr: 'Q & Q Recovery, West Road, Barnsley', when: '2026-07-21', price: '\u00a350.00', priceType: 'Set Price', status: 'active', awarded: false, unread: 0, pinned: false, lastTs: Date.now() - 1000 * 60 * 60 * 30,
+      lastMessageText: 'Conversation started for End of Tenancy / Deep / Regular / Communal.',
+      messages: [pminbDateDiv('YESTERDAY'), pminbSysMsg('neutral', 'End of Tenancy / Deep / Regular / Communal', 'Conversation started for End of Tenancy / Deep / Regular / Communal.', '09:12')] },
+    { id: 'c-2628', kind: 'supplier', name: 'Liam Greenwood', supplierFull: 'Liam Greenwood Appliance Engineer', jobId: 'JOB-2628', jobTitle: 'Appliance Installation', propertyName: 'Homeland Heights', propertyAddr: 'Carrington, PO Box 81490, London', when: '2026-07-02', price: '\u00a31,019.98', priceType: 'Quote', status: 'active', awarded: true, unread: 0, pinned: false, lastTs: Date.now() - 1000 * 60 * 60 * 50,
+      lastMessageText: 'Deposit of \u00a31,019.98 received \u2014 Your deposit of \u00a31,019.98 has been processed.',
+      messages: [pminbDateDiv('WEDNESDAY'), pminbSysMsg('positive', 'Appliance Installation', 'Your quote of \u00a31,019.98 has been accepted \u2014 you\u2019ve been awarded this job.', '14:02'), pminbSysMsg('neutral', 'Deposit of \u00a31,019.98 received', 'Your deposit of \u00a31,019.98 has been processed. The supplier has been notified and their payout has been scheduled.', '14:03')] },
+    { id: 'c-2776', kind: 'supplier', name: 'Liam Greenwood', supplierFull: 'Liam Greenwood Appliance Engineer', jobId: 'JOB-2776', jobTitle: 'EICR \u2014 Electrical Installation Condition Report', propertyName: 'Travelodge Hotels Ltd', propertyAddr: 'Travelodge Hotels Ltd, 3 Smythe Close, London', when: '2026-07-06', price: '\u00a3175.68', priceType: 'Set Price', status: 'active', awarded: true, unread: 0, pinned: false, lastTs: Date.now() - 1000 * 60 * 60 * 70,
+      lastMessageText: 'You\u2019ve been marked as a no-show \u2014 You were unable to attend this job.',
+      messages: [pminbDateDiv('WEDNESDAY'), pminbSysMsg('warn', 'EICR \u2014 Electrical Installation Condition Report', 'You\u2019ve been marked as a no-show. You were unable to attend this job in the scheduled window.', '08:40')] },
+    { id: 'c-2765', kind: 'supplier', name: 'Daniel Carter', jobId: 'JOB-2765', jobTitle: 'End of Tenancy / Deep / Regular / Communal', propertyName: 'Q & Q Recovery', propertyAddr: 'Q & Q Recovery, West Road, Barnsley', when: '2026-07-06', price: '\u00a372.00', priceType: 'Set Price', status: 'active', awarded: false, unread: 0, pinned: false, lastTs: Date.now() - 1000 * 60 * 60 * 24 * 8,
+      lastMessageText: 'Conversation started for End of Tenancy / Deep / Regular / Communal.',
+      messages: [pminbDateDiv('06/07/2026'), pminbSysMsg('neutral', 'End of Tenancy / Deep / Regular / Communal', 'Conversation started for End of Tenancy / Deep / Regular / Communal.', '11:04')] },
+    { id: 'c-2764', kind: 'supplier', name: 'Liam Greenwood', supplierFull: 'Liam Greenwood Appliance Engineer', jobId: 'JOB-2764', jobTitle: 'Boiler Repair / No Hot Water / Gas Leak Emergency', propertyName: 'Q & Q Recovery', propertyAddr: 'Q & Q Recovery, West Road, Barnsley', when: '2026-07-03', price: 'On quote', priceType: 'Quote', status: 'active', awarded: false, unread: 0, pinned: false, lastTs: Date.now() - 1000 * 60 * 60 * 24 * 8,
+      lastMessageText: 'Conversation started for Boiler Repair / No Hot Water / Gas Leak Emergency.',
+      messages: [pminbDateDiv('06/07/2026'), pminbSysMsg('neutral', 'Boiler Repair / No Hot Water / Gas Leak Emergency', 'Conversation started for Boiler Repair / No Hot Water / Gas Leak Emergency.', '10:51')] },
+    { id: 'c-2765b', kind: 'supplier', name: 'Nadia Reid', supplierFull: 'Nadia Reid Gardener', jobId: 'JOB-2765', jobTitle: 'Boiler Repair / No Hot Water', propertyName: 'Homeland 2', propertyAddr: 'Q & Q Recovery, West Road, Barnsley', when: '2026-07-04', price: '\u00a348.00', priceType: 'Set Price', status: 'active', awarded: false, unread: 0, pinned: false, lastTs: Date.now() - 1000 * 60 * 60 * 24 * 10,
+      lastMessageText: 'You\u2019ve been marked as a no-show \u2014 You were unable to attend this job.',
+      messages: [pminbDateDiv('04/07/2026'), pminbSysMsg('warn', 'Boiler Repair / No Hot Water', 'You\u2019ve been marked as a no-show. You were unable to attend this job in the scheduled window.', '15:22')] },
+    { id: 'c-2759', kind: 'supplier', name: 'Liam Greenwood', supplierFull: 'Liam Greenwood Appliance Engineer', jobId: 'JOB-2759', jobTitle: 'Airbnb Check-in', propertyName: 'Flat 44, 93 Victoria Road', propertyAddr: 'Flat 1, 39 Whitehall, London', when: '2026-07-04', price: '\u00a397.96', priceType: 'Set Price', status: 'active', awarded: false, unread: 0, pinned: false, lastTs: Date.now() - 1000 * 60 * 60 * 24 * 10,
+      lastMessageText: 'You\u2019ve been marked as a no-show \u2014 You were unable to attend this job.',
+      messages: [pminbDateDiv('04/07/2026'), pminbSysMsg('warn', 'Airbnb Check-in', 'You\u2019ve been marked as a no-show. You were unable to attend this job in the scheduled window.', '09:15')] },
+
+    { id: 'c-2721', kind: 'supplier', name: 'Nadia Reid', supplierFull: 'Nadia Reid Gardener', jobId: 'JOB-2721', jobTitle: 'Smoke Alarm Installation', propertyName: 'Homeland Heights', propertyAddr: 'Carrington, PO Box 81490, London', when: '2026-07-01', price: '\u00a3250.00', priceType: 'Set Price', status: 'archived', awarded: true, unread: 0, pinned: false, lastTs: Date.now() - 1000 * 60 * 25,
+      lastMessageText: 'Conversation started for Smoke Alarm Installation.',
+      messages: [pminbDateDiv('TODAY'), pminbSysMsg('neutral', 'Smoke Alarm Installation', 'Conversation started for Smoke Alarm Installation.', '12:19')] },
+    { id: 'c-2746', kind: 'supplier', name: 'Nadia Reid', supplierFull: 'Nadia Reid Gardener', jobId: 'JOB-2746', jobTitle: 'Door Entry / Intercom / Smart Doorbell', propertyName: 'Homeland Heights', propertyAddr: 'Carrington, PO Box 81490, London', when: '2026-07-06', price: 'On quote', priceType: 'Quote', status: 'archived', awarded: false, unread: 0, pinned: false, lastTs: Date.now() - 1000 * 60 * 60 * 24 * 8,
+      lastMessageText: 'Door Entry / Intercom / Smart Doorbell \u2014 The property manager has cancelled this job.',
+      messages: [pminbDateDiv('06/07/2026'), pminbSysMsg('warn', 'Door Entry / Intercom / Smart Doorbell', 'The property manager has cancelled this job.', '16:40')] },
+    { id: 'c-2713', kind: 'supplier', name: 'Liam Greenwood', supplierFull: 'Liam Greenwood Appliance Engineer', jobId: 'JOB-2713', jobTitle: 'Airbnb Turnover Clean', propertyName: 'Homeland 2', propertyAddr: 'Q & Q Recovery, West Road, Barnsley', when: '2026-07-03', price: '\u00a3240.00', priceType: 'Set Price', status: 'archived', awarded: true, unread: 4, pinned: false, lastTs: Date.now() - 1000 * 60 * 60 * 24 * 11,
+      lastMessageText: 'Deposit of \u00a3240.00 received \u2014 Your deposit of \u00a3240.00 has been processed.',
+      messages: [pminbDateDiv('03/07/2026'), pminbSysMsg('positive', 'Airbnb Turnover Clean', 'Your quote of \u00a3240.00 has been accepted \u2014 you\u2019ve been awarded this job.', '10:02'), pminbSysMsg('neutral', 'Deposit of \u00a3240.00 received', 'Your deposit of \u00a3240.00 has been processed. The supplier has been notified and their payout has been scheduled.', '10:03')] },
+
+    { id: 'c-2774', kind: 'supplier', name: 'rajat', supplierFull: 'rajat', supplierCompany: 'COMMUNIFY ON DEMAND LTD', rating: 4.3, ratingCount: 12, jobId: 'JOB-2774', jobTitle: 'Carpet / Stair Carpet Steam Clean', propertyName: 'Homeland 2', propertyAddr: 'Q & Q Recovery, West Road, Barnsley', when: '2026-07-06', price: '\u00a3840.00', priceType: 'Set Price', status: 'completed', awarded: true, unread: 0, pinned: false, lastTs: Date.now() - 1000 * 60 * 60 * 24 * 13,
+      lastMessageText: 'The completion report for this job is now available to download.',
+      messages: [
+        pminbSysMsg('positive', 'Carpet / Stair Carpet Steam Clean', 'The property manager has selected you for Carpet / Stair Carpet Steam Clean.', '21:51'),
+        pminbSysMsg('neutral', 'Your quote of \u00a3900.00 has been accepted \u2014 you\u2019ve been awarded this job.', '', '21:51'),
+        pminbSysMsg('neutral', 'Deposit of \u00a3360.00 received', 'Your deposit of \u00a3360.00 for job #2744 (Carpet / Stair Carpet Steam Clean) has been processed successfully. The supplier has been notified and their payout has been scheduled. Your invoice is available in the dashboard.', '21:51'),
+        pminbSysMsg('positive', 'Carpet / Stair Carpet Steam Clean', 'The supplier has started work on your job.', '21:52'),
+        pminbSysMsg('neutral', 'Carpet / Stair Carpet Steam Clean', 'The supplier has marked this job as complete. Please review.', '21:53'),
+        pminbSysMsg('positive', 'Carpet / Stair Carpet Steam Clean', 'The property manager has approved and completed this job.', '22:15'),
+        pminbSysMsg('neutral', 'Carpet / Stair Carpet Steam Clean', 'The completion report for this job is now available to download.', '22:15')
+      ] },
+    { id: 'c-2653', kind: 'supplier', name: 'GRIFFIN RAIL WHEEL LTD', jobId: 'JOB-2653', jobTitle: 'Rewiring', propertyName: 'Old Shades', propertyAddr: '45-47, Whitehall, London', when: '2026-06-28', price: '\u00a3620.00', priceType: 'Set Price', status: 'completed', awarded: true, unread: 0, pinned: false, lastTs: Date.now() - 1000 * 60 * 60 * 24 * 16,
+      lastMessageText: 'The completion report for this job is now available to download.',
+      messages: [pminbSysMsg('positive', 'Rewiring', 'The property manager has approved and completed this job.', '18:40'), pminbSysMsg('neutral', 'Rewiring', 'The completion report for this job is now available to download.', '18:41')] },
+    { id: 'c-2697', kind: 'supplier', name: 'KEY RIDERS LTD', jobId: 'JOB-2697', jobTitle: 'Communal Area Clean', propertyName: 'Carrington', propertyAddr: 'Carrington, PO Box 81490, London', when: '2026-06-30', price: '\u00a3288.00', priceType: 'Set Price', status: 'completed', awarded: true, unread: 0, pinned: false, lastTs: Date.now() - 1000 * 60 * 60 * 24 * 14,
+      lastMessageText: 'Early payment of \u00a3288.00 processed \u2014 Your early payment has been sent.',
+      messages: [pminbSysMsg('positive', 'Communal Area Clean', 'The property manager has approved and completed this job.', '09:10'), pminbSysMsg('neutral', 'Early payment of \u00a3288.00 processed', 'Your early payment of \u00a3288.00 has been sent to your linked account.', '09:12')] }
+  ];
+
+  var pminbActiveTab = 'active';
+  var pminbSearchQuery = '';
+  var pminbFilterType = null; // 'property' | 'supplier' | null
+  var pminbFilterValue = null;
+  var pminbActiveConvId = null;
+  var pminbInitDone = false;
+
+  function pminbConv(id) { return PMINB_CONVERSATIONS.find(function (c) { return c.id === id; }); }
+  function pminbInitials(name) {
+    var parts = (name || '').trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+  function pminbTotalUnread() {
+    return PMINB_CONVERSATIONS.reduce(function (sum, c) { return sum + (c.unread || 0); }, 0);
+  }
+  function pminbFilteredList() {
+    var q = pminbSearchQuery.trim().toLowerCase();
+    return PMINB_CONVERSATIONS.filter(function (c) {
+      if (c.status !== pminbActiveTab) return false;
+      if (pminbFilterType === 'property' && c.propertyName !== pminbFilterValue) return false;
+      if (pminbFilterType === 'supplier' && c.name !== pminbFilterValue) return false;
+      if (q) {
+        var hay = (c.name + ' ' + (c.jobId || '') + ' ' + (c.jobTitle || '') + ' ' + c.lastMessageText).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function pminbRenderList() {
+    var listEl = document.getElementById('pminbConvList');
+    var items = pminbFilteredList().slice().sort(function (a, b) {
+      if (!!b.pinned !== !!a.pinned) return b.pinned ? 1 : -1;
+      return b.lastTs - a.lastTs;
+    });
+    if (!items.length) {
+      listEl.innerHTML = '<div class="ain-conv-list-empty">No conversations match this search.</div>';
+      return;
+    }
+    listEl.innerHTML = items.map(function (c) {
+      var titleLine = c.kind === 'support' ? c.name : (c.name + ' \u2014 ' + (c.jobTitle || ''));
+      return '<div class="ain-conv-item' + (c.unread ? ' unread' : '') + (c.id === pminbActiveConvId ? ' active' : '') + '" data-pminb-conv="' + c.id + '">' +
+        '<div class="ain-conv-avatar" style="background:var(--icon-tint-bg);color:var(--accent-blue);">' + pminbInitials(c.name) + '</div>' +
+        '<div class="ain-conv-body">' +
+          '<div class="ain-conv-top-row">' +
+            '<span class="ain-conv-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:190px;">' + sinbEsc(titleLine) + '</span>' +
+            '<span class="ain-conv-time">' + adminInboxRelTime(c.lastTs) + '</span>' +
+          '</div>' +
+          (c.jobId ? '<div style="font-size:11.5px;font-weight:700;color:var(--accent-blue);margin-top:1px;">' + c.jobId + '</div>' : '') +
+          '<div class="ain-conv-preview">' + sinbEsc(c.lastMessageText) + '</div>' +
+        '</div>' +
+        (c.unread ? '<span class="ain-unread-badge">' + c.unread + '</span>' : '') +
+      '</div>';
+    }).join('');
+    listEl.querySelectorAll('[data-pminb-conv]').forEach(function (el) {
+      el.addEventListener('click', function () { pminbOpenConversation(el.getAttribute('data-pminb-conv')); });
+    });
+  }
+
+  function pminbMessageHtml(m) {
+    if (m.kind === 'date') return '<div class="sinb-msg-row system"><div class="ain-conv-list-empty" style="padding:2px 0;font-size:11px;font-weight:700;color:#94a3b8;">' + sinbEsc(m.label) + '</div></div>';
+    var toneClass = m.tone === 'warn' ? ' warn' : (m.tone === 'positive' ? ' positive' : '');
+    return '<div class="sinb-msg-row system"><div class="sinb-system-card"><div class="sinb-system-card-inner' + toneClass + '">' +
+      (m.title ? '<div class="sinb-system-card-title">' + sinbEsc(m.title) + '</div>' : '') +
+      (m.body ? '<div class="sinb-system-card-body">' + sinbEsc(m.body) + '</div>' : '') +
+      '</div><div class="sinb-system-card-time">' + m.time + '</div></div></div>';
+  }
+  function pminbOpenConversation(id) {
+    var c = pminbConv(id);
+    if (!c) return;
+    pminbActiveConvId = id;
+    c.unread = 0;
+    document.getElementById('pminbEmptyState').style.display = 'none';
+    document.getElementById('pminbThreadView').style.display = 'flex';
+    document.querySelector('.pminb-layout').classList.add('pminb-mobile-thread-open');
+
+    var headerHtml = '<div class="ain-conv-avatar sinb-conv-avatar" style="background:var(--icon-tint-bg);color:var(--accent-blue);">' + pminbInitials(c.name) + '</div>' +
+      '<div><div class="sinb-chat-header-name-row"><h3>' + sinbEsc(c.name) + (c.jobTitle && c.kind === 'supplier' ? ' \u2014 ' + sinbEsc(c.jobTitle) : '') + '</h3>' +
+      (c.rating ? '<span style="font-size:12px;font-weight:700;color:#eab308;">\u2605 ' + c.rating.toFixed(1) + '<span style="color:var(--text-body-muted);font-weight:600;"> (' + c.ratingCount + ')</span></span>' : '') + '</div>' +
+      '<div class="sinb-chat-header-sub">Last active ' + sinbEsc(c.lastActive || adminInboxRelTime(c.lastTs)) + '</div></div>' +
+      '<div class="sinb-chat-header-actions">' +
+      (c.awarded ? '<span class="pminb-awarded-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Awarded</span>' : '') +
+      '<button type="button" class="ain-icon-btn" id="pminbCallBtn" aria-label="Call"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></button>' +
+      '<div style="position:relative;"><button type="button" class="ain-icon-btn" id="pminbMenuBtn" aria-label="More"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>' +
+      '<div class="pminb-conv-menu" id="pminbConvMenu">' +
+      '<div class="pminb-conv-menu-item" id="pminbMenuPin"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 3h6l-1 7 4 3H6l4-3-1-7z"/></svg><span id="pminbMenuPinText">Pin Conversation</span></div>' +
+      '<div class="pminb-conv-menu-item" id="pminbMenuDetails"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span>Details</span></div>' +
+      (c.status !== 'archived' ? '<div class="pminb-conv-menu-item" id="pminbMenuArchive"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8M1 3h22v5H1z"/><path d="M10 12h4"/></svg><span>Archive</span></div>' : '') +
+      '</div></div>' +
+      '</div>';
+    document.getElementById('pminbThreadHeader').innerHTML = headerHtml;
+
+    var jobBar = document.getElementById('pminbJobBar');
+    if (c.jobId) {
+      jobBar.hidden = false;
+      jobBar.innerHTML = ['JOB ID#' + c.jobId, 'SERVICE#' + (c.jobTitle || '\u2014'), 'PROPERTY#' + (c.propertyAddr || c.propertyName || '\u2014'), 'WHEN#' + pmjdFormatNumeric(c.when), 'PRICE#' + c.price + (c.priceType ? ' (' + c.priceType + ')' : '')]
+        .map(function (pair) {
+          var parts = pair.split('#'); return '<div class="pminb-job-bar-item"><div class="lbl">' + parts[0] + '</div><div class="val' + (parts[0] === 'JOB ID' ? ' link' : '') + '">' + sinbEsc(parts[1]) + '</div></div>';
+        }).join('');
+    } else { jobBar.hidden = true; }
+
+    pminbRenderMessages(c);
+
+    var isReadOnly = c.status === 'archived' || c.status === 'completed';
+    document.getElementById('pminbComposer').style.display = isReadOnly ? 'none' : '';
+    document.getElementById('pminbReadonlyFooter').hidden = !isReadOnly;
+    if (isReadOnly) document.getElementById('pminbReadonlyText').textContent = 'This conversation is ' + c.status + ' \u2014 read only.';
+
+    pminbRenderList();
+    pminbUpdateBadges();
+    pminbWireThreadHeaderButtons(c);
+  }
+  function pminbRenderMessages(c) {
+    var inner = document.getElementById('pminbMessagesInner');
+    inner.innerHTML = c.messages.map(pminbMessageHtml).join('');
+    var scrollEl = document.getElementById('pminbChatScroll');
+    scrollEl.scrollTop = scrollEl.scrollHeight;
+  }
+  function pminbWireThreadHeaderButtons(c) {
+    document.getElementById('pminbCallBtn').addEventListener('click', function () {
+      showToast('Calling \u2014 Click-to-call isn\u2019t connected yet. Coming soon.');
+    });
+    var menuBtn = document.getElementById('pminbMenuBtn');
+    var menu = document.getElementById('pminbConvMenu');
+    menuBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      menu.classList.toggle('open');
+    });
+    document.getElementById('pminbMenuPinText').textContent = c.pinned ? 'Unpin Conversation' : 'Pin Conversation';
+    document.getElementById('pminbMenuPin').addEventListener('click', function () {
+      c.pinned = !c.pinned;
+      menu.classList.remove('open');
+      pminbRenderList();
+      showToast(c.pinned ? 'Conversation pinned.' : 'Conversation unpinned.');
+    });
+    document.getElementById('pminbMenuDetails').addEventListener('click', function () {
+      menu.classList.remove('open');
+      showToast('Conversation details isn\u2019t wired up in this prototype yet.');
+    });
+    var archiveBtn = document.getElementById('pminbMenuArchive');
+    if (archiveBtn) archiveBtn.addEventListener('click', function () {
+      c.status = 'archived';
+      menu.classList.remove('open');
+      pminbSwitchTab(pminbActiveTab);
+      showToast('Conversation archived.');
+    });
+  }
+
+  function pminbSwitchTab(tab) {
+    pminbActiveTab = tab;
+    document.querySelectorAll('#pminbTabsRow .pminb-tab').forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-pminb-tab') === tab); });
+    pminbActiveConvId = null;
+    document.getElementById('pminbEmptyState').style.display = '';
+    document.getElementById('pminbThreadView').style.display = 'none';
+    document.querySelector('.pminb-layout').classList.remove('pminb-mobile-thread-open');
+    pminbRenderList();
+  }
+
+  function pminbPopulateFilterMenus() {
+    var properties = [];
+    var suppliers = [];
+    PMINB_CONVERSATIONS.forEach(function (c) {
+      if (c.propertyName && properties.indexOf(c.propertyName) === -1) properties.push(c.propertyName);
+      if (c.kind === 'supplier' && suppliers.indexOf(c.name) === -1) suppliers.push(c.name);
+    });
+    var propMenu = document.getElementById('pminbFilterPropertyMenu');
+    propMenu.innerHTML = ['All Properties'].concat(properties).map(function (p) {
+      var selected = (p === 'All Properties' && pminbFilterType !== 'property') || (pminbFilterType === 'property' && pminbFilterValue === p);
+      return '<div class="pminb-filter-sub-item' + (selected ? ' selected' : '') + '" data-filter-prop="' + sinbEsc(p) + '">' + sinbEsc(p) + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>';
+    }).join('');
+    var supMenu = document.getElementById('pminbFilterSupplierMenu');
+    supMenu.innerHTML = ['All Suppliers'].concat(suppliers).map(function (s) {
+      var selected = (s === 'All Suppliers' && pminbFilterType !== 'supplier') || (pminbFilterType === 'supplier' && pminbFilterValue === s);
+      return '<div class="pminb-filter-sub-item' + (selected ? ' selected' : '') + '" data-filter-sup="' + sinbEsc(s) + '">' + sinbEsc(s) + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>';
+    }).join('');
+    propMenu.querySelectorAll('[data-filter-prop]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        var v = el.getAttribute('data-filter-prop');
+        pminbFilterType = v === 'All Properties' ? null : 'property';
+        pminbFilterValue = v === 'All Properties' ? null : v;
+        pminbCloseFilterPanel();
+        pminbUpdateFilterBtnState();
+        pminbRenderList();
+      });
+    });
+    supMenu.querySelectorAll('[data-filter-sup]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        var v = el.getAttribute('data-filter-sup');
+        pminbFilterType = v === 'All Suppliers' ? null : 'supplier';
+        pminbFilterValue = v === 'All Suppliers' ? null : v;
+        pminbCloseFilterPanel();
+        pminbUpdateFilterBtnState();
+        pminbRenderList();
+      });
+    });
+  }
+  function pminbCloseFilterPanel() {
+    document.getElementById('pminbFilterPanel').classList.remove('open');
+    document.querySelectorAll('.pminb-filter-sub-menu').forEach(function (m) { m.classList.remove('open'); });
+  }
+  function pminbUpdateFilterBtnState() {
+    document.getElementById('pminbFilterBtn').classList.toggle('active', !!pminbFilterType);
+    document.getElementById('pminbClearFiltersBtn').hidden = !pminbFilterType;
+    pminbPopulateFilterMenus();
+  }
+  function pminbUpdateBadges() {
+    var total = pminbTotalUnread();
+    var navBadge = document.getElementById('badgeInbox');
+    if (navBadge) { navBadge.textContent = total; navBadge.hidden = total === 0; }
+    var pill = document.getElementById('pminbUnreadPill');
+    var pillText = document.getElementById('pminbUnreadPillText');
+    if (pill) { pill.hidden = total === 0; if (pillText) pillText.textContent = total + ' unread'; }
+  }
+
+  function initPmInboxOnce() {
+    pminbRenderList();
+    pminbUpdateBadges();
+    pminbPopulateFilterMenus();
+    if (pminbInitDone) return;
+    pminbInitDone = true;
+
+    document.getElementById('pminbSearchInput').addEventListener('input', function (e) {
+      pminbSearchQuery = e.target.value;
+      pminbRenderList();
+    });
+    document.querySelectorAll('#pminbTabsRow .pminb-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () { pminbSwitchTab(tab.getAttribute('data-pminb-tab')); });
+    });
+    document.getElementById('pminbBackBtn').addEventListener('click', function () {
+      document.querySelector('.pminb-layout').classList.remove('pminb-mobile-thread-open');
+    });
+
+    var filterBtn = document.getElementById('pminbFilterBtn');
+    var filterPanel = document.getElementById('pminbFilterPanel');
+    filterBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      filterPanel.classList.toggle('open');
+    });
+    document.getElementById('pminbFilterPropertyBtn').addEventListener('click', function (e) {
+      e.stopPropagation();
+      document.getElementById('pminbFilterPropertyMenu').classList.toggle('open');
+      document.getElementById('pminbFilterSupplierMenu').classList.remove('open');
+    });
+    document.getElementById('pminbFilterSupplierBtn').addEventListener('click', function (e) {
+      e.stopPropagation();
+      document.getElementById('pminbFilterSupplierMenu').classList.toggle('open');
+      document.getElementById('pminbFilterPropertyMenu').classList.remove('open');
+    });
+    document.getElementById('pminbClearFiltersBtn').addEventListener('click', function () {
+      pminbFilterType = null; pminbFilterValue = null;
+      pminbCloseFilterPanel();
+      pminbUpdateFilterBtnState();
+      pminbRenderList();
+    });
+    document.addEventListener('click', function (e) {
+      pminbCloseFilterPanel();
+      var menu = document.getElementById('pminbConvMenu');
+      if (menu) menu.classList.remove('open');
+      if (!e.target.closest('#pminbEmojiBtn') && !e.target.closest('#pminbEmojiPopover')) {
+        document.getElementById('pminbEmojiPopover').classList.remove('open');
+      }
+    });
+
+    var msgInput = document.getElementById('pminbMessageInput');
+    var sendBtn = document.getElementById('pminbSendBtn');
+    msgInput.addEventListener('input', function () { sendBtn.disabled = !msgInput.value.trim(); });
+    function pminbSend() {
+      var text = msgInput.value.trim();
+      if (!text) return;
+      var c = pminbConv(pminbActiveConvId);
+      if (!c) return;
+      var now = new Date();
+      var time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+      c.messages.push({ kind: 'system', tone: 'neutral', title: '', body: text, time: time });
+      c.lastMessageText = text;
+      c.lastTs = Date.now();
+      msgInput.value = '';
+      sendBtn.disabled = true;
+      pminbRenderMessages(c);
+      pminbRenderList();
+    }
+    sendBtn.addEventListener('click', pminbSend);
+    msgInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); pminbSend(); }
+    });
+    document.getElementById('pminbScrollBottomBtn').addEventListener('click', function () {
+      var scrollEl = document.getElementById('pminbChatScroll');
+      scrollEl.scrollTop = scrollEl.scrollHeight;
+    });
+    var emojiBtn = document.getElementById('pminbEmojiBtn');
+    var emojiPopover = document.getElementById('pminbEmojiPopover');
+    emojiBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var wasOpen = emojiPopover.classList.contains('open');
+      if (!wasOpen) {
+        // position:fixed with no explicit coordinates renders at the bottom of the viewport and
+        // falls off-screen — anchor it above the emoji button instead, same as every other chat
+        // mount's popover (Admin Inbox, PM's own onboarding chat, etc.).
+        var rect = emojiBtn.getBoundingClientRect();
+        emojiPopover.style.left = rect.left + 'px';
+        emojiPopover.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+        emojiPopover.style.top = 'auto';
+      }
+      emojiPopover.classList.toggle('open');
+    });
+    emojiPopover.querySelectorAll('[data-emoji]').forEach(function (span) {
+      span.addEventListener('click', function () {
+        msgInput.value += span.getAttribute('data-emoji');
+        sendBtn.disabled = !msgInput.value.trim();
+        emojiPopover.classList.remove('open');
+        msgInput.focus();
+      });
+    });
+    document.getElementById('pminbAttachBtn').addEventListener('click', function () { document.getElementById('pminbAttachInput').click(); });
+    document.getElementById('pminbAttachInput').addEventListener('change', function (e) {
+      if (e.target.files && e.target.files.length) showToast(e.target.files.length + ' file' + (e.target.files.length === 1 ? '' : 's') + ' attached.');
+    });
+  }
+
+  /* =========================================================
+     PM PREFERRED SUPPLIERS — reuses the same real suppliers referenced throughout Jobs, Supplier
+     Quotes and the Inbox, so this list feels like the same roster rather than a disconnected demo.
+  ========================================================== */
+  var PMPREF_SUPPLIERS = [
+    { id: 'rajat', name: 'rajat', company: 'COMMUNIFY ON DEMAND LTD', type: 'company', categories: ['Appliances', 'Cleaning', 'Gas & Heating General'], rating: 3.4, jobsDone: 5, phone: '+447555281444', email: 'nopod62636@icotz.com', active: true, photo: 'https://i.pravatar.cc/150?img=8' },
+    { id: 'sorogam', name: 'sorogam', company: 'GRIFFIN RAIL WHEEL LTD', type: 'company', categories: ['Appliances', 'Cleaning', 'Electrical', 'Gas & Heating', 'Gas & Heating + compliance & legal', 'Gas & Heating General'], rating: 4.3, jobsDone: 12, phone: '+447888542877', email: 'sorogam354@jctoto.com', active: true, photo: 'https://i.pravatar.cc/150?img=14' },
+    { id: 'liamg', name: 'Liam Greenwood', company: 'Liam Greenwood Appliance Engineer', type: 'sole_trader', categories: ['Cleaning', 'Compliance & Legal', 'Damp, Mould & Structural', 'Electrical', 'Electrical + compliance & legal', 'Electrical General', 'Gas & Heating', 'Gas & Heating + compliance & legal', 'Plumbing'], rating: 5.0, jobsDone: 4, phone: '+447671542225', email: 'greenwood86@gmail.com', active: true, photo: 'https://i.pravatar.cc/150?img=3' },
+    { id: 'nadiar', name: 'Nadia Reid', company: 'Nadia Reid Gardener', type: 'sole_trader', categories: [], rating: 4.7, jobsDone: 7, phone: '+447974202021', email: 'nadia.reid07@gmail.com', active: true, photo: 'https://i.pravatar.cc/150?img=25' },
+    { id: 'keyriders', name: 'KEY RIDERS LTD', company: 'Key Riders Facilities Ltd', type: 'company', categories: ['Cleaning', 'Property Marketing & Agency'], rating: 4.1, jobsDone: 9, phone: '+447700142839', email: 'ops@keyriders.co.uk', active: true, photo: 'https://i.pravatar.cc/150?img=52' },
+    { id: 'doefy', name: 'doefy', company: 'Doefy Property Services', type: 'sole_trader', categories: ['Security & Access'], rating: 3.8, jobsDone: 2, phone: '+447811902234', email: 'doefy@fastmail.com', active: false, photo: 'https://i.pravatar.cc/150?img=19' }
+  ];
+  var pmprefSearchQuery = '';
+  var pmprefCategoryFilter = null;
+  var pmprefInitDone = false;
+
+  function pmprefFilteredList() {
+    var q = pmprefSearchQuery.trim().toLowerCase();
+    return PMPREF_SUPPLIERS.filter(function (s) {
+      if (pmprefCategoryFilter && s.categories.indexOf(pmprefCategoryFilter) === -1) return false;
+      if (q && (s.name + ' ' + s.company).toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+  }
+  function pmprefCardHtml(s, idx) {
+    var initial = s.name.trim().charAt(0).toUpperCase();
+    var tagsHtml = '<span class="pmpref-tag type">' + sinbEsc(s.type) + '</span>' +
+      s.categories.map(function (c) { return '<span class="pmpref-tag">' + sinbEsc(c) + '</span>'; }).join('') +
+      '<span class="pmpref-rating">\u2605 ' + s.rating.toFixed(1) + '<span class="muted">' + s.jobsDone + ' job' + (s.jobsDone === 1 ? '' : 's') + '</span></span>';
+    var avatarInner = s.photo ? '<img src="' + s.photo + '" alt="' + sinbEsc(s.name) + '" onerror="this.parentElement.textContent=\'' + initial + '\';this.remove();">' : initial;
+    return '<div class="pmpref-card" data-pmpref-card="' + s.id + '">' +
+      '<div class="pmpref-card-top">' +
+      '<div class="pmpref-avatar">' + avatarInner + '</div>' +
+      '<div class="pmpref-card-name-block"><div class="pmpref-card-name">' + sinbEsc(s.name) + '</div><div class="pmpref-card-company">' + sinbEsc(s.company) + '</div></div>' +
+      '<button type="button" class="toggle-switch sm' + (s.active ? ' on' : '') + '" data-pmpref-toggle="' + s.id + '" role="switch" aria-checked="' + (s.active ? 'true' : 'false') + '"><span class="thumb"></span></button>' +
+      '</div>' +
+      '<div class="pmpref-tags">' + tagsHtml + '</div>' +
+      '<div class="pmpref-contact-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>' + sinbEsc(s.phone) + '</div>' +
+      '<div class="pmpref-contact-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z" fill="none"/><path d="M22 6l-10 7L2 6"/><path d="M2 6h20v12H2z"/></svg>' + sinbEsc(s.email) + '</div>' +
+      '<div class="pmpref-book-btn"><button type="button" class="btn btn-primary" data-pmpref-book="' + s.id + '"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Book a Job</button></div>' +
+      '</div>';
+  }
+  function pmprefRenderGrid() {
+    var grid = document.getElementById('pmprefGrid');
+    var list = pmprefFilteredList();
+    if (!list.length) { grid.innerHTML = '<div class="pmpref-empty">No suppliers match your search.</div>'; return; }
+    grid.innerHTML = list.map(pmprefCardHtml).join('');
+    grid.querySelectorAll('[data-pmpref-toggle]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var s = PMPREF_SUPPLIERS.find(function (x) { return x.id === btn.getAttribute('data-pmpref-toggle'); });
+        s.active = !s.active;
+        if (!s.active) {
+          showRichToast('Removed from preferred suppliers', s.name, 'info');
+        } else {
+          showRichToast('Added to preferred suppliers', s.name, 'success');
+        }
+        btn.classList.toggle('on', s.active);
+        btn.setAttribute('aria-checked', s.active ? 'true' : 'false');
+      });
+    });
+    grid.querySelectorAll('[data-pmpref-book]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        pmbookOpenNewBooking();
+        initPmBookOnce();
+        pmbookSwitchTab('custom');
+      });
+    });
+  }
+  function pmprefPopulateCategoryMenu() {
+    var cats = [];
+    PMPREF_SUPPLIERS.forEach(function (s) { s.categories.forEach(function (c) { if (cats.indexOf(c) === -1) cats.push(c); }); });
+    cats.sort();
+    pmbookWireMenu('pmprefCategoryFilter', ['All Categories & Services'].concat(cats), 'All Categories & Services', function (v) {
+      pmprefCategoryFilter = v === 'All Categories & Services' ? null : v;
+      pmprefRenderGrid();
+    });
+  }
+  function initPmPrefSuppliersOnce() {
+    pmprefRenderGrid();
+    pmprefPopulateCategoryMenu();
+    if (pmprefInitDone) return;
+    pmprefInitDone = true;
+    document.getElementById('pmprefSearchInput').addEventListener('input', function (e) {
+      pmprefSearchQuery = e.target.value;
+      pmprefRenderGrid();
+    });
+  }
+
+  /* =========================================================
+     PM DISPUTES — list + detail. The progress stepper reuses .pmjd-dispatch-step /
+     .pmjd-dispatch-line from the Job Detail page's own Live Dispatch stepper (same visual
+     language, just five formal stages instead of a job's lifecycle).
+  ========================================================== */
+  var PMDSP_STATUS_TONE = { 'Open': 'blue', 'Acknowledged': 'blue', 'Awaiting Supplier': 'amber', 'In Mediation': 'purple', 'Resolved': 'green', 'Rejected': 'red', 'Withdrawn': 'gray' };
+  var PMDSP_STAGES = ['Dispute Raised', 'Acknowledged', 'Supplier Response', 'Keylr Mediation', 'Resolved'];
+  var PMDSP_DISPUTES = [
+    { id: 'DSP-37', jobNum: 2606, jobTitle: 'End of Tenancy / Deep / Regular / Communal', supplier: 'sorogam', amount: 84.00, status: 'Resolved', opened: '30 Jun 2026', slaComplete: true, due: '06/07/2026',
+      reason: 'Work Not Completed', outcome: 'Re-attend & rework', whatHappened: 'Job details are pending', resolutionText: 'Resolved \u2014 upheld',
+      progressStage: 4, progressCurrentDone: false, currentSubLabel: 'In progress',
+      log: [{ title: 'Dispute raised by the PM', sub: 'Work Not Completed', date: '30/06/2026', resolved: false }, { title: 'Dispute resolved', sub: 'Upheld', date: '30/06/2026', resolved: true }],
+      financials: { jobTotal: 84.00, disputed: 84.00, netToSupplier: 84.00 }, chatUpdates: 2 },
+    { id: 'DSP-36', jobNum: 2758, jobTitle: 'Airbnb Turnover Clean', supplier: 'Liam Greenwood', amount: 147.60, status: 'Resolved', opened: '27 Jun 2026', slaComplete: true, due: '03/07/2026',
+      reason: 'Price Discrepancy', outcome: 'Partial Refund', whatHappened: 'The final invoice did not match the agreed quote for this job.', resolutionText: 'Resolved \u2014 partial refund issued',
+      progressStage: 4, progressCurrentDone: true, currentSubLabel: 'Done',
+      log: [{ title: 'Dispute raised by the PM', sub: 'Price Discrepancy', date: '27/06/2026', resolved: false }, { title: 'Dispute resolved', sub: 'Partial refund', date: '28/06/2026', resolved: true }],
+      financials: { jobTotal: 147.60, disputed: 44.00, netToSupplier: 103.60 }, chatUpdates: 4 },
+    { id: 'DSP-35', jobNum: 2648, jobTitle: 'Boiler Service (Annual)', supplier: 'Liam Greenwood', amount: 240.00, status: 'Resolved', opened: '27 Jun 2026', slaComplete: true, due: '03/07/2026',
+      reason: 'Work Not Completed', outcome: 'Full Refund', whatHappened: 'The supplier did not attend the scheduled appointment.', resolutionText: 'Resolved \u2014 upheld, full refund issued',
+      progressStage: 4, progressCurrentDone: true, currentSubLabel: 'Done',
+      log: [{ title: 'Dispute raised by the PM', sub: 'Work Not Completed', date: '27/06/2026', resolved: false }, { title: 'Dispute resolved', sub: 'Upheld', date: '27/06/2026', resolved: true }],
+      financials: { jobTotal: 240.00, disputed: 240.00, netToSupplier: 0 }, chatUpdates: 3 },
+    { id: 'DSP-34', jobNum: 2669, jobTitle: 'Airbnb Turnover Clean', supplier: 'Liam Greenwood', amount: 147.60, status: 'Resolved', opened: '27 Jun 2026', slaComplete: true, due: '03/07/2026',
+      reason: 'Damage Reported', outcome: 'Re-attend & rework', whatHappened: 'Tenant reported a stain left behind after the clean.', resolutionText: 'Resolved \u2014 re-clean scheduled',
+      progressStage: 4, progressCurrentDone: true, currentSubLabel: 'Done',
+      log: [{ title: 'Dispute raised by the PM', sub: 'Damage Reported', date: '27/06/2026', resolved: false }, { title: 'Dispute resolved', sub: 'Re-attend agreed', date: '27/06/2026', resolved: true }],
+      financials: { jobTotal: 147.60, disputed: 0, netToSupplier: 147.60 }, chatUpdates: 1 },
+    { id: 'DSP-32', jobNum: 2776, jobTitle: 'End of Tenancy / Deep / Regular / Communal', supplier: 'Liam Greenwood', amount: 84.00, status: 'Resolved', opened: '26 Jun 2026', slaComplete: true, due: '02/07/2026',
+      reason: 'Work Not Completed', outcome: 'Re-attend & rework', whatHappened: 'Some rooms were skipped during the clean.', resolutionText: 'Resolved \u2014 upheld',
+      progressStage: 4, progressCurrentDone: true, currentSubLabel: 'Done',
+      log: [{ title: 'Dispute raised by the PM', sub: 'Work Not Completed', date: '26/06/2026', resolved: false }, { title: 'Dispute resolved', sub: 'Upheld', date: '26/06/2026', resolved: true }],
+      financials: { jobTotal: 84.00, disputed: 84.00, netToSupplier: 84.00 }, chatUpdates: 2 },
+    { id: 'DSP-30', jobNum: 2606, jobTitle: 'Boiler Service (Annual)', supplier: 'Liam Greenwood', amount: 336.00, status: 'Resolved', opened: '26 Jun 2026', slaComplete: true, due: '02/07/2026',
+      reason: 'Overcharge', outcome: 'Partial Refund', whatHappened: 'Call-out fee was charged twice on the final invoice.', resolutionText: 'Resolved \u2014 partial refund issued',
+      progressStage: 4, progressCurrentDone: true, currentSubLabel: 'Done',
+      log: [{ title: 'Dispute raised by the PM', sub: 'Overcharge', date: '26/06/2026', resolved: false }, { title: 'Dispute resolved', sub: 'Partial refund', date: '26/06/2026', resolved: true }],
+      financials: { jobTotal: 336.00, disputed: 60.00, netToSupplier: 276.00 }, chatUpdates: 2 },
+    { id: 'DSP-41', jobNum: 2758, jobTitle: 'Boiler Repair / No Hot Water / Gas Leak Emergency', supplier: 'Liam Greenwood', amount: 95.00, status: 'In Mediation', opened: '10 Jul 2026', slaComplete: false, due: '16/07/2026',
+      reason: 'Work Not Completed', outcome: 'Re-attend & rework', whatHappened: 'Job details are pending', resolutionText: '',
+      progressStage: 3, progressCurrentDone: false, currentSubLabel: 'In progress',
+      log: [{ title: 'Dispute raised by the PM', sub: 'Work Not Completed', date: '10/07/2026', resolved: false }],
+      financials: { jobTotal: 95.00, disputed: 95.00, netToSupplier: 0 }, chatUpdates: 1 },
+    { id: 'DSP-42', jobNum: 2776, jobTitle: 'EICR \u2014 Electrical Installation Condition Report', supplier: 'Liam Greenwood', amount: 175.68, status: 'Open', opened: '12 Jul 2026', slaComplete: false, due: '18/07/2026',
+      reason: 'No-show', outcome: 'Full Refund', whatHappened: 'Job details are pending', resolutionText: '',
+      progressStage: 0, progressCurrentDone: false, currentSubLabel: 'In progress',
+      log: [{ title: 'Dispute raised by the PM', sub: 'No-show', date: '12/07/2026', resolved: false }],
+      financials: { jobTotal: 175.68, disputed: 175.68, netToSupplier: 0 }, chatUpdates: 0 }
+  ];
+  var pmdspSearchQuery = '';
+  var pmdspStatusFilter = 'All Statuses';
+  var pmdspActiveId = null;
+  var pmdspInitDone = false;
+
+  function pmdspFilteredList() {
+    var q = pmdspSearchQuery.trim().toLowerCase();
+    return PMDSP_DISPUTES.filter(function (d) {
+      if (pmdspStatusFilter !== 'All Statuses' && d.status !== pmdspStatusFilter) return false;
+      if (q && (d.id + ' ' + d.jobTitle + ' ' + d.supplier).toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+  }
+  function pmdspMoney(n) { return '\u00a3' + n.toFixed(2); }
+  function pmdspRowHtml(d) {
+    return '<tr class="clickable" data-pmdsp-row="' + d.id + '">' +
+      '<td class="pmdsp-id-link">' + d.id + '</td>' +
+      '<td><div class="pmdsp-job-title">' + sinbEsc(d.jobTitle) + '</div><div class="pmdsp-job-supplier">' + sinbEsc(d.supplier) + '</div></td>' +
+      '<td class="pmdsp-amount">' + pmdspMoney(d.amount) + '</td>' +
+      '<td><span class="status-pill ' + (PMDSP_STATUS_TONE[d.status] || 'gray') + '">' + d.status + '</span></td>' +
+      '<td>' + d.opened + '</td>' +
+      '<td>' + (d.slaComplete ? '<span class="pmdsp-sla-complete">Complete</span>' : '<span style="color:var(--text-body-muted);">In progress</span>') + '</td>' +
+      '</tr>';
+  }
+  function pmdspRenderTable() {
+    var list = pmdspFilteredList();
+    document.getElementById('pmdspCountPillText').textContent = PMDSP_DISPUTES.length + ' dispute' + (PMDSP_DISPUTES.length === 1 ? '' : 's');
+    var tbody = document.getElementById('pmdspTableBody');
+    tbody.innerHTML = list.length ? list.map(pmdspRowHtml).join('') : '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-body-muted);">No disputes match your search.</td></tr>';
+    document.getElementById('pmdspFooter').textContent = list.length ? ('Showing 1\u2013' + list.length + ' of ' + list.length + ' disputes') : '';
+    tbody.querySelectorAll('[data-pmdsp-row]').forEach(function (row) {
+      row.addEventListener('click', function () { pmdspOpenDetail(row.getAttribute('data-pmdsp-row')); });
+    });
+  }
+  function pmdspDispute(id) { return PMDSP_DISPUTES.find(function (d) { return d.id === id; }); }
+
+  function pmdspRenderProgressSteps(d) {
+    var stepsEl = document.getElementById('pmdspProgressSteps');
+    var html = '';
+    PMDSP_STAGES.forEach(function (label, i) {
+      var isDone = i < d.progressStage || (i === d.progressStage && d.progressCurrentDone);
+      var isCurrent = i === d.progressStage && !isDone;
+      var cls = isDone ? 'done' : (isCurrent ? 'current-numbered' : '');
+      var dotInner = isDone ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' : '<span class="num">' + (i + 1) + '</span>';
+      var subLabel = isDone ? 'Done' : (isCurrent ? (d.currentSubLabel || 'In progress') : '');
+      html += '<div class="pmjd-dispatch-step ' + cls + '"><div class="dot">' + dotInner + '</div><div class="label">' + label + '</div>' + (subLabel ? '<div class="sub-label">' + subLabel + '</div>' : '') + '</div>';
+      if (i < PMDSP_STAGES.length - 1) html += '<div class="pmjd-dispatch-line' + (i < d.progressStage ? ' done' : '') + '"></div>';
+    });
+    stepsEl.innerHTML = html;
+  }
+  function pmdspOpenDetail(id) {
+    var d = pmdspDispute(id);
+    if (!d) return;
+    pmdspActiveId = id;
+    document.getElementById('pmDisputeDetailHeading').textContent = 'Dispute ' + d.id;
+    document.getElementById('pmdspBreadcrumbJob').textContent = 'JOB #' + d.jobNum;
+    document.getElementById('pmdspBreadcrumbId').textContent = d.id;
+    document.getElementById('pmdspHeaderId').textContent = d.id;
+    var statusPill = document.getElementById('pmdspHeaderStatusPill');
+    statusPill.textContent = d.status;
+    statusPill.className = 'status-pill ' + (PMDSP_STATUS_TONE[d.status] || 'gray');
+    document.getElementById('pmdspHeaderJob').textContent = 'JOB #' + d.jobNum + ' \u00b7 ' + d.jobTitle;
+    document.getElementById('pmdspHeaderStage').textContent = d.status;
+    document.getElementById('pmdspHeaderAmount').textContent = pmdspMoney(d.amount);
+
+    document.querySelectorAll('#pmdspScenarioTabs .pmdsp-scenario-tab').forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-scenario') === 'review'); });
+
+    pmdspRenderProgressSteps(d);
+
+    document.getElementById('pmdspStageCardTitle').textContent = d.status;
+    document.getElementById('pmdspStageCardSub').textContent = d.status === 'Resolved' ? 'The dispute is closed.' : (d.status === 'Open' ? 'The dispute has been raised and is awaiting acknowledgement.' : 'The dispute is being worked through.');
+    var metaRow = document.getElementById('pmdspStageMetaRow');
+    metaRow.hidden = d.status !== 'Resolved';
+    if (d.status === 'Resolved') {
+      document.getElementById('pmdspStageOwner').textContent = 'Property Manager';
+      document.getElementById('pmdspStageSla').textContent = '3 Working Days';
+      document.getElementById('pmdspStageDue').textContent = d.due || '\u2014';
+    }
+    document.getElementById('pmdspReason').textContent = d.reason;
+    document.getElementById('pmdspOutcome').textContent = d.outcome;
+    document.getElementById('pmdspWhatHappened').textContent = d.whatHappened;
+
+    var resCard = document.getElementById('pmdspResolutionCard');
+    if (d.resolutionText) { resCard.hidden = false; document.getElementById('pmdspResolutionText').textContent = d.resolutionText; }
+    else { resCard.hidden = true; }
+
+    document.getElementById('pmdspEvidenceCount').textContent = '0 files';
+
+    var procList = document.getElementById('pmdspProcessList');
+    var procSteps = [
+      { title: 'Dispute Acknowledgement', sub: '1 Working Day' },
+      { title: 'Supplier Response', sub: '3 Working Days' },
+      { title: 'Keylr Mediation', sub: '5 Working Days' }
+    ];
+    procList.innerHTML = procSteps.map(function (p, i) {
+      var done = d.progressStage > i + 1 || (d.progressStage === i + 1 && d.progressCurrentDone) || (i < 2 && d.progressStage >= 2);
+      return '<div class="pmdsp-process-item"><span class="dot" style="background:' + (i <= d.progressStage ? '#1a7a3e' : '#cbd5e1') + ';"></span><div class="txt"><div class="t">' + p.title + '</div><div class="s">' + p.sub + '</div></div>' +
+        (i <= d.progressStage - 1 || (i === d.progressStage - 1) ? '<span class="pmdsp-process-done">Done</span>' : '') + '</div>';
+    }).join('');
+    document.getElementById('pmdspMaxResTime').textContent = '11 Working Days';
+
+    var logList = document.getElementById('pmdspLogList');
+    logList.innerHTML = d.log.map(function (l) {
+      return '<div class="pmdsp-log-item"><span class="dot' + (l.resolved ? ' resolved' : '') + '"></span><div class="txt"><div class="t">' + sinbEsc(l.title) + '</div><div class="s">' + sinbEsc(l.sub) + '</div><div class="d">' + l.date + '</div></div></div>';
+    }).join('');
+
+    document.getElementById('pmdspFinTotal').textContent = pmdspMoney(d.financials.jobTotal);
+    document.getElementById('pmdspFinDisputed').textContent = pmdspMoney(d.financials.disputed);
+    document.getElementById('pmdspFinNet').textContent = pmdspMoney(d.financials.netToSupplier);
+    document.getElementById('pmdspChatSub').textContent = d.chatUpdates + ' update' + (d.chatUpdates === 1 ? '' : 's') + ' \u00b7 conversation';
+
+    document.querySelectorAll('#pmDashboard .dash-nav-item').forEach(function (i) { i.classList.remove('active'); });
+    var disputesNavItem = document.querySelector('#pmDashboard .dash-nav-item[data-nav="disputes"]');
+    if (disputesNavItem) disputesNavItem.classList.add('active');
+    showPMView('disputedetail');
+  }
+  function initPmDisputesOnce() {
+    pmdspRenderTable();
+    if (pmdspInitDone) return;
+    pmdspInitDone = true;
+    document.getElementById('pmdspSearchInput').addEventListener('input', function (e) {
+      pmdspSearchQuery = e.target.value;
+      pmdspRenderTable();
+    });
+    pmbookWireMenu('pmdspStatusFilter', ['All Statuses', 'Open', 'Acknowledged', 'Awaiting Supplier', 'In Mediation', 'Resolved', 'Rejected', 'Withdrawn'], 'All Statuses', function (v) {
+      pmdspStatusFilter = v;
+      pmdspRenderTable();
+    });
+    document.getElementById('pmdspBackToListBtn').addEventListener('click', function () {
+      showPMView('disputes');
+      pmdspRenderTable();
+    });
+    document.getElementById('pmdspChatLink').addEventListener('click', function () {
+      var d = pmdspDispute(pmdspActiveId);
+      if (!d) return;
+      document.querySelectorAll('#pmDashboard .dash-nav-item').forEach(function (i) { i.classList.remove('active'); });
+      var inboxNavItem = document.querySelector('#pmDashboard .dash-nav-item[data-nav="inbox"]');
+      if (inboxNavItem) inboxNavItem.classList.add('active');
+      showPMView('inbox');
+      initPmInboxOnce();
+      // Best-effort: land on the conversation for this dispute's own job if one exists, rather
+      // than always dropping the PM on a blank "pick a conversation" state.
+      var matchingConv = PMINB_CONVERSATIONS.find(function (c) { return c.jobId === 'JOB-' + d.jobNum; });
+      if (matchingConv) pminbOpenConversation(matchingConv.id);
+    });
+    document.getElementById('pmdspJobLink').addEventListener('click', function () {
+      var d = pmdspDispute(pmdspActiveId);
+      if (!d) return;
+      var jobId = 'JOB-' + d.jobNum;
+      if (PMJOBS_DATA.some(function (j) { return j.id === jobId; })) {
+        pmjobsOpenDetail(jobId);
+      } else {
+        showToast('Job ' + jobId + ' isn\u2019t in this prototype\u2019s job list.');
+      }
+    });
+  }
+
   // Entry point for the Jobs table's "+ Book a Job" button — always lands on Quick Book.
   function pmbookOpenNewBooking() {
     document.querySelectorAll('#pmDashboard .dash-nav-item').forEach(function (i) { i.classList.remove('active'); });
@@ -29669,7 +30769,7 @@
 
   /* ---- PM Settings view ---- */
   function showPMView(view) {
-    var viewIds = { home: 'pmHomeView', settings: 'pmSettingsView', explore: 'pmExploreView', responses: 'pmJobsView', quotes: 'pmQuotesView', jobdetail: 'pmJobDetailView', newbooking: 'pmNewBookingView', properties: 'pmPropertiesView', propertyform: 'pmPropertyFormView', propertyjobs: 'pmPropertyJobsView', compliancesettings: 'pmComplianceSettingsView', tickets: 'pmTicketsView', servicespricing: 'pmServicesPricingView', servicetemplate: 'pmServiceTemplateView' };
+    var viewIds = { home: 'pmHomeView', settings: 'pmSettingsView', explore: 'pmExploreView', responses: 'pmJobsView', quotes: 'pmQuotesView', jobdetail: 'pmJobDetailView', newbooking: 'pmNewBookingView', properties: 'pmPropertiesView', propertyform: 'pmPropertyFormView', propertyjobs: 'pmPropertyJobsView', compliancesettings: 'pmComplianceSettingsView', tickets: 'pmTicketsView', servicespricing: 'pmServicesPricingView', servicetemplate: 'pmServiceTemplateView', inbox: 'pmInboxView', suppliers: 'pmPrefSuppliersView', disputes: 'pmDisputesView', disputedetail: 'pmDisputeDetailView' };
     Object.keys(viewIds).forEach(function (key) {
       var el = document.getElementById(viewIds[key]);
       if (key === view) {
@@ -29683,7 +30783,8 @@
     });
     var pmDashContent = document.querySelector('#pmDashboard .dash-content');
     if (pmDashContent) pmDashContent.classList.toggle('dash-content-full', view === 'quotes');
-    if (pmDashContent) pmDashContent.classList.toggle('dash-content-narrow-pad', view === 'properties' || view === 'propertyform' || view === 'propertyjobs' || view === 'compliancesettings' || view === 'servicespricing' || view === 'servicetemplate' || view === 'jobdetail' || view === 'newbooking' || view === 'responses');
+    if (pmDashContent) pmDashContent.classList.toggle('dash-content-narrow-pad', view === 'properties' || view === 'propertyform' || view === 'propertyjobs' || view === 'compliancesettings' || view === 'servicespricing' || view === 'servicetemplate' || view === 'jobdetail' || view === 'newbooking' || view === 'responses' || view === 'suppliers' || view === 'disputes' || view === 'disputedetail');
+    if (pmDashContent) pmDashContent.classList.toggle('dash-content-full-bleed', view === 'inbox');
     // The topbar's title area shows exactly one of five things at a time: the Dashboard-only
     // "Good afternoon" greeting, the Properties module heading (Properties view now leads with
     // search + count instead, in its own header row), the property form/Jobs page's Back button +
@@ -29703,6 +30804,11 @@
     var propFormDeleteBtn = document.getElementById('pmpropFormDeleteBtn');
     var jobDetailTitleWrap = document.getElementById('pmJobDetailTopbarTitle');
     var jobsTitleWrap = document.getElementById('pmJobsTopbarTitle');
+    var quotesTitleWrap = document.getElementById('pmQuotesTopbarTitle');
+    var inboxTitleWrap = document.getElementById('pmInboxTopbarTitle');
+    var prefSuppliersTitleWrap = document.getElementById('pmPrefSuppliersTopbarTitle');
+    var disputesTitleWrap = document.getElementById('pmDisputesTopbarTitle');
+    var disputeDetailTitleWrap = document.getElementById('pmDisputeDetailTopbarTitle');
     var bookTitleWrap = document.getElementById('pmBookTopbarTitle');
     var isDetailPage = (view === 'propertyform' || view === 'propertyjobs' || view === 'compliancesettings');
     if (greetingWrap) greetingWrap.style.display = (view === 'home') ? '' : 'none';
@@ -29718,6 +30824,11 @@
     // a separate icon button, since it returns to Jobs specifically, not Properties like sharedBackBtn.
     if (jobDetailTitleWrap) jobDetailTitleWrap.style.display = (view === 'jobdetail') ? '' : 'none';
     if (jobsTitleWrap) jobsTitleWrap.style.display = (view === 'responses') ? '' : 'none';
+    if (quotesTitleWrap) quotesTitleWrap.style.display = (view === 'quotes') ? '' : 'none';
+    if (inboxTitleWrap) inboxTitleWrap.style.display = (view === 'inbox') ? '' : 'none';
+    if (prefSuppliersTitleWrap) prefSuppliersTitleWrap.style.display = (view === 'suppliers') ? '' : 'none';
+    if (disputesTitleWrap) disputesTitleWrap.style.display = (view === 'disputes') ? '' : 'none';
+    if (disputeDetailTitleWrap) disputeDetailTitleWrap.style.display = (view === 'disputedetail') ? '' : 'none';
     if (bookTitleWrap) bookTitleWrap.style.display = (view === 'newbooking') ? '' : 'none';
     if (svcBackBtn) svcBackBtn.style.display = (view === 'servicetemplate') ? '' : 'none';
     if (svcDetailTitleWrap) svcDetailTitleWrap.style.display = (view === 'servicetemplate') ? '' : 'none';
@@ -31908,6 +33019,15 @@
       item.classList.add('active');
       if (item.getAttribute('data-nav') === 'home') {
         showPMView('home');
+      } else if (item.getAttribute('data-nav') === 'inbox') {
+        showPMView('inbox');
+        initPmInboxOnce();
+      } else if (item.getAttribute('data-nav') === 'suppliers') {
+        showPMView('suppliers');
+        initPmPrefSuppliersOnce();
+      } else if (item.getAttribute('data-nav') === 'disputes') {
+        showPMView('disputes');
+        initPmDisputesOnce();
       } else if (item.getAttribute('data-nav') === 'explore') {
         showPMView('explore');
         initPmExploreOnce();
@@ -37205,10 +38325,20 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
   var toastRich = document.getElementById('toastRich');
   var toastRichTitle = document.getElementById('toastRichTitle');
   var toastRichDetail = document.getElementById('toastRichDetail');
+  var toastRichIcon = document.querySelector('#toastRich .tr-icon');
   var toastRichTimer = null;
-  function showRichToast(title, detail) {
+  var TOAST_RICH_ICONS = {
+    success: '<circle cx="12" cy="12" r="9"/><path d="M8.5 12.2l2.3 2.3 4.7-4.9"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/>'
+  };
+  // variant defaults to 'success' (the original green + checkmark) so every existing caller keeps
+  // its current look — 'info' is the new teal + info-icon treatment for a neutral/removal-style
+  // notice (e.g. "Removed from preferred suppliers") rather than a positive-confirmation one.
+  function showRichToast(title, detail, variant) {
     toastRichTitle.textContent = title;
     toastRichDetail.textContent = detail || '';
+    toastRich.classList.toggle('info', variant === 'info');
+    toastRichIcon.innerHTML = TOAST_RICH_ICONS[variant === 'info' ? 'info' : 'success'];
     toastRich.classList.add('show');
     clearTimeout(toastRichTimer);
     toastRichTimer = setTimeout(function () { toastRich.classList.remove('show'); }, 4500);
