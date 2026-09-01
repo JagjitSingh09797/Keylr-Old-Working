@@ -3049,7 +3049,7 @@
      thread itself; only the filter dropdown, tabs, job-context bar and
      read-only footer below are new to this dashboard.
      ========================================================================== */
-  .pminb-layout { display: flex; gap: 0; background: #fff; border: 1px solid var(--border-subtle); border-radius: 16px; overflow: hidden; height: calc(100vh - 200px); min-height: 480px; }
+  .pminb-layout { display: flex; gap: 0; background: #fff; border: 1px solid var(--border-subtle); border-radius: 16px; overflow: hidden; height: calc(100vh - 120px); min-height: 480px; }
   .pminb-list-panel { width: 360px; flex-shrink: 0; border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column; min-height: 0; }
   .pminb-detail-panel { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
   .pminb-thread-view { flex: 1; display: flex; flex-direction: column; min-height: 0; min-width: 0; }
@@ -3092,7 +3092,7 @@
   .pminb-conv-menu-item:hover { background: var(--surface-soft); }
   .pminb-conv-menu-item svg { width: 15px; height: 15px; color: var(--text-body-muted); flex-shrink: 0; }
   @media (max-width: 860px) {
-    .pminb-layout { height: calc(100vh - 200px); min-height: 420px; flex-direction: column; }
+    .pminb-layout { height: calc(100vh - 120px); min-height: 420px; flex-direction: column; }
     .pminb-list-panel { width: 100%; max-height: none; border-right: none; border-bottom: none; flex: 1; display: flex; }
     .pminb-detail-panel { display: none; flex: 1; min-height: 480px; }
     .pminb-layout.pminb-mobile-thread-open .pminb-list-panel { display: none; }
@@ -6679,6 +6679,7 @@
      result, is often just 1\u20133 rows. Same scoped fix already applied elsewhere in the app for the
      same reason (#pmsvcTableWrap, #supInvitesTableWrap, .team-table-wrap). */
   .pmprop-table-wrap { min-height: 0; }
+  .pm-table-wrap.pmprop-table-wrap { max-height: calc(100vh - 80px); }
 
   @media (max-width: 900px) {
     .pmprop-table-wrap { overflow-x: auto; }
