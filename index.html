@@ -2524,6 +2524,9 @@
     transition: background-color 150ms ease-out, border-color 150ms ease-out;
   }
   .btn-keylr-light:hover { background: #dde9f9; border-color: var(--accent-blue); }
+  .pmex-quotelist-btn { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--border-subtle); border-radius: 9px; padding: 9px 15px; font-size: 12.5px; font-weight: 700; color: var(--text-heading); cursor: pointer; font-family: inherit; }
+  .pmex-quotelist-btn:hover { background: var(--surface-soft); }
+  .pmex-quotelist-count { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--navy-900); color: #fff; font-size: 10.5px; font-weight: 800; }
   .bell-btn {
     width: 38px; height: 38px; border-radius: 10px;
     border: 1px solid var(--border-subtle); background: #fff;
@@ -5941,7 +5944,135 @@
   /* =========================================================
      PM: EXPLORE SERVICES
   ========================================================== */
+  /* ==========================================================================
+     PM EXPLORE SERVICES — landing page (hero, compliance, browse-by-category/trade,
+     book again, emergency). Reuses Keylr's established navy hero gradient (same one
+     the Job Detail page's own hero uses) and amber for anything "needs attention",
+     rather than introducing new colours for this one page.
+     ========================================================================== */
+  .pmex-hero { background: linear-gradient(135deg, var(--btn-grad-start) 0%, var(--btn-grad-end) 100%); border-radius: 18px; padding: 32px 34px 28px; color: #fff; margin-bottom: 30px; }
+  .pmex-hero-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: rgba(255,255,255,0.65); margin-bottom: 10px; }
+  .pmex-hero-title { font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 8px; letter-spacing: -0.01em; }
+  .pmex-hero-sub { font-size: 13.5px; color: rgba(255,255,255,0.8); line-height: 1.5; max-width: 560px; margin-bottom: 22px; }
+  .pmex-hero-search-row { display: flex; gap: 10px; flex-wrap: wrap; background: #fff; border-radius: 13px; padding: 7px; }
+  .pmex-hero-search-wrap, .pmex-hero-loc-wrap { display: flex; align-items: center; gap: 9px; padding: 9px 14px; flex: 1; min-width: 200px; color: #94a3b8; }
+  .pmex-hero-search-wrap { border-right: 1px solid var(--border-subtle); }
+  .pmex-hero-search-wrap input, .pmex-hero-loc-wrap input { border: none; outline: none; font-size: 13.5px; font-family: inherit; color: var(--text-heading); width: 100%; background: none; }
+  .pmex-hero-search-row .btn { flex-shrink: 0; padding: 11px 22px; }
+  .pmex-hero-popular { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-top: 16px; font-size: 12px; color: rgba(255,255,255,0.7); }
+  .pmex-hero-tag { font-size: 12px; font-weight: 700; color: #fff; background: rgba(255,255,255,0.14); padding: 6px 13px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+  .pmex-hero-tag:hover { background: rgba(255,255,255,0.24); }
+
+  .pmex-section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+  .pmex-section-title { font-size: 17px; font-weight: 800; color: var(--text-heading); }
+  .pmex-section-sub { font-size: 12.5px; color: var(--text-body-muted); margin-top: 3px; }
+  .pmex-section-link { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 700; color: var(--accent-blue); cursor: pointer; white-space: nowrap; }
+  .pmex-section-link:hover { text-decoration: underline; }
+
+  .pmex-card-imgdrop { height: 92px; border-radius: 11px 11px 0 0; background: var(--surface-soft); border: 1px dashed var(--border-subtle); border-bottom: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: #b0b8c4; cursor: pointer; overflow: hidden; position: relative; flex-shrink: 0; }
+  .pmex-card-imgdrop:hover { background: #f2f4f7; }
+  .pmex-card-imgdrop span { font-size: 11px; font-weight: 600; text-align: center; padding: 0 10px; }
+  .pmex-card-imgdrop img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+  .pmex-card-imgdrop input { display: none; }
+
+  .pmex-compliance-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 1200px) { .pmex-compliance-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 620px) { .pmex-compliance-grid { grid-template-columns: 1fr; } }
+  .pmex-compliance-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 12px; overflow: hidden; cursor: pointer; display: flex; flex-direction: column; }
+  .pmex-compliance-card:hover { border-color: #cbd5e1; box-shadow: 0 4px 14px rgba(16,24,40,0.06); }
+  .pmex-compliance-card-body { padding: 13px 15px 15px; flex: 1; display: flex; flex-direction: column; }
+  .pmex-compliance-card-toprow { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+  .pmex-compliance-code { font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; color: var(--text-body-muted); background: var(--surface-soft); padding: 3px 9px; border-radius: 6px; }
+  .pmex-action-needed-pill { font-size: 10px; font-weight: 800; letter-spacing: 0.02em; color: #92620a; background: #fef3c7; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .pmex-compliance-title { font-size: 14px; font-weight: 800; color: var(--text-heading); margin-bottom: 6px; line-height: 1.3; }
+  .pmex-compliance-due { font-size: 12px; color: var(--text-body-muted); line-height: 1.4; flex: 1; margin-bottom: 12px; }
+  .pmex-card-footrow { display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: var(--text-body-muted); padding-top: 10px; border-top: 1px solid var(--border-subtle); }
+  .pmex-card-footrow strong { color: var(--text-heading); font-weight: 800; }
+
+  .pmex-landing-cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 1200px) { .pmex-landing-cat-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 620px) { .pmex-landing-cat-grid { grid-template-columns: 1fr; } }
+  .pmex-landing-cat-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 12px; overflow: hidden; cursor: pointer; position: relative; }
+  .pmex-landing-cat-card:hover { border-color: #cbd5e1; box-shadow: 0 4px 14px rgba(16,24,40,0.06); }
+  .pmex-landing-cat-card .pmex-card-imgdrop { position: relative; }
+  .pmex-most-booked-pill { position: absolute; bottom: 8px; right: 8px; font-size: 10px; font-weight: 800; color: #fff; background: var(--navy-900); padding: 4px 10px; border-radius: 999px; }
+  .pmex-landing-cat-body { padding: 12px 15px 14px; }
+  .pmex-landing-cat-title { font-size: 14.5px; font-weight: 800; color: var(--text-heading); margin-bottom: 3px; }
+  .pmex-landing-cat-meta { font-size: 12px; color: var(--text-body-muted); }
+
+  .pmex-trade-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  @media (max-width: 1200px) { .pmex-trade-grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 780px) { .pmex-trade-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 480px) { .pmex-trade-grid { grid-template-columns: repeat(2, 1fr); } }
+  .pmex-trade-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 12px; overflow: hidden; cursor: pointer; }
+  .pmex-trade-card:hover { border-color: #cbd5e1; box-shadow: 0 4px 14px rgba(16,24,40,0.06); }
+  .pmex-trade-card .pmex-card-imgdrop { height: 66px; }
+  .pmex-trade-card .pmex-card-imgdrop svg { width: 16px; height: 16px; }
+  .pmex-trade-body { padding: 10px 12px 12px; }
+  .pmex-trade-title { font-size: 13px; font-weight: 800; color: var(--text-heading); }
+  .pmex-trade-meta { font-size: 11px; color: var(--text-body-muted); margin-top: 2px; }
+
+  .pmex-bookagain-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .pmex-bookagain-item { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; flex: 1 1 300px; min-width: 260px; }
+  .pmex-bookagain-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; background: var(--icon-tint-bg); color: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; overflow: hidden; }
+  .pmex-bookagain-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .pmex-bookagain-info { flex: 1; min-width: 0; }
+  .pmex-bookagain-name { font-size: 13px; font-weight: 800; color: var(--text-heading); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pmex-bookagain-meta { font-size: 11.5px; color: var(--text-body-muted); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pmex-rebook-btn { font-size: 12px; font-weight: 700; color: var(--text-heading); background: #fff; border: 1px solid var(--border-subtle); padding: 8px 14px; border-radius: 8px; cursor: pointer; font-family: inherit; flex-shrink: 0; }
+  .pmex-rebook-btn:hover { background: var(--surface-soft); }
+
+  .pmex-emergency-banner { display: flex; align-items: center; justify-content: space-between; gap: 20px; background: #fff8ec; border: 1px solid #f5dc9e; border-radius: 14px; padding: 20px 24px; margin-top: 34px; flex-wrap: wrap; }
+  .pmex-emergency-eyebrow { font-size: 10.5px; font-weight: 800; letter-spacing: 0.06em; color: #b45309; margin-bottom: 5px; }
+  .pmex-emergency-title { font-size: 15.5px; font-weight: 800; color: var(--text-heading); margin-bottom: 3px; }
+  .pmex-emergency-sub { font-size: 12.5px; color: var(--text-body-muted); }
+  .pmex-emergency-btn { flex-shrink: 0; font-size: 13px; font-weight: 700; color: #fff; background: #b45309; border: none; padding: 12px 22px; border-radius: 10px; cursor: pointer; font-family: inherit; white-space: nowrap; }
+  .pmex-emergency-btn:hover { background: #92400e; }
+  @media (max-width: 700px) {
+    .pmex-hero { padding: 24px 20px; }
+    .pmex-hero-title { font-size: 22px; }
+    .pmex-hero-search-row { flex-direction: column; }
+    .pmex-hero-search-wrap { border-right: none; border-bottom: 1px solid var(--border-subtle); }
+    .pmex-hero-search-row .btn { width: 100%; justify-content: center; }
+  }
+
   .pmex-loc-wrap { position: relative; margin-bottom: 16px; }
+  /* Results page: two-column layout (persistent left sidebar of filters + right-hand supplier
+     grid), matching the Admin Supplier Applicants style of "filters are always visible, not a
+     toggle panel" rather than the dropdown panel this page used before. */
+  .pmex-results-top { margin-bottom: 4px; }
+  .pmex-results-top .pmex-back-btn { margin-bottom: 14px; }
+  .pmex-results-top-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+  .pmex-results-title { font-size: 20px; font-weight: 800; color: var(--text-heading); }
+  .pmex-results-sub { font-size: 12.5px; color: var(--text-body-muted); margin-top: 3px; }
+  .pmex-sort-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pmex-sort-pill { font-size: 12px; font-weight: 700; color: var(--text-body-muted); background: var(--surface-soft); padding: 8px 14px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+  .pmex-sort-pill.active { background: var(--icon-tint-bg); color: var(--accent-blue); }
+  .pmex-sort-pill:not(.active):hover { background: #eef1f5; }
+
+  .pmex-results-layout { display: grid; grid-template-columns: 250px 1fr; gap: 22px; align-items: start; margin-top: 18px; }
+  @media (max-width: 900px) { .pmex-results-layout { grid-template-columns: 1fr; } }
+  .pmex-sidebar { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 18px; position: sticky; top: 16px; }
+  @media (max-width: 900px) { .pmex-sidebar { position: static; } }
+  .pmex-sidebar-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .pmex-sidebar-title { font-size: 14.5px; font-weight: 800; color: var(--text-heading); }
+  .pmex-sidebar .pmex-filter-clear { font-size: 12px; font-weight: 700; color: var(--accent-blue); cursor: pointer; }
+  .pmex-sidebar .pmex-filter-clear:hover { text-decoration: underline; }
+  .pmex-sidebar .pmex-search-wrap input, .pmex-sidebar .pmex-loc-input { background: var(--surface-soft); border: 1px solid var(--border-subtle); border-radius: 9px; padding-top: 9px; padding-bottom: 9px; font-size: 13px; }
+  .pmex-sidebar-recent-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
+  .pmex-sidebar-recent-chip { font-size: 11px; font-weight: 600; color: var(--text-body-muted); background: var(--surface-soft); padding: 4px 10px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+  .pmex-sidebar-recent-chip:hover { background: #eef1f5; }
+  .pmex-sidebar-block { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border-subtle); }
+  .pmex-sidebar-label-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--text-heading); margin-bottom: 10px; }
+  .pmex-sidebar-label-row span:last-child { font-weight: 600; color: var(--text-body-muted); }
+  .pmex-sidebar-block input[type="range"] { width: 100%; accent-color: var(--accent-blue); }
+  .pmex-sidebar-slider-ends { display: flex; justify-content: space-between; font-size: 10.5px; color: #94a3b8; margin-top: 4px; }
+  .pmex-pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pmex-sidebar-pill { font-size: 11.5px; font-weight: 700; color: var(--text-heading); background: var(--surface-soft); border: 1px solid transparent; padding: 6px 12px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+  .pmex-sidebar-pill.active { background: var(--icon-tint-bg); color: var(--accent-blue); border-color: #bcd2ec; }
+  .pmex-sidebar-pill:not(.active):hover { background: #eef1f5; }
+  .pmex-results-content { min-width: 0; }
+
   .pmex-loc-wrap svg.pmex-loc-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; z-index: 2; }
   .pmex-loc-input { width: 100%; padding: 13px 42px 13px 40px; }
   .pmex-loc-clear { display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border-radius: 50%; background: var(--surface-soft); border: none; cursor: pointer; align-items: center; justify-content: center; color: var(--text-body-muted); z-index: 2; }
@@ -6003,6 +6134,8 @@
   .pmex-pcard-price strong { font-size: 19px; font-weight: 800; color: var(--text-heading); display: block; line-height: 1.05; }
 
   .pmex-pcard-badges { display: flex; gap: 4px; flex-wrap: wrap; padding: 0 14px 8px; }
+  .pmex-pcard-photo { padding: 0 14px 10px; }
+  .pmex-pcard-photo .pmex-card-imgdrop { height: 130px; border-radius: 11px; border-style: dashed; border-bottom-width: 1px; }
   .pmex-cert-chip { font-size: 9.5px; font-weight: 700; padding: 2px 8px 2px 6px; border-radius: 20px; white-space: nowrap; display: inline-flex; align-items: center; gap: 3px; }
   .pmex-cert-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
 
@@ -6010,12 +6143,18 @@
   .pmex-pcard-avail.two-col { grid-template-columns: repeat(2, 1fr); }
   .pmex-avail-card { background: var(--surface-soft); border: 1px solid #edf0f5; border-radius: 10px; padding: 8px 4px 7px; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
   .pmex-avail-card.emg { background: #fffbeb; border-color: #fde68a; }
+  .pmex-avail-card.empty { opacity: 0.55; }
   .pmex-avail-card-icon { display: flex; align-items: center; justify-content: center; color: var(--text-body-muted); margin-bottom: 1px; }
   .pmex-avail-card.emg .pmex-avail-card-icon { color: #d97706; }
   .pmex-avail-card-val { font-size: 10.5px; font-weight: 600; color: var(--text-heading); line-height: 1.2; }
   .pmex-avail-card.emg .pmex-avail-card-val { color: #b45309; }
+  .pmex-avail-card.empty .pmex-avail-card-val { color: #94a3b8; }
   .pmex-avail-card-lbl { font-size: 9px; color: #94a3b8; font-weight: 500; }
   .pmex-avail-card.emg .pmex-avail-card-lbl { color: #d97706; }
+
+  .pmex-svc-box-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 0 6px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.04em; color: #94a3b8; }
+  .pmex-svc-box-head-right { font-weight: 600; letter-spacing: 0; text-transform: none; }
+  .pmex-preferred-tag { display: inline-flex; align-items: center; font-size: 10px; font-weight: 700; color: var(--accent-blue); background: var(--icon-tint-bg); padding: 3px 9px; border-radius: 999px; margin-left: 6px; vertical-align: middle; }
 
   .pmex-pcard-services { padding: 0 12px 8px; }
   .pmex-svc-box { background: var(--surface-soft); border: 1px solid #e8ecf0; border-radius: 8px; padding: 0 10px 6px; }
@@ -6037,6 +6176,33 @@
   .pmex-pcard-footer { display: flex; align-items: center; gap: 6px; padding: 8px 14px 12px; border-top: 1px solid #f1f5f9; margin-top: auto; }
   .pmex-book-btn { flex: 1; background: linear-gradient(135deg, var(--btn-grad-start) 0%, var(--btn-grad-end) 100%); color: #fff; border: none; border-radius: 999px; padding: 9px 14px; font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 6px; }
   .pmex-book-btn:hover { opacity: 0.9; }
+  .pmex-quote-toggle-btn { flex: 1; background: linear-gradient(135deg, var(--btn-grad-start) 0%, var(--btn-grad-end) 100%); color: #fff; border: none; border-radius: 999px; padding: 9px 14px; font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background-color 150ms ease-out, color 150ms ease-out; }
+  .pmex-quote-toggle-btn:hover { opacity: 0.9; }
+  .pmex-quote-toggle-btn.added { background: #e3f9e9; color: #1a7a3e; }
+  .pmex-quote-toggle-btn.added:hover { opacity: 1; background: #d5f4de; }
+  .pmex-quote-bar {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(120%);
+    display: flex; align-items: center; gap: 16px; background: linear-gradient(135deg, var(--btn-grad-start) 0%, var(--btn-grad-end) 100%); color: #fff;
+    padding: 14px 18px; border-radius: 14px; box-shadow: 0 16px 40px rgba(16,24,40,0.28);
+    z-index: 210; max-width: min(620px, calc(100vw - 48px)); opacity: 0; pointer-events: none;
+    transition: transform 220ms cubic-bezier(0.16,1,0.3,1), opacity 220ms ease-out;
+  }
+  .pmex-quote-bar.open { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
+  .pmex-quote-bar-count { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 800; }
+  .pmex-quote-bar-text { flex: 1; min-width: 0; }
+  .pmex-quote-bar-label { font-size: 13px; font-weight: 800; white-space: nowrap; }
+  .pmex-quote-bar-sub { font-size: 11.5px; color: rgba(255,255,255,0.65); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pmex-quote-bar-clear { flex-shrink: 0; background: none; border: none; color: rgba(255,255,255,0.7); font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: inherit; padding: 8px 6px; }
+  .pmex-quote-bar-clear:hover { color: #fff; }
+  .pmex-quote-bar-request { flex-shrink: 0; display: flex; align-items: center; gap: 7px; background: #fff; color: var(--accent-blue); border: none; border-radius: 9px; padding: 10px 16px; font-size: 12.5px; font-weight: 800; cursor: pointer; font-family: inherit; white-space: nowrap; }
+  .pmex-quote-bar-request:hover { background: #f1f3f6; }
+  @media (max-width: 620px) {
+    .pmex-quote-bar { flex-wrap: wrap; padding: 14px; }
+    .pmex-quote-bar-text { flex: 1 1 auto; order: 1; }
+    .pmex-quote-bar-count { order: 0; }
+    .pmex-quote-bar-clear { order: 2; }
+    .pmex-quote-bar-request { order: 3; flex: 1 1 100%; justify-content: center; margin-top: 4px; }
+  }
   .pmex-profile-btn { background: transparent; border: 1.5px solid transparent; color: #374151; font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 4px; white-space: nowrap; padding: 9px 12px; border-radius: 999px; flex-shrink: 0; transition: background-color 120ms ease-out, border-color 120ms ease-out; }
   .pmex-profile-btn:hover { background: var(--surface-soft); border-color: var(--border-subtle); color: var(--text-heading); }
 
@@ -12522,10 +12688,13 @@
           <span class="pmjd-breadcrumb-sep">/</span>
           <span class="pmjd-breadcrumb-title">New Booking</span>
         </div>
-        <button type="button" class="bell-btn" id="pmBellBtn" aria-label="Notifications" style="margin-left:auto;">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-          <span class="bell-dot" id="pmBellDot"></span>
-        </button>
+        <div class="pmex-topbar-actions" style="margin-left:auto;display:flex;align-items:center;gap:12px;">
+          <button type="button" class="pmex-quotelist-btn" id="pmexQuoteListBtn" style="display:none;">Quote list <span class="pmex-quotelist-count" id="pmexQuoteListCount">0</span></button>
+          <button type="button" class="bell-btn" id="pmBellBtn" aria-label="Notifications">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            <span class="bell-dot" id="pmBellDot"></span>
+          </button>
+        </div>
         <div class="notif-panel" id="pmNotifPanel">
           <div class="notif-panel-head">
             <h3>Notifications</h3>
@@ -13284,50 +13453,162 @@
           <!-- Explore Services view -->
           <div id="pmExploreView" style="display:none;">
             <div class="dash-section">
-              <div id="pmexBrowseWrap">
-                  <div class="pmex-loc-wrap" id="pmexLocWrap">
-                    <svg class="pmex-loc-icon" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1a5 5 0 00-5 5c0 4 5 9 5 9s5-5 5-9a5 5 0 00-5-5z"/><circle cx="8" cy="6" r="1.8"/></svg>
-                    <input type="text" class="field-input pmex-loc-input" id="pmexLocInput" autocomplete="off" placeholder="Filter by postcode, city or property name...">
-                    <button type="button" class="pmex-loc-clear" id="pmexLocClearBtn" aria-label="Clear"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 1l8 8M9 1L1 9"/></svg></button>
-                    <div class="pmex-loc-dd" id="pmexLocDd"></div>
+              <div id="pmexLandingWrap">
+                <div class="pmex-hero">
+                  <div class="pmex-hero-eyebrow">MARKETPLACE</div>
+                  <h2 class="pmex-hero-title">What needs doing today?</h2>
+                  <div class="pmex-hero-sub">Search by service, compliance certificate or trade. Book vetted suppliers across your portfolio in a few clicks.</div>
+                  <div class="pmex-hero-search-row">
+                    <div class="pmex-hero-search-wrap">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                      <input type="text" id="pmexHeroServiceInput" placeholder="e.g. gas safety certificate, boiler service, EICR...">
+                    </div>
+                    <div class="pmex-hero-loc-wrap">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1a5 5 0 00-5 5c0 4 5 9 5 9s5-5 5-9a5 5 0 00-5-5z"/><circle cx="8" cy="6" r="1.8"/></svg>
+                      <input type="text" id="pmexHeroLocInput" placeholder="Postcode or property" autocomplete="off">
+                    </div>
+                    <button type="button" class="btn btn-primary" id="pmexHeroSearchBtn">Search</button>
                   </div>
+                  <div class="pmex-hero-popular">
+                    <span>Popular:</span>
+                    <span class="pmex-hero-tag" data-hero-tag="Gas Safety Certificate">Gas Safety Certificate</span>
+                    <span class="pmex-hero-tag" data-hero-tag="EICR">EICR</span>
+                    <span class="pmex-hero-tag" data-hero-tag="Boiler service">Boiler service</span>
+                    <span class="pmex-hero-tag" data-hero-tag="End of tenancy clean">End of tenancy clean</span>
+                    <span class="pmex-hero-tag" data-hero-tag="Emergency leak">Emergency leak</span>
+                  </div>
+                </div>
 
-                  <div class="pmex-search-row" id="pmexSearchRow">
-                    <div class="pmex-search-wrap">
+                <div class="pmex-section-head">
+                  <div>
+                    <div class="pmex-section-title">Compliance &amp; certificates</div>
+                    <div class="pmex-section-sub">Statutory work, matched to the properties that are due.</div>
+                  </div>
+                  <span class="pmex-section-link" id="pmexComplianceCalendarLink">View compliance calendar <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                </div>
+                <div class="pmex-compliance-grid" id="pmexComplianceGrid"></div>
+
+                <div class="pmex-section-head" style="margin-top:34px;">
+                  <div>
+                    <div class="pmex-section-title">Browse by category</div>
+                    <div class="pmex-section-sub">Every aisle of the marketplace.</div>
+                  </div>
+                </div>
+                <div class="pmex-landing-cat-grid" id="pmexLandingCatGrid"></div>
+
+                <div class="pmex-section-head" style="margin-top:34px;">
+                  <div>
+                    <div class="pmex-section-title">Browse by trade</div>
+                    <div class="pmex-section-sub">When you already know who you need.</div>
+                  </div>
+                </div>
+                <div class="pmex-trade-grid" id="pmexTradeGrid"></div>
+
+                <div class="pmex-section-head" style="margin-top:34px;">
+                  <div>
+                    <div class="pmex-section-title">Book again</div>
+                    <div class="pmex-section-sub">Suppliers you have used in the last 90 days.</div>
+                  </div>
+                </div>
+                <div class="pmex-bookagain-row" id="pmexBookAgainRow"></div>
+
+                <div class="pmex-emergency-banner">
+                  <div>
+                    <div class="pmex-emergency-eyebrow">24/7 EMERGENCY</div>
+                    <div class="pmex-emergency-title">Leak, outage or no heating right now?</div>
+                    <div class="pmex-emergency-sub">Broadcast the job to every on-call supplier covering the postcode. Average first response 12 minutes.</div>
+                  </div>
+                  <button type="button" class="pmex-emergency-btn" id="pmexEmergencyBtn">Raise emergency job</button>
+                </div>
+              </div>
+
+              <div id="pmexBrowseWrap" style="display:none;">
+                <div class="pmex-results-top">
+                  <div class="pmex-back-btn" id="pmexAllServicesBackBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>All services</div>
+                  <div class="pmex-results-top-row">
+                    <div>
+                      <div class="pmex-results-title" id="pmexResultsTitle">All Services</div>
+                      <div class="pmex-results-sub" id="pmexResultsSub">Suppliers available</div>
+                    </div>
+                    <div class="pmex-sort-pills" id="pmexSortPills">
+                      <div class="pmex-sort-pill active" data-sort="recommended">Recommended</div>
+                      <div class="pmex-sort-pill" data-sort="price">Lowest price</div>
+                      <div class="pmex-sort-pill" data-sort="rating">Highest rated</div>
+                      <div class="pmex-sort-pill" data-sort="fastest">Fastest response</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pmex-results-layout">
+                  <div class="pmex-sidebar" id="pmexSidebar">
+                    <div class="pmex-sidebar-head">
+                      <div class="pmex-sidebar-title">Filters</div>
+                      <span class="pmex-filter-clear" id="pmexFilterClearBtn">Clear all</span>
+                    </div>
+
+                    <div class="pmex-search-wrap" style="margin-bottom:10px;">
                       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="4.5"/><path d="M10 10l2.5 2.5"/></svg>
-                      <input type="text" class="field-input" style="padding-left:36px;" id="pmexSearchInput" placeholder="Search services..." autocomplete="off">
+                      <input type="text" class="field-input" style="padding-left:36px;" id="pmexSearchInput" placeholder="Search suppliers..." autocomplete="off">
                     </div>
-                    <button type="button" class="pmex-filter-btn" id="pmexFilterToggleBtn">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 3h12M3 7h8M5 11h4"/></svg>
-                      Filters <span class="pmex-filter-badge" id="pmexFilterBadge" style="display:none;"></span>
-                    </button>
-                  </div>
+                    <div class="pmex-loc-wrap" id="pmexLocWrap" style="margin-bottom:0;">
+                      <svg class="pmex-loc-icon" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1a5 5 0 00-5 5c0 4 5 9 5 9s5-5 5-9a5 5 0 00-5-5z"/><circle cx="8" cy="6" r="1.8"/></svg>
+                      <input type="text" class="field-input pmex-loc-input" id="pmexLocInput" autocomplete="off" placeholder="Postcode or property...">
+                      <button type="button" class="pmex-loc-clear" id="pmexLocClearBtn" aria-label="Clear"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 1l8 8M9 1L1 9"/></svg></button>
+                      <div class="pmex-loc-dd" id="pmexLocDd"></div>
+                    </div>
+                    <div class="pmex-sidebar-recent-chips" id="pmexRecentChips"></div>
 
-                  <div class="pmex-filter-panel" id="pmexFilterPanel">
-                    <div class="pmex-filter-panel-head">
-                      <div class="pmex-filter-panel-title">Refine results</div>
-                      <button type="button" class="pmex-filter-clear" id="pmexFilterClearBtn">✕ Clear</button>
+                    <div class="pmex-sidebar-block">
+                      <div class="pmex-sidebar-label-row"><span>Price from</span><span id="pmexPriceValLabel">Any price</span></div>
+                      <input type="range" id="pmexPriceSlider" min="40" max="200" step="10" value="40">
+                      <div class="pmex-sidebar-slider-ends"><span>£40</span><span>£200+</span></div>
                     </div>
-                    <div class="pmex-filter-label">Minimum rating</div>
-                    <div class="pm-filter-field" style="width:220px;">
-                      <button type="button" class="pm-custom-dd-btn" data-dd="pmexRatingFilter">
-                        <span class="cdd-value">Any rating</span>
-                        <svg class="cdd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-                      </button>
-                      <div class="pm-custom-dd-menu" data-dd-menu="pmexRatingFilter">
-                        <div class="cdd-item selected" data-value="Any rating">Any rating</div>
-                        <div class="cdd-item" data-value="3.0+ ★">3.0+ ★</div>
-                        <div class="cdd-item" data-value="4.0+ ★">4.0+ ★</div>
-                        <div class="cdd-item" data-value="4.5+ ★">4.5+ ★</div>
+
+                    <div class="pmex-sidebar-block">
+                      <div class="pmex-sidebar-label-row"><span>Rating</span></div>
+                      <div class="pmex-pill-row" id="pmexRatingPills">
+                        <div class="pmex-sidebar-pill" data-rating="4.5">4.5+</div>
+                        <div class="pmex-sidebar-pill" data-rating="4.0">4.0+</div>
+                        <div class="pmex-sidebar-pill active" data-rating="0">Any</div>
+                      </div>
+                    </div>
+
+                    <div class="pmex-sidebar-block">
+                      <div class="pmex-sidebar-label-row"><span>Certifications</span></div>
+                      <div class="pmex-pill-row" id="pmexCertPills"></div>
+                    </div>
+
+                    <div class="pmex-sidebar-block">
+                      <div class="pmex-sidebar-label-row"><span>Availability &amp; credentials</span></div>
+                      <div class="pmex-pill-row" id="pmexAvailPills">
+                        <div class="pmex-sidebar-pill" data-avail="emergency">Emergency 24/7</div>
+                        <div class="pmex-sidebar-pill" data-avail="sameday">Same day</div>
+                        <div class="pmex-sidebar-pill" data-avail="weekends">Weekends</div>
+                        <div class="pmex-sidebar-pill" data-avail="insured">Insured</div>
+                        <div class="pmex-sidebar-pill" data-avail="dbs">DBS checked</div>
+                        <div class="pmex-sidebar-pill" data-avail="preferred">Preferred only</div>
+                        <div class="pmex-sidebar-pill" data-avail="commercial">Commercial</div>
                       </div>
                     </div>
                   </div>
 
-                  <div class="pmex-chiprow" id="pmexCategoryChips"></div>
-
-                  <div id="pmexCatCards" style="display:none;"></div>
-                  <div id="pmexProviderCards" style="display:none;"></div>
+                  <div class="pmex-results-content">
+                    <div class="pmex-chiprow" id="pmexCategoryChips"></div>
+                    <div id="pmexCatCards" style="display:none;"></div>
+                    <div id="pmexProviderCards" style="display:none;"></div>
+                  </div>
                 </div>
+              </div>
+
+              <div class="pmex-quote-bar" id="pmexQuoteBar">
+                <div class="pmex-quote-bar-count" id="pmexQuoteBarCount">0</div>
+                <div class="pmex-quote-bar-text">
+                  <div class="pmex-quote-bar-label" id="pmexQuoteBarLabel">0 suppliers selected</div>
+                  <div class="pmex-quote-bar-sub">One brief, sent to all selected suppliers</div>
+                </div>
+                <button type="button" class="pmex-quote-bar-clear" id="pmexQuoteBarClearBtn">Clear</button>
+                <button type="button" class="pmex-quote-bar-request" id="pmexQuoteBarRequestBtn">Request quotes <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+              </div>
 
                 <div id="pmexProfileWrap" style="display:none;">
                   <button type="button" class="pmex-back-btn" id="pmexProfileBackBtn">
@@ -24121,7 +24402,7 @@
   };
 
   var PMEX_PROVIDERS = [
-    { id: 'pv1', name: 'Thameside Plumbing & Gas', businessType: 'Company', role: 'Gas Engineer \u00b7 Plumber \u00b7 HVAC', rating: 4.8, reviews: 136, jobs: 4210, price: 90, sla: '4 hours', hours: '06:00-22:00', days: 'Mon-Sun', emergency: true, certs: ['Gas Safe', 'CIPHE', 'WaterSafe'], areas: 'E1, EC1', insured: true, dbs: false, cat: ['plumbing', 'maintenance'], experience: 14, responseRate: 98, completionRate: 97, repeatClients: 82, memberSince: 2016,
+    { id: 'pv1', name: 'Thameside Plumbing & Gas', businessType: 'Company', role: 'Gas Engineer \u00b7 Plumber \u00b7 HVAC', rating: 4.8, reviews: 136, jobs: 4210, price: 90, sla: '4 hours', hours: '06:00-22:00', days: 'Mon-Sun', emergency: true, certs: ['Gas Safe', 'CIPHE', 'WaterSafe'], areas: 'E1, EC1', insured: true, dbs: false, preferred: true, cat: ['plumbing', 'maintenance'], experience: 14, responseRate: 98, completionRate: 97, repeatClients: 82, memberSince: 2016,
       services: [
         { name: 'Boiler Service', tags: ['RES', 'COM'], price: '\u00a3175', budget: true },
         { name: 'Gas Safety Check', tags: ['RES', 'COM'], price: '\u00a385', budget: true },
@@ -24144,14 +24425,14 @@
         { name: 'End of Tenancy Clean', tags: ['RES'], price: '\u00a3175' },
         { name: 'Carpet Clean', tags: ['RES', 'COM'], quote: true }
       ] },
-    { id: 'pv4', name: 'Sparkle Commercial Clean', businessType: 'Company', role: 'Commercial Cleaning', rating: 3.6, reviews: 71, jobs: 455, price: 20, sla: 'Next day', hours: '08:00-17:00', days: 'Mon-Fri', emergency: false, certs: [], areas: 'Manchester, Leeds', insured: true, dbs: true, cat: ['cleaning'], experience: 9, responseRate: 92, completionRate: 94, repeatClients: 70, memberSince: 2018,
+    { id: 'pv4', name: 'Sparkle Commercial Clean', businessType: 'Company', role: 'Commercial Cleaning', rating: 3.6, reviews: 71, jobs: 455, price: 20, sla: 'Next day', hours: '08:00-17:00', days: 'Mon-Fri', emergency: false, certs: ['DBS'], areas: 'Manchester, Leeds', insured: true, dbs: true, cat: ['cleaning'], experience: 9, responseRate: 92, completionRate: 94, repeatClients: 70, memberSince: 2018,
       services: [
         { name: 'Office Clean', tags: ['COM'], price: '\u00a320/hr' },
         { name: 'Deep Clean', tags: ['RES', 'COM'], price: '\u00a3240' },
         { name: 'Carpet Clean', tags: ['RES', 'COM'], price: '\u00a375' },
         { name: 'Window Clean', tags: ['RES', 'COM'], price: '\u00a342' }
       ] },
-    { id: 'pv5', name: 'Voltix Electrical Ltd', businessType: 'Company', role: 'Electrician', rating: 4.6, reviews: 82, jobs: 905, price: 95, sla: 'Next day', hours: '08:00-18:00', days: 'Mon-Sat', emergency: true, certs: ['NICEIC', 'Part P'], areas: 'London, Home Counties', insured: true, dbs: false, cat: ['electrical'], experience: 11, responseRate: 97, completionRate: 97, repeatClients: 80, memberSince: 2017,
+    { id: 'pv5', name: 'Voltix Electrical Ltd', businessType: 'Company', role: 'Electrician', rating: 4.6, reviews: 82, jobs: 905, price: 95, sla: 'Next day', hours: '08:00-18:00', days: 'Mon-Sat', emergency: true, certs: ['NICEIC', 'Part P'], areas: 'London, Home Counties', insured: true, dbs: false, preferred: true, cat: ['electrical'], experience: 11, responseRate: 97, completionRate: 97, repeatClients: 80, memberSince: 2017,
       services: [
         { name: 'EICR', tags: ['RES', 'COM'], price: '\u00a3180', budget: true },
         { name: 'Fault Finding', tags: ['RES', 'COM'], price: '\u00a390', budget: true },
@@ -24165,14 +24446,14 @@
         { name: 'Emergency Lighting Test', tags: ['COM'], price: '\u00a365' },
         { name: 'Fire Extinguisher Service', tags: ['COM'], quote: true }
       ] },
-    { id: 'pv7', name: 'Inventory Experts UK', businessType: 'Sole Trader', role: 'Inventory Clerk', rating: 4.8, reviews: 203, jobs: 1780, price: 95, sla: 'Same day', hours: '08:00-20:00', days: 'Mon-Sun', emergency: false, certs: [], areas: 'London & South East', insured: true, dbs: true, cat: ['inventory'], experience: 8, responseRate: 99, completionRate: 98, repeatClients: 91, memberSince: 2019,
+    { id: 'pv7', name: 'Inventory Experts UK', businessType: 'Sole Trader', role: 'Inventory Clerk', rating: 4.8, reviews: 203, jobs: 1780, price: 95, sla: 'Same day', hours: '08:00-20:00', days: 'Mon-Sun', emergency: false, certs: ['DBS'], areas: 'London & South East', insured: true, dbs: true, cat: ['inventory'], experience: 8, responseRate: 99, completionRate: 98, repeatClients: 91, memberSince: 2019,
       services: [
         { name: 'Check-In Report', tags: ['RES'], price: '\u00a390' },
         { name: 'Check-Out Report', tags: ['RES'], price: '\u00a390' },
         { name: 'Mid-Term Inspection', tags: ['RES'], price: '\u00a370' },
         { name: 'Full Inventory', tags: ['RES'], price: '\u00a3175' }
       ] },
-    { id: 'pv8', name: 'Dan Whitfield', businessType: 'Sole Trader', role: 'Handyman', rating: 4.7, reviews: 36, jobs: 812, price: 25, sla: 'Same day', hours: '07:00-19:00', days: 'Mon-Sat', emergency: true, certs: [], areas: 'E1, E2', insured: true, dbs: true, cat: ['repairs', 'maintenance'], experience: 12, responseRate: 97, completionRate: 96, repeatClients: 79, memberSince: 2016,
+    { id: 'pv8', name: 'Dan Whitfield', businessType: 'Sole Trader', role: 'Handyman', rating: 4.7, reviews: 36, jobs: 812, price: 25, sla: 'Same day', hours: '07:00-19:00', days: 'Mon-Sat', emergency: true, certs: ['DBS'], areas: 'E1, E2', insured: true, dbs: true, cat: ['repairs', 'maintenance'], experience: 12, responseRate: 97, completionRate: 96, repeatClients: 79, memberSince: 2016,
       services: [
         { name: 'General Repairs', tags: ['RES', 'COM'], price: '\u00a325', budget: true },
         { name: 'Lock Change', tags: ['RES', 'COM'], price: '\u00a360', budget: true },
@@ -24185,6 +24466,36 @@
     { name: '14 Thames House', addr: 'Wapping High Street, London', postcode: 'E1W 1AA' },
     { name: 'Oakfield Court, Flat 3B', addr: 'Oakfield Road, Manchester', postcode: 'M1 4GH' },
     { name: 'The Maltings', addr: 'Kirkstall Road, Leeds', postcode: 'LS4 2AB' }
+  ];
+
+  /* Landing page data — compliance cards carry live-feeling "due" copy derived from the same
+     categories/providers used everywhere else on this page, rather than a disconnected data set. */
+  var PMEX_COMPLIANCE_ITEMS = [
+    { code: 'CP12', label: 'Gas Safety Certificate', imgLabel: 'boiler', cat: 'plumbing', actionNeeded: true, due: '3 properties due within 30 days', suppliers: 8, from: 75 },
+    { code: 'EICR', label: 'EICR Inspection', imgLabel: 'fuse board', cat: 'electrical', actionNeeded: true, due: '1 property overdue', suppliers: 7, from: 145 },
+    { code: 'EPC', label: 'Energy Performance Certificate', imgLabel: 'property', cat: 'inventory', actionNeeded: false, due: '2 properties due within 90 days', suppliers: 5, from: 85 },
+    { code: 'FRA', label: 'Fire Risk Assessment', imgLabel: 'fire alarm', cat: 'fire', actionNeeded: false, due: 'All current \u2014 next due Nov 2026', suppliers: 4, from: 180 },
+    { code: 'LRA', label: 'Legionella Risk Assessment', imgLabel: 'water tank', cat: 'plumbing', actionNeeded: true, due: '4 properties never assessed', suppliers: 4, from: 120 },
+    { code: 'PAT', label: 'PAT Testing', imgLabel: 'appliance', cat: 'electrical', actionNeeded: false, due: '6 properties due within 60 days', suppliers: 6, from: 60 }
+  ];
+  var PMEX_TRADE_ITEMS = [
+    { label: 'Plumber', cat: 'plumbing', count: 9 },
+    { label: 'Gas Engineer', cat: 'plumbing', count: 8 },
+    { label: 'Electrician', cat: 'electrical', count: 9 },
+    { label: 'Cleaner', cat: 'cleaning', count: 14 },
+    { label: 'Handyman', cat: 'repairs', count: 11 },
+    { label: 'Locksmith', cat: 'repairs', count: 3 },
+    { label: 'Roofer', cat: 'maintenance', count: 4 },
+    { label: 'Pest Technician', cat: 'pest', count: 4 },
+    { label: 'HVAC Engineer', cat: 'hvac', count: 5 },
+    { label: 'Fire Safety Assessor', cat: 'fire', count: 6 }
+  ];
+  // "Book again" reuses real providers already in PMEX_PROVIDERS rather than inventing disconnected
+  // names, so re-booking one lands on the same profile/services a PM would actually see.
+  var PMEX_BOOK_AGAIN = [
+    { pid: 'pv1', service: 'Boiler service', date: '12 Aug', property: 'Flat 4, Hale Court' },
+    { pid: 'pv4', service: 'End of tenancy', date: '2 Aug', property: '18 Ryder St' },
+    { pid: 'pv5', service: 'EICR', date: '24 Jul', property: 'Kingsland House' }
   ];
 
   var PMEX_UK_CITIES = [
@@ -24219,8 +24530,7 @@
     return m[days] || days || '';
   }
   function pmexCertChip(cert) {
-    var cs = PMEX_CERT_STYLE[cert] || { bg: '#f8fafc', bd: '#e2e8f0', tx: '#374151', dot: '#94a3b8' };
-    return '<span class="pmex-cert-chip" style="background:' + cs.bg + ';border:1.5px solid ' + cs.bd + ';color:' + cs.tx + ';"><span class="pmex-cert-dot" style="background:' + cs.dot + ';"></span>' + pmexEscapeHtml(cert) + '</span>';
+    return '<span class="pmex-cert-chip" style="background:var(--icon-tint-bg);border:1.5px solid #d3e2f4;color:var(--accent-blue);"><span class="pmex-cert-dot" style="background:var(--accent-blue);"></span>' + pmexEscapeHtml(cert) + '</span>';
   }
   function pmexSvcRowHtml(s) {
     var chk = '<svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="#10b981" stroke-width="2" style="flex-shrink:0;"><circle cx="7" cy="7" r="6"/><path d="M4.5 7l2 2 3-3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -24285,38 +24595,24 @@
     var slaIco = '<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="6" r="5"/><path d="M6 3v3l1.5 1.5"/></svg>';
     var calIco = '<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="2" width="10" height="9" rx="1.5"/><path d="M1 5h10M4 1v2M8 1v2"/></svg>';
     var emgIco = '<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 1L4 7h4l-3 4 7-7H8z" stroke-linejoin="round"/></svg>';
-    var availClass = p.emergency ? 'pmex-pcard-avail' : 'pmex-pcard-avail two-col';
+    // Always three stat boxes now — a supplier with no emergency cover still gets the slot, just
+    // showing an empty "\u2014" state, rather than the card silently losing a column.
     var avail = '<div class="pmex-avail-card"><div class="pmex-avail-card-icon">' + slaIco + '</div><div class="pmex-avail-card-val">' + pmexEscapeHtml(p.sla) + '</div><div class="pmex-avail-card-lbl">SLA</div></div>' +
       '<div class="pmex-avail-card"><div class="pmex-avail-card-icon">' + calIco + '</div><div class="pmex-avail-card-val">' + pmexDaysLabel(p.days) + '</div><div class="pmex-avail-card-lbl">' + pmexEscapeHtml(p.hours) + '</div></div>' +
-      (p.emergency ? '<div class="pmex-avail-card emg"><div class="pmex-avail-card-icon">' + emgIco + '</div><div class="pmex-avail-card-val">24/7</div><div class="pmex-avail-card-lbl">Emergency</div></div>' : '');
+      (p.emergency
+        ? '<div class="pmex-avail-card emg"><div class="pmex-avail-card-icon">' + emgIco + '</div><div class="pmex-avail-card-val">24/7</div><div class="pmex-avail-card-lbl">Emergency</div></div>'
+        : '<div class="pmex-avail-card empty"><div class="pmex-avail-card-icon">' + emgIco + '</div><div class="pmex-avail-card-val">\u2014</div><div class="pmex-avail-card-lbl">Emergency</div></div>');
 
-    var resSvcs = p.services.filter(function (s) { return (s.tags || []).indexOf('RES') >= 0; });
-    var comSvcs = p.services.filter(function (s) { return (s.tags || []).indexOf('COM') >= 0; });
-    if (!resSvcs.length && comSvcs.length) resSvcs = comSvcs;
-    if (!comSvcs.length && resSvcs.length) comSvcs = resSvcs;
-    var hasTabs = resSvcs.length > 0 && comSvcs.length > 0 && resSvcs !== comSvcs;
-
-    function tabRows(svcs, tabKey) {
-      var shown = svcs.slice(0, 2);
-      var extra = svcs.slice(2);
-      var h = shown.map(pmexSvcRowHtml).join('');
-      if (extra.length) {
-        h += '<div class="pmex-svc-more" data-more-key="' + tabKey + '" style="display:none;">' + extra.map(pmexSvcRowHtml).join('') + '</div>';
-        h += '<button type="button" class="pmex-show-more" data-more-toggle="' + tabKey + '" data-more-count="' + extra.length + '">+' + extra.length + ' more <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4l2 2 2-2"/></svg></button>';
-      }
-      return h;
-    }
-
-    var svcsSection = '<div class="pmex-svc-box">';
-    if (hasTabs) {
-      svcsSection += '<div class="pmex-svc-tabs">' +
-        '<div class="pmex-svc-tab active" data-svc-tab="res" data-pid="' + p.id + '">Residential (' + resSvcs.length + ')</div>' +
-        '<div class="pmex-svc-tab" data-svc-tab="com" data-pid="' + p.id + '">Commercial (' + comSvcs.length + ')</div>' +
-        '</div>' +
-        '<div class="pmex-svc-pane" data-pane="res_' + p.id + '">' + tabRows(resSvcs, 'res_' + p.id) + '</div>' +
-        '<div class="pmex-svc-pane" data-pane="com_' + p.id + '" style="display:none;">' + tabRows(comSvcs, 'com_' + p.id) + '</div>';
-    } else {
-      svcsSection += tabRows(p.services, 'all_' + p.id);
+    // Flat services list (no Residential/Commercial tabs) with a "SERVICES (N) \u00b7 Fixed budget
+    // prices" header, matching the simpler single-list card design.
+    var shown = p.services.slice(0, 2);
+    var extra = p.services.slice(2);
+    var svcsSection = '<div class="pmex-svc-box">' +
+      '<div class="pmex-svc-box-head"><span>SERVICES (' + p.services.length + ')</span><span class="pmex-svc-box-head-right">Fixed budget prices</span></div>' +
+      shown.map(pmexSvcRowHtml).join('');
+    if (extra.length) {
+      svcsSection += '<div class="pmex-svc-more" data-more-key="all_' + p.id + '" style="display:none;">' + extra.map(pmexSvcRowHtml).join('') + '</div>';
+      svcsSection += '<button type="button" class="pmex-show-more" data-more-toggle="all_' + p.id + '" data-more-count="' + extra.length + '">+' + extra.length + ' more <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4l2 2 2-2"/></svg></button>';
     }
     svcsSection += '</div>';
 
@@ -24326,28 +24622,32 @@
     if (p.insured) footer += '<span style="color:#10b981;"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#10b981" stroke-width="1.5"><path d="M6 1l4 2v4c0 2.5-4 5-4 5S2 9.5 2 7V3z"/></svg> Insured</span>';
     if (p.dbs) footer += '<span style="color:var(--accent-blue);"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="var(--accent-blue)" stroke-width="1.5"><path d="M2 6l3 3 5-5"/></svg> DBS</span>';
 
+    var isPreferred = !!p.preferred;
+
     return '<div class="pmex-pcard">' +
       '<div class="pmex-pcard-head">' +
       '<div style="position:relative;flex-shrink:0;"><div class="pmex-pcard-avatar"><img src="https://i.pravatar.cc/112?img=' + (idx % 70 + 3) + '" alt="" onerror="this.style.display=\'none\'"></div><div class="pmex-pcard-online"></div></div>' +
       '<div class="pmex-pcard-info">' +
-      '<div class="pmex-pcard-name">' + pmexEscapeHtml(p.name) + ' <svg width="14" height="14" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="7.5" fill="var(--accent-blue)"/><path d="M4.5 7.5l2.5 2.5 4-4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+      '<div class="pmex-pcard-name">' + pmexEscapeHtml(p.name) + ' <svg width="14" height="14" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="7.5" fill="var(--accent-blue)"/><path d="M4.5 7.5l2.5 2.5 4-4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' + (isPreferred ? '<span class="pmex-preferred-tag">Preferred</span>' : '') + '</div>' +
       '<div class="pmex-pcard-sub">' + pmexEscapeHtml(p.role) + '</div>' +
       '<div class="pmex-pcard-rating">' + starSvg + '<span class="pmex-pcard-rating-num">' + p.rating + '</span><span class="pmex-pcard-rating-cnt">(' + p.reviews + ')</span><span class="pmex-pcard-rating-jobs">' + p.jobs.toLocaleString() + ' jobs</span></div>' +
       '</div>' +
       '<div class="pmex-pcard-price">from<strong>\u00a3' + p.price + '</strong></div>' +
       '</div>' +
       (certsHtml ? '<div class="pmex-pcard-badges">' + certsHtml + '</div>' : '') +
-      '<div class="' + availClass + '">' + avail + '</div>' +
+      '<div class="pmex-pcard-photo">' + pmexImgDropHtml('recent-work', p.id) + '</div>' +
+      '<div class="pmex-pcard-avail">' + avail + '</div>' +
       '<div class="pmex-pcard-services">' + svcsSection + '</div>' +
       (footer ? '<div class="pmex-pcard-meta">' + footer + '</div>' : '') +
       '<div class="pmex-pcard-footer">' +
-      '<button type="button" class="pmex-book-btn" data-book-pid="' + p.id + '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="12" height="10" rx="1.5"/><path d="M1 6.5h12M4.5 1.5v2M9.5 1.5v2"/></svg> Book now</button>' +
+      pmexQuoteBtnHtml(p.id) +
       '<button type="button" class="pmex-profile-btn" data-profile-pid="' + p.id + '">Profile <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h6M7 3l3 3-3 3"/></svg></button>' +
       '</div>' +
       '</div>';
   }
 
   function pmexWireProviderCardEvents(container) {
+    pmexWireImgDrops(container);
     container.querySelectorAll('[data-svc-tab]').forEach(function (tab) {
       tab.addEventListener('click', function () {
         var pid = tab.getAttribute('data-pid');
@@ -24371,18 +24671,68 @@
           : 'Show less <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" style="transform:rotate(180deg);"><path d="M3 4l2 2 2-2"/></svg>';
       });
     });
-    container.querySelectorAll('[data-book-pid]').forEach(function (btn) {
-      btn.addEventListener('click', function () { showToast('Booking flow isn\u2019t wired up in this prototype yet.'); });
+    container.querySelectorAll('[data-quote-toggle-pid]').forEach(function (btn) {
+      btn.addEventListener('click', function () { pmexToggleQuoteList(btn.getAttribute('data-quote-toggle-pid')); });
     });
     container.querySelectorAll('[data-profile-pid]').forEach(function (btn) {
       btn.addEventListener('click', function () { pmexShowProfile(btn.getAttribute('data-profile-pid')); });
     });
   }
 
+  /* ---- Quote list: multi-select suppliers across the whole Explore Services session, with a
+     sticky bottom bar (mirrors the reference's "N suppliers selected \u2192 Request quotes") and a
+     topbar counter that stays in sync everywhere a card for that supplier is rendered. ---- */
+  var pmexQuoteList = [];
+  function pmexQuoteBtnHtml(pid) {
+    var isIn = pmexQuoteList.indexOf(pid) !== -1;
+    return '<button type="button" class="pmex-quote-toggle-btn' + (isIn ? ' added' : '') + '" data-quote-toggle-pid="' + pid + '">' +
+      (isIn
+        ? '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7l3 3 6-6"/></svg> Added to quote list'
+        : 'Add to quote list') +
+      '</button>';
+  }
+  function pmexToggleQuoteList(pid) {
+    var i = pmexQuoteList.indexOf(pid);
+    if (i === -1) pmexQuoteList.push(pid); else pmexQuoteList.splice(i, 1);
+    document.querySelectorAll('[data-quote-toggle-pid="' + pid + '"]').forEach(function (btn) {
+      var isIn = pmexQuoteList.indexOf(pid) !== -1;
+      btn.classList.toggle('added', isIn);
+      btn.innerHTML = isIn
+        ? '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7l3 3 6-6"/></svg> Added to quote list'
+        : 'Add to quote list';
+    });
+    pmexSyncQuoteListUI();
+  }
+  function pmexSyncQuoteListUI() {
+    var n = pmexQuoteList.length;
+    var countEl = document.getElementById('pmexQuoteListCount');
+    if (countEl) countEl.textContent = n;
+    var bar = document.getElementById('pmexQuoteBar');
+    if (bar) {
+      bar.classList.toggle('open', n > 0);
+      var countBadge = document.getElementById('pmexQuoteBarCount');
+      if (countBadge) countBadge.textContent = n;
+      var label = document.getElementById('pmexQuoteBarLabel');
+      if (label) label.textContent = n + ' supplier' + (n === 1 ? '' : 's') + ' selected';
+    }
+  }
+  function pmexQuoteListNames() {
+    return pmexQuoteList.map(function (pid) {
+      var p = PMEX_PROVIDERS.find(function (x) { return x.id === pid; });
+      return p ? p.name : '';
+    }).filter(Boolean);
+  }
+
+  function pmexShowLanding() {
+    document.getElementById('pmexProfileWrap').style.display = 'none';
+    document.getElementById('pmexBrowseWrap').style.display = 'none';
+    document.getElementById('pmexLandingWrap').style.display = '';
+    document.querySelector('#pmDashboard .dash-scroll-area').scrollTo({ top: 0, behavior: 'smooth' });
+  }
   function pmexShowBrowse() {
     document.getElementById('pmexProfileWrap').style.display = 'none';
+    document.getElementById('pmexLandingWrap').style.display = 'none';
     document.getElementById('pmexBrowseWrap').style.display = '';
-    document.getElementById('pmexHeaderBlock').style.display = '';
     document.querySelector('#pmDashboard .dash-scroll-area').scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -24393,8 +24743,8 @@
     var content = document.getElementById('pmexProfileContent');
     content.innerHTML = pmexProviderProfileHtml(p, idx);
     pmexWireProfilePageEvents(content);
+    document.getElementById('pmexLandingWrap').style.display = 'none';
     document.getElementById('pmexBrowseWrap').style.display = 'none';
-    document.getElementById('pmexHeaderBlock').style.display = 'none';
     document.getElementById('pmexProfileWrap').style.display = '';
     document.querySelector('#pmDashboard .dash-scroll-area').scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -24555,6 +24905,17 @@
     });
   }
 
+  function pmexProviderCoversLocation(p, locValue) {
+    if (!p.areas) return true;
+    var areasLower = p.areas.toLowerCase();
+    if (areasLower.indexOf('uk wide') !== -1) return true;
+    var v = locValue.toLowerCase().replace(/\s+/g, '');
+    if (areasLower.indexOf(locValue.toLowerCase()) !== -1) return true;
+    return p.areas.split(',').some(function (tok) {
+      tok = tok.trim().toLowerCase().replace(/\s+/g, '');
+      return tok && (v.indexOf(tok) === 0 || tok.indexOf(v) === 0);
+    });
+  }
   function pmexRenderProviders(cat, minRating, searchQuery) {
     var container = document.getElementById('pmexProviderCards');
     if (!container) return;
@@ -24564,14 +24925,33 @@
     var filtered = PMEX_PROVIDERS.filter(function (p) {
       var catMatch = cat === 'all' || p.cat.indexOf(cat) >= 0;
       var ratingMatch = p.rating >= minRating;
+      var priceMatch = p.price >= pmexPriceMin || pmexPriceMin <= 40;
+      var certMatch = !pmexCertFilters.length || pmexCertFilters.every(function (c) { return p.certs.indexOf(c) !== -1; });
+      var availMatch = !pmexAvailFilters.length || pmexAvailFilters.every(function (a) {
+        if (a === 'emergency') return !!p.emergency;
+        if (a === 'sameday') return /same day/i.test(p.sla);
+        if (a === 'insured') return !!p.insured;
+        if (a === 'dbs') return !!p.dbs;
+        if (a === 'preferred') return !!p.preferred;
+        if (a === 'weekends') return /sat|sun/i.test(p.days);
+        if (a === 'commercial') return p.services.some(function (s) { return (s.tags || []).indexOf('COM') !== -1; });
+        return true;
+      });
       var searchMatch = !q || p.name.toLowerCase().indexOf(q) >= 0 || p.role.toLowerCase().indexOf(q) >= 0 ||
         p.certs.join(' ').toLowerCase().indexOf(q) >= 0 || p.services.some(function (s) { return s.name.toLowerCase().indexOf(q) >= 0; });
-      return catMatch && ratingMatch && searchMatch;
+      var locMatch = !pmexLocValue || pmexProviderCoversLocation(p, pmexLocValue);
+      return catMatch && ratingMatch && priceMatch && certMatch && availMatch && searchMatch && locMatch;
     });
+    if (pmexSortMode === 'price') filtered.sort(function (a, b) { return a.price - b.price; });
+    else if (pmexSortMode === 'rating') filtered.sort(function (a, b) { return b.rating - a.rating; });
+    else if (pmexSortMode === 'fastest') filtered.sort(function (a, b) { return pmexSlaMinutes(a.sla) - pmexSlaMinutes(b.sla); });
+    else filtered.sort(function (a, b) { return (b.rating * Math.log(b.jobs + 1)) - (a.rating * Math.log(a.jobs + 1)); });
+
+    pmexUpdateResultsHeader(cat, filtered.length);
     container.innerHTML = '';
     if (!filtered.length) {
-      container.appendChild(pmexEmptyState('No providers found', q ? 'No suppliers match your search' : 'No suppliers cover your properties for this service', q ? 'Clear search' : 'Browse all services', function () {
-        if (q) { pmexClearSearch(); } else { pmexFilterCategory('all'); }
+      container.appendChild(pmexEmptyState('No providers found', q ? 'No suppliers match your search' : 'No suppliers match your filters', q ? 'Clear search' : 'Clear filters', function () {
+        if (q) { pmexClearSearch(); } else { pmexClearFilter(); }
       }));
       return;
     }
@@ -24581,10 +24961,19 @@
     container.appendChild(grid);
     pmexWireProviderCardEvents(grid);
   }
+  function pmexSlaMinutes(sla) {
+    if (/emergency|now/i.test(sla)) return 0;
+    var h = sla.match(/(\d+)\s*hour/i);
+    if (h) return parseInt(h[1], 10) * 60;
+    if (/same day/i.test(sla)) return 300;
+    if (/next day/i.test(sla)) return 1440;
+    var d = sla.match(/(\d+)\s*hour/i);
+    return 99999;
+  }
 
   function pmexUpdateSearchPlaceholder() {
     var inp = document.getElementById('pmexSearchInput');
-    if (inp) inp.placeholder = pmexCurrentCat === 'all' ? 'Search services...' : 'Search providers...';
+    if (inp) inp.placeholder = pmexCurrentCat === 'all' ? 'Search services...' : 'Search suppliers...';
   }
 
   function pmexFilterCategory(cat) {
@@ -24596,56 +24985,62 @@
     pmexUpdateSearchPlaceholder();
     var catCards = document.getElementById('pmexCatCards');
     var provCards = document.getElementById('pmexProviderCards');
-    var filterBtn = document.getElementById('pmexFilterToggleBtn');
-    var panel = document.getElementById('pmexFilterPanel');
-    if (cat === 'all') {
-      if (catCards) { pmexRenderCatCards(); catCards.style.display = ''; }
-      if (provCards) { provCards.style.display = 'none'; provCards.innerHTML = ''; }
-      if (filterBtn) filterBtn.style.display = pmexMinRating > 0 ? 'flex' : 'none';
-      if (panel) panel.classList.remove('open');
-    } else {
-      if (catCards) catCards.style.display = 'none';
-      if (provCards) { provCards.style.display = ''; pmexRenderProviders(cat, pmexMinRating); }
-      if (filterBtn) filterBtn.style.display = 'flex';
-    }
+    var sidebar = document.getElementById('pmexSidebar');
+    var backBtn = document.getElementById('pmexAllServicesBackBtn');
+    // "All" now behaves exactly like any other category filter (all suppliers, sidebar + sort
+    // pills all present) rather than switching to the separate category-tile picker — that picker
+    // now lives only on the landing page's own "Browse by category" section.
+    if (catCards) { catCards.style.display = 'none'; catCards.innerHTML = ''; }
+    if (provCards) provCards.style.display = '';
+    if (sidebar) sidebar.style.display = '';
+    if (backBtn) backBtn.style.display = '';
+    pmexRenderCertPills(cat);
+    pmexRenderProviders(cat, pmexMinRating, pmexSearchQuery);
   }
 
-  function pmexToggleFilterPanel() {
-    var p = document.getElementById('pmexFilterPanel');
-    if (p) p.classList.toggle('open');
+  var pmexPriceMin = 40;
+  var pmexCertFilters = [];
+  var pmexAvailFilters = [];
+  var pmexSortMode = 'recommended';
+
+  function pmexUpdateResultsHeader(cat, count) {
+    var catDef = PMEX_CAT_DEFS.find(function (c) { return c.key === cat; });
+    var titleEl = document.getElementById('pmexResultsTitle');
+    var subEl = document.getElementById('pmexResultsSub');
+    if (titleEl) titleEl.textContent = cat === 'all' ? 'All services' : (catDef ? catDef.label : 'Results');
+    if (subEl) subEl.textContent = count + ' supplier' + (count === 1 ? '' : 's') + ' available \u00b7 sorted by ' + (pmexSortMode === 'recommended' ? 'recommended' : pmexSortMode === 'price' ? 'lowest price' : pmexSortMode === 'rating' ? 'highest rated' : 'fastest response');
   }
-  function pmexUpdateFilterBadge() {
-    var badge = document.getElementById('pmexFilterBadge');
-    if (!badge) return;
-    if (pmexMinRating > 0) {
-      badge.textContent = pmexMinRating.toFixed(1).replace('.0', '') + '+';
-      badge.style.display = 'inline';
-    } else {
-      badge.style.display = 'none';
-    }
-  }
-  function pmexApplyFilter(rating) {
-    pmexMinRating = rating || 0;
-    pmexUpdateFilterBadge();
-    // Keep the filter reachable on the "All" view once a rating is chosen, even with no search query yet
-    var filterBtn = document.getElementById('pmexFilterToggleBtn');
-    if (filterBtn && pmexCurrentCat === 'all') filterBtn.style.display = 'flex';
-    pmexRenderProviders(pmexCurrentCat, pmexMinRating, pmexSearchQuery);
-  }
-  function pmexResetRatingDropdown() {
-    var btn = document.querySelector('.pm-custom-dd-btn[data-dd="pmexRatingFilter"]');
-    var menu = document.querySelector('.pm-custom-dd-menu[data-dd-menu="pmexRatingFilter"]');
-    if (btn) btn.querySelector('.cdd-value').textContent = 'Any rating';
-    if (menu) menu.querySelectorAll('.cdd-item').forEach(function (i) { i.classList.toggle('selected', i.getAttribute('data-value') === 'Any rating'); });
+  var PMEX_ALL_CERTS = ['Gas Safe', 'CIPHE', 'WaterSafe', 'NICEIC', 'TrustMark', 'DBS'];
+  function pmexRenderCertPills(cat) {
+    var wrap = document.getElementById('pmexCertPills');
+    if (!wrap) return;
+    wrap.innerHTML = PMEX_ALL_CERTS.map(function (c) {
+      return '<div class="pmex-sidebar-pill' + (pmexCertFilters.indexOf(c) !== -1 ? ' active' : '') + '" data-cert="' + pmexEscapeHtml(c) + '">' + pmexEscapeHtml(c) + '</div>';
+    }).join('');
+    wrap.querySelectorAll('[data-cert]').forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        var c = pill.getAttribute('data-cert');
+        var i = pmexCertFilters.indexOf(c);
+        if (i === -1) pmexCertFilters.push(c); else pmexCertFilters.splice(i, 1);
+        pill.classList.toggle('active');
+        pmexRenderProviders(pmexCurrentCat, pmexMinRating, pmexSearchQuery);
+      });
+    });
   }
   function pmexClearFilter() {
     pmexMinRating = 0;
-    pmexResetRatingDropdown();
-    pmexUpdateFilterBadge();
-    var panel = document.getElementById('pmexFilterPanel');
-    if (panel) panel.classList.remove('open');
-    var filterBtn = document.getElementById('pmexFilterToggleBtn');
-    if (filterBtn && pmexCurrentCat === 'all' && !pmexSearchQuery) filterBtn.style.display = 'none';
+    pmexPriceMin = 40;
+    pmexCertFilters = [];
+    pmexAvailFilters = [];
+    document.querySelectorAll('#pmexRatingPills .pmex-sidebar-pill').forEach(function (p) { p.classList.toggle('active', p.getAttribute('data-rating') === '0'); });
+    document.querySelectorAll('#pmexCertPills .pmex-sidebar-pill, #pmexAvailPills .pmex-sidebar-pill').forEach(function (p) { p.classList.remove('active'); });
+    var slider = document.getElementById('pmexPriceSlider');
+    if (slider) slider.value = 40;
+    var priceLbl = document.getElementById('pmexPriceValLabel');
+    if (priceLbl) priceLbl.textContent = 'Any price';
+    var locInput = document.getElementById('pmexLocInput');
+    if (locInput) locInput.value = '';
+    pmexClearSearch();
     pmexRenderProviders(pmexCurrentCat, 0, pmexSearchQuery);
   }
   function pmexClearSearch() {
@@ -24656,23 +25051,7 @@
   function pmexFilterSearch(q) {
     q = (q || '').trim();
     pmexSearchQuery = q;
-    var filterBtn = document.getElementById('pmexFilterToggleBtn');
-    if (pmexCurrentCat === 'all') {
-      var catCards = document.getElementById('pmexCatCards');
-      var provCards = document.getElementById('pmexProviderCards');
-      if (!q) {
-        if (catCards) catCards.style.display = '';
-        if (provCards) { provCards.style.display = 'none'; provCards.innerHTML = ''; }
-        if (filterBtn) filterBtn.style.display = pmexMinRating > 0 ? 'flex' : 'none';
-        return;
-      }
-      if (catCards) catCards.style.display = 'none';
-      if (provCards) provCards.style.display = '';
-      if (filterBtn) filterBtn.style.display = 'flex';
-      pmexRenderProviders('all', pmexMinRating, q);
-    } else {
-      pmexRenderProviders(pmexCurrentCat, pmexMinRating, q);
-    }
+    pmexRenderProviders(pmexCurrentCat, pmexMinRating, q);
   }
 
   /* ---- Location filter autocomplete ---- */
@@ -24738,10 +25117,7 @@
     pmexLocValue = (v || '').trim();
     var btn = document.getElementById('pmexLocClearBtn');
     if (btn) btn.style.display = pmexLocValue ? 'flex' : 'none';
-    var dd = document.getElementById('pmexLocDd');
-    if (!pmexLocValue) { if (dd) dd.style.display = 'none'; return; }
-    pmexLocRenderDropdown(pmexLocValue);
-    if (dd) dd.style.display = 'block';
+    pmexRenderProviders(pmexCurrentCat, pmexMinRating, pmexSearchQuery);
   }
   function pmexLocDropdownShow() {
     if (pmexLocValue) {
@@ -24760,7 +25136,7 @@
     pmexLocValue = '';
     var btn = document.getElementById('pmexLocClearBtn');
     if (btn) btn.style.display = 'none';
-    pmexLocDropdownHide();
+    pmexRenderProviders(pmexCurrentCat, pmexMinRating, pmexSearchQuery);
   }
 
   function initPmExploreOnce() {
@@ -24769,17 +25145,213 @@
 
     pmexRenderChips();
     pmexFilterCategory('all');
+    pmexRenderComplianceGrid();
+    pmexRenderLandingCatGrid();
+    pmexRenderTradeGrid();
+    pmexRenderBookAgain();
+    pmexShowLanding();
 
     document.getElementById('pmexSearchInput').addEventListener('input', function (e) { pmexFilterSearch(e.target.value); });
-    document.getElementById('pmexFilterToggleBtn').addEventListener('click', pmexToggleFilterPanel);
     document.getElementById('pmexFilterClearBtn').addEventListener('click', pmexClearFilter);
 
     var locInput = document.getElementById('pmexLocInput');
     locInput.addEventListener('input', function (e) { pmexFilterByLocation(e.target.value); });
-    locInput.addEventListener('focus', pmexLocDropdownShow);
-    locInput.addEventListener('blur', function () { setTimeout(pmexLocDropdownHide, 160); });
     document.getElementById('pmexLocClearBtn').addEventListener('click', pmexLocClear);
     document.getElementById('pmexProfileBackBtn').addEventListener('click', pmexShowBrowse);
+    document.getElementById('pmexAllServicesBackBtn').addEventListener('click', function () { pmexShowLanding(); });
+
+    document.querySelectorAll('#pmexSortPills .pmex-sort-pill').forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        pmexSortMode = pill.getAttribute('data-sort');
+        document.querySelectorAll('#pmexSortPills .pmex-sort-pill').forEach(function (p) { p.classList.toggle('active', p === pill); });
+        pmexRenderProviders(pmexCurrentCat, pmexMinRating, pmexSearchQuery);
+      });
+    });
+    document.querySelectorAll('#pmexRatingPills .pmex-sidebar-pill').forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        pmexMinRating = parseFloat(pill.getAttribute('data-rating')) || 0;
+        document.querySelectorAll('#pmexRatingPills .pmex-sidebar-pill').forEach(function (p) { p.classList.toggle('active', p === pill); });
+        pmexRenderProviders(pmexCurrentCat, pmexMinRating, pmexSearchQuery);
+      });
+    });
+    document.querySelectorAll('#pmexAvailPills .pmex-sidebar-pill').forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        var a = pill.getAttribute('data-avail');
+        var i = pmexAvailFilters.indexOf(a);
+        if (i === -1) pmexAvailFilters.push(a); else pmexAvailFilters.splice(i, 1);
+        pill.classList.toggle('active');
+        pmexRenderProviders(pmexCurrentCat, pmexMinRating, pmexSearchQuery);
+      });
+    });
+    var priceSlider = document.getElementById('pmexPriceSlider');
+    priceSlider.addEventListener('input', function () {
+      pmexPriceMin = parseInt(priceSlider.value, 10);
+      var lbl = document.getElementById('pmexPriceValLabel');
+      lbl.textContent = pmexPriceMin <= 40 ? 'Any price' : '\u00a3' + pmexPriceMin + (pmexPriceMin >= 200 ? '+' : '');
+      pmexRenderProviders(pmexCurrentCat, pmexMinRating, pmexSearchQuery);
+    });
+    var recentChipsWrap = document.getElementById('pmexRecentChips');
+    recentChipsWrap.innerHTML = PMEX_PROPERTIES.map(function (prop) {
+      return '<span class="pmex-sidebar-recent-chip" data-recent-postcode="' + pmexEscapeHtml(prop.postcode) + '">' + pmexEscapeHtml(prop.postcode) + '</span>';
+    }).join('');
+    recentChipsWrap.querySelectorAll('[data-recent-postcode]').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        locInput.value = chip.getAttribute('data-recent-postcode');
+        pmexFilterByLocation(locInput.value);
+      });
+    });
+
+    /* ---- Landing page wiring ---- */
+    function pmexRunHeroSearch() {
+      var q = document.getElementById('pmexHeroServiceInput').value.trim();
+      pmexShowBrowse();
+      pmexFilterCategory('all');
+      if (q) { document.getElementById('pmexSearchInput').value = q; pmexFilterSearch(q); }
+      var loc = document.getElementById('pmexHeroLocInput').value.trim();
+      if (loc) { document.getElementById('pmexLocInput').value = loc; pmexFilterByLocation(loc); }
+    }
+    document.getElementById('pmexHeroSearchBtn').addEventListener('click', pmexRunHeroSearch);
+    document.getElementById('pmexHeroServiceInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') pmexRunHeroSearch(); });
+    document.querySelectorAll('.pmex-hero-tag').forEach(function (tag) {
+      tag.addEventListener('click', function () {
+        document.getElementById('pmexHeroServiceInput').value = tag.getAttribute('data-hero-tag');
+        pmexRunHeroSearch();
+      });
+    });
+    document.getElementById('pmexComplianceCalendarLink').addEventListener('click', function () {
+      showToast('The compliance calendar isn\u2019t wired up in this prototype yet.');
+    });
+    document.getElementById('pmexEmergencyBtn').addEventListener('click', function () {
+      pmbookOpenNewBooking();
+      initPmBookOnce();
+      pmbookSwitchTab('custom');
+      pmbookOnSchedPrefChange('Emergency');
+      var pillBtn = document.querySelector('.pm-custom-dd-btn[data-dd="pmbookSchedPref"] .cdd-value');
+      if (pillBtn) { pillBtn.textContent = 'Emergency'; pillBtn.classList.remove('cdd-placeholder'); }
+    });
+    document.getElementById('pmexBookAgainRow').addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-rebook-pid]');
+      if (!btn) return;
+      pmexShowProfile(btn.getAttribute('data-rebook-pid'));
+    });
+
+    /* ---- Quote list bar + topbar button ---- */
+    document.getElementById('pmexQuoteBarClearBtn').addEventListener('click', function () {
+      pmexQuoteList = [];
+      document.querySelectorAll('[data-quote-toggle-pid]').forEach(function (btn) {
+        btn.classList.remove('added');
+        btn.innerHTML = 'Add to quote list';
+      });
+      pmexSyncQuoteListUI();
+    });
+    document.getElementById('pmexQuoteBarRequestBtn').addEventListener('click', function () {
+      var names = pmexQuoteListNames();
+      if (!names.length) return;
+      showRichToast('Quote request sent', 'One brief sent to ' + names.join(', ') + '.', 'success');
+      pmexQuoteList = [];
+      document.querySelectorAll('[data-quote-toggle-pid]').forEach(function (btn) {
+        btn.classList.remove('added');
+        btn.innerHTML = 'Add to quote list';
+      });
+      pmexSyncQuoteListUI();
+    });
+    document.getElementById('pmexQuoteListBtn').addEventListener('click', function () {
+      if (!pmexQuoteList.length) { showToast('Your quote list is empty \u2014 add a supplier from any category to get started.'); return; }
+      pmexSyncQuoteListUI();
+      document.getElementById('pmexQuoteBar').scrollIntoView({ block: 'nearest' });
+    });
+  }
+
+  /* ---- Landing page card renderers — every grid reuses the same pmex-card-imgdrop pattern so a
+     photo dropped on any card behaves identically, and every card click routes into the existing
+     category-filtered browse view rather than a parallel results system. ---- */
+  // Uploaded photos persist across re-renders (e.g. Clear all, sort, filter) rather than living
+  // only in the DOM — each drop zone that's given a persistKey saves/restores through this map
+  // instead of losing the image the moment its card's HTML is regenerated.
+  var pmexUploadedPhotos = {};
+  function pmexImgDropHtml(label, persistKey) {
+    var saved = persistKey ? pmexUploadedPhotos[persistKey] : null;
+    var keyAttr = persistKey ? ' data-photo-key="' + pmexEscapeHtml(persistKey) + '"' : '';
+    if (saved) {
+      return '<div class="pmex-card-imgdrop" data-imgdrop' + keyAttr + '><img src="' + saved + '" alt=""><input type="file" accept="image/*"></div>';
+    }
+    return '<div class="pmex-card-imgdrop" data-imgdrop' + keyAttr + '><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>Drop a ' + pmexEscapeHtml(label) + ' photo</span><input type="file" accept="image/*"></div>';
+  }
+  function pmexWireImgDrops(container) {
+    container.querySelectorAll('[data-imgdrop]').forEach(function (drop) {
+      var input = drop.querySelector('input[type="file"]');
+      drop.addEventListener('click', function (e) { e.stopPropagation(); input.click(); });
+      input.addEventListener('click', function (e) { e.stopPropagation(); });
+      input.addEventListener('change', function (e) {
+        if (!e.target.files || !e.target.files[0]) return;
+        var url = URL.createObjectURL(e.target.files[0]);
+        var key = drop.getAttribute('data-photo-key');
+        if (key) pmexUploadedPhotos[key] = url;
+        var span = drop.querySelector('span'), svg = drop.querySelector('svg');
+        if (span) span.remove(); if (svg) svg.remove();
+        var img = document.createElement('img');
+        img.src = url;
+        drop.appendChild(img);
+      });
+    });
+  }
+  function pmexRenderComplianceGrid() {
+    var grid = document.getElementById('pmexComplianceGrid');
+    grid.innerHTML = PMEX_COMPLIANCE_ITEMS.map(function (item) {
+      return '<div class="pmex-compliance-card" data-goto-cat="' + item.cat + '">' +
+        pmexImgDropHtml(item.imgLabel) +
+        '<div class="pmex-compliance-card-body">' +
+        '<div class="pmex-compliance-card-toprow"><span class="pmex-compliance-code">' + item.code + '</span>' + (item.actionNeeded ? '<span class="pmex-action-needed-pill">Action needed</span>' : '') + '</div>' +
+        '<div class="pmex-compliance-title">' + pmexEscapeHtml(item.label) + '</div>' +
+        '<div class="pmex-compliance-due">' + pmexEscapeHtml(item.due) + '</div>' +
+        '<div class="pmex-card-footrow"><span>' + item.suppliers + ' vetted suppliers</span><strong>from \u00a3' + item.from + '</strong></div>' +
+        '</div></div>';
+    }).join('');
+    pmexWireImgDrops(grid);
+    grid.querySelectorAll('[data-goto-cat]').forEach(function (card) {
+      card.addEventListener('click', function () { pmexShowBrowse(); pmexFilterCategory(card.getAttribute('data-goto-cat')); });
+    });
+  }
+  function pmexRenderLandingCatGrid() {
+    var grid = document.getElementById('pmexLandingCatGrid');
+    grid.innerHTML = PMEX_CAT_DEFS.map(function (c, i) {
+      var count = PMEX_PROVIDERS.filter(function (p) { return p.cat.indexOf(c.key) !== -1; }).length;
+      var minPrice = Math.min.apply(null, PMEX_PROVIDERS.filter(function (p) { return p.cat.indexOf(c.key) !== -1; }).map(function (p) { return p.price; }).concat([9999]));
+      return '<div class="pmex-landing-cat-card" data-goto-cat="' + c.key + '">' +
+        pmexImgDropHtml(c.label.toLowerCase()) + (i === 0 ? '<span class="pmex-most-booked-pill">Most booked</span>' : '') +
+        '<div class="pmex-landing-cat-body"><div class="pmex-landing-cat-title">' + pmexEscapeHtml(c.label) + '</div>' +
+        '<div class="pmex-landing-cat-meta">' + count + ' supplier' + (count === 1 ? '' : 's') + (minPrice < 9999 ? ' \u00b7 from \u00a3' + minPrice : '') + '</div></div></div>';
+    }).join('');
+    pmexWireImgDrops(grid);
+    grid.querySelectorAll('[data-goto-cat]').forEach(function (card) {
+      card.addEventListener('click', function () { pmexShowBrowse(); pmexFilterCategory(card.getAttribute('data-goto-cat')); });
+    });
+  }
+  function pmexRenderTradeGrid() {
+    var grid = document.getElementById('pmexTradeGrid');
+    grid.innerHTML = PMEX_TRADE_ITEMS.map(function (t) {
+      return '<div class="pmex-trade-card" data-goto-cat="' + t.cat + '">' +
+        pmexImgDropHtml(t.label.toLowerCase()) +
+        '<div class="pmex-trade-body"><div class="pmex-trade-title">' + pmexEscapeHtml(t.label) + '</div><div class="pmex-trade-meta">' + t.count + ' available</div></div></div>';
+    }).join('');
+    pmexWireImgDrops(grid);
+    grid.querySelectorAll('[data-goto-cat]').forEach(function (card) {
+      card.addEventListener('click', function () { pmexShowBrowse(); pmexFilterCategory(card.getAttribute('data-goto-cat')); });
+    });
+  }
+  function pmexRenderBookAgain() {
+    var row = document.getElementById('pmexBookAgainRow');
+    row.innerHTML = PMEX_BOOK_AGAIN.map(function (b) {
+      var p = PMEX_PROVIDERS.find(function (x) { return x.id === b.pid; });
+      if (!p) return '';
+      var idx = PMEX_PROVIDERS.indexOf(p);
+      var initials = p.name.trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
+      return '<div class="pmex-bookagain-item">' +
+        '<div class="pmex-bookagain-avatar"><img src="https://i.pravatar.cc/72?img=' + (idx % 70 + 3) + '" alt="" onerror="this.remove();"><span>' + initials + '</span></div>' +
+        '<div class="pmex-bookagain-info"><div class="pmex-bookagain-name">' + pmexEscapeHtml(p.name) + '</div><div class="pmex-bookagain-meta">' + pmexEscapeHtml(b.service) + ' \u00b7 ' + b.date + ' \u00b7 ' + pmexEscapeHtml(b.property) + '</div></div>' +
+        '<button type="button" class="pmex-rebook-btn" data-rebook-pid="' + p.id + '">Rebook</button>' +
+        '</div>';
+    }).join('');
   }
 
   /* =========================================================
@@ -30843,6 +31415,8 @@
     if (inboxTitleWrap) inboxTitleWrap.style.display = (view === 'inbox') ? '' : 'none';
     if (settingsTitleWrap) settingsTitleWrap.style.display = (view === 'settings') ? '' : 'none';
     if (exploreTitleWrap) exploreTitleWrap.style.display = (view === 'explore') ? '' : 'none';
+    var quoteListBtn = document.getElementById('pmexQuoteListBtn');
+    if (quoteListBtn) quoteListBtn.style.display = (view === 'explore') ? 'flex' : 'none';
     if (prefSuppliersTitleWrap) prefSuppliersTitleWrap.style.display = (view === 'suppliers') ? '' : 'none';
     if (disputesTitleWrap) disputesTitleWrap.style.display = (view === 'disputes') ? '' : 'none';
     if (disputeDetailTitleWrap) disputeDetailTitleWrap.style.display = (view === 'disputedetail') ? '' : 'none';
@@ -46614,10 +47188,6 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
       if (v !== 'Custom Date Range') { pmDateJoinedFrom = null; pmDateJoinedTo = null; }
       pmCurrentPage = 1;
       renderPMList();
-    },
-    pmexRatingFilter: function (v) {
-      var map = { 'Any rating': 0, '3.0+ \u2605': 3, '4.0+ \u2605': 4, '4.5+ \u2605': 4.5 };
-      pmexApplyFilter(map[v] !== undefined ? map[v] : 0);
     },
     pmjrStatusFilter: function (v) {
       pmjrStatusFilter = v;
