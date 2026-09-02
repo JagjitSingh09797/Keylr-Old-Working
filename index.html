@@ -225,6 +225,24 @@
   .logo { display: flex; align-items: center; }
   .logo svg { height: 20px; width: auto; color: #ffffff; }
   .nav-actions { display: flex; align-items: center; gap: 12px; }
+  .navbar-hamburger-btn {
+    display: none; align-items: center; justify-content: center;
+    width: 38px; height: 38px; border-radius: 9px; flex-shrink: 0;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);
+    color: #e2e8f0; cursor: pointer;
+  }
+  .navbar-hamburger-btn:hover { background: rgba(255,255,255,0.1); }
+  .navbar-mobile-menu {
+    display: none; flex-direction: column; gap: 8px;
+    padding: 14px 20px 18px; background: rgba(16,24,40,0.97); backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .navbar-mobile-menu.open { display: flex; }
+  .navbar-mobile-menu .btn-admin, .navbar-mobile-menu .btn-login, .navbar-mobile-menu .btn { justify-content: center; width: 100%; }
+  @media (max-width: 860px) {
+    .nav-actions { display: none; }
+    .navbar-hamburger-btn { display: flex; }
+  }
   .btn-login {
     color: #e2e8f0;
     font-weight: 600;
@@ -653,7 +671,7 @@
 
   @media (max-width: 420px) {
     .hero h1 { font-size: 30px; }
-    .hero { padding-left: 16px; padding-right: 16px; }
+    .hero { padding: 140px 0 80px; padding-left: 16px; padding-right: 16px; }
     #heroSearchBtn .hero-search-btn-text { display: none; }
     #heroSearchBtn { padding: 12px 16px; }
   }
@@ -933,6 +951,12 @@
     transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
   }
   .field-input::placeholder { color: #a6b0bf; }
+  /* Job Bookings / Job Responses search bars were taller than every other filter-row search bar
+     on the PM side (both plain .field-input at its default 12px vertical padding) — scoped down to
+     the same smaller height used everywhere else (Disputes, Preferred Suppliers, Properties, SLA,
+     Quotes, Service Checklists) for consistency, without touching .field-input's own default (it's
+     used across many unrelated form contexts elsewhere that should keep their normal size). */
+  #pmjobsSearchInput, #pmjrSearchInput { padding-top: 9px; padding-bottom: 9px; font-size: 13px; }
   input.field-input[type="date"] { height: 43px; padding-top: 0; padding-bottom: 0; }
   input.field-input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(24%) sepia(31%) saturate(1226%) hue-rotate(190deg) brightness(93%) contrast(93%);
@@ -2403,6 +2427,14 @@
   .dash-main { flex: 1; height: 100vh; display: flex; flex-direction: column; min-width: 0; }
 
   .dash-topbar {
+    position: relative; /* containing block for .notif-panel's position:absolute — without this the
+      panel falls through to #pmDashboard (position:fixed, full viewport height) as its nearest
+      positioned ancestor instead, so "top: calc(100% + 10px)" resolves against the whole page height
+      rather than the topbar's own 72px, landing the panel entirely below the visible viewport no
+      matter the screen size. Pre-existing gap, not something the notification redesign introduced —
+      just never surfaced until this dashboard's own screenshot testing looked at the open panel
+      directly instead of trusting the CSS looked right. position:relative with no offsets has no
+      visual effect on the topbar itself, so this is a pure, safe positioning-context fix. */
     flex-shrink: 0;
     height: 72px;
     background: #fff;
@@ -3657,6 +3689,9 @@
   .notif-panel-head h3 { font-size: 17px; font-weight: 800; color: var(--text-heading); }
   .notif-panel-head button { font-size: 13px; font-weight: 700; color: var(--accent-blue); background: none; border: none; cursor: pointer; font-family: inherit; }
   .notif-panel-head button:hover { text-decoration: underline; }
+  .notif-panel-head-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--accent-blue); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .notif-panel-head-text { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; }
+  .notif-panel-unread-sub { font-size: 12px; color: var(--text-body-muted); font-weight: 600; margin-top: 2px; }
   .notif-row { display: flex; gap: 12px; padding: 16px 20px; cursor: pointer; transition: background-color 150ms ease-out; }
   .notif-row.unread { background: var(--icon-tint-bg); }
   .notif-row:hover { background: var(--surface-soft); }
@@ -3670,6 +3705,24 @@
   .notif-row .nr-desc { font-size: 12.5px; color: var(--text-body-muted); line-height: 1.4; margin-top: 2px; }
   .notif-row .nr-date { font-size: 11px; color: #94a3b8; margin-top: 6px; }
   .notif-row .nr-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-blue); flex-shrink: 0; margin-top: 4px; }
+  /* PM-specific row shape: date sits inline with the title (not on its own line below) and a
+     chevron toggles the description between one-line-truncated and fully expanded — matches the
+     reference mockup. Scoped under #pmNotifPanel only, so Supplier/Admin's notif rows (same shared
+     .notif-row/.nr-* classes above) render exactly as they already did before this change. */
+  #pmNotifPanel .notif-row { align-items: flex-start; }
+  #pmNotifPanel .nr-title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  #pmNotifPanel .nr-title-row .nr-date { margin-top: 0; flex-shrink: 0; }
+  #pmNotifPanel .nr-desc { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #pmNotifPanel .notif-row.expanded .nr-desc { white-space: normal; }
+  #pmNotifPanel .nr-side { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; padding-top: 2px; }
+  #pmNotifPanel .nr-chevron { color: #94a3b8; transition: transform 150ms ease-out; }
+  #pmNotifPanel .notif-row.expanded .nr-chevron { transform: rotate(180deg); }
+  .notif-panel-foot { position: sticky; bottom: 0; background: #fff; border-top: 1px solid var(--border-subtle); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-body-muted); }
+  .notif-panel-pager { display: flex; align-items: center; gap: 10px; }
+  .notif-panel-pager button { width: 26px; height: 26px; border-radius: 8px; border: 1px solid var(--border-subtle); background: #fff; display: flex; align-items: center; justify-content: center; color: var(--text-heading); cursor: pointer; flex-shrink: 0; }
+  .notif-panel-pager button:hover:not(:disabled) { background: var(--surface-soft); }
+  .notif-panel-pager button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .notif-panel-pager span { font-weight: 700; color: var(--text-heading); min-width: 34px; text-align: center; }
 
   /* =========================================================
      ADMIN — PROPERTY MANAGER MODULE
@@ -4250,6 +4303,7 @@
      Custom Booking's 4-field Service row that also uses the plain .pmbook-field-row class — scoped
      by container so the base 4-column rule stays untouched everywhere else. */
   #pmbookTemplatesCreatePage .pmbook-field-row { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 560px) { #pmbookTemplatesCreatePage .pmbook-field-row { grid-template-columns: 1fr; } }
   .pmbook-field { min-width: 0; }
   .pmbook-field label { display: block; font-size: 13px; font-weight: 700; color: var(--text-heading); margin-bottom: 8px; }
   .pmbook-field label .req { color: var(--required-red); }
@@ -4390,6 +4444,15 @@
   .pmbook-tpl-form-head-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--icon-tint-bg); color: var(--accent-blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .pmbook-tpl-form-title { font-size: 15px; font-weight: 800; color: var(--text-heading); margin-bottom: 2px; }
   .pmbook-tpl-active-toggle { display: flex; align-items: center; gap: 12px; flex-shrink: 0; background: var(--surface-soft); border-radius: 10px; padding: 10px 14px; }
+  @media (max-width: 560px) {
+    /* The icon+title+description block (flex:1, no min-width safety) and this toggle card
+       (flex-shrink:0, so it never gives up width) were fighting for the same row at mobile widths —
+       the toggle refusing to shrink squeezed the description text down to a few characters per line
+       instead of wrapping normally. Letting the head row wrap, and the toggle card claim its own
+       full-width line once it does, gives both pieces the room they actually need. */
+    .pmbook-tpl-form-head { flex-wrap: wrap; }
+    .pmbook-tpl-active-toggle { width: 100%; }
+  }
   .pmbook-tpl-active-toggle-label { font-size: 12.5px; font-weight: 700; color: var(--text-heading); }
   .pmbook-tpl-form-grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; }
   @media (max-width: 900px) { .pmbook-tpl-form-grid { grid-template-columns: 1fr; } }
@@ -5227,11 +5290,14 @@
        The Jobs module's own table (#pmjobsTableWrap) is the same case again: it has real column
        filters and sorting a card layout would need to reproduce from scratch, so it stays a
        horizontally-scrolling table on narrow screens instead of going blank. */
-    #pmInvitesTableWrap, #supInvitesTableWrap, .pmprop-jobs-page-table-wrap, #pmjobsTableWrap { display: flex !important; flex-direction: column; }
+    #pmInvitesTableWrap, #supInvitesTableWrap, .pmprop-jobs-page-table-wrap, #pmjobsTableWrap, #pmqrTableWrap { display: flex !important; flex-direction: column; }
     /* The table already scrolls horizontally via .pm-table-scroll (overflow:auto), so cell content
        wrapping onto multiple lines just makes rows taller and harder to scan for no benefit — one
        line per cell, and the table itself grows wider instead, which is what the horizontal scroll
-       is already there to handle. */
+       is already there to handle. #pmqrTableWrap is deliberately left out of this one: its Service/
+       Property/Manager cells are two-line by design (name + category/address/company beneath, see
+       .pmqr-svc-name etc.) even on desktop, and forcing nowrap here made that overflow sideways into
+       the next column instead of just wrapping like it already does at every other width. */
     #pmInvitesTableWrap td, #pmInvitesTableWrap th,
     #supInvitesTableWrap td, #supInvitesTableWrap th,
     #pmjobsTableWrap td, #pmjobsTableWrap th { white-space: nowrap; }
@@ -6038,12 +6104,12 @@
   .pminv-toptab:not(.active):hover { color: var(--text-heading); }
   .pminv-section-label { font-size: 11px; font-weight: 800; letter-spacing: 0.05em; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; }
   .pminv-section-desc { font-size: 12.5px; color: var(--text-body-muted); margin-bottom: 20px; max-width: 900px; line-height: 1.5; }
-  .pminv-status-tabs { display: flex; gap: 24px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 0; flex-wrap: wrap; }
-  .pminv-status-tab { padding: 0 0 12px; font-size: 13.5px; font-weight: 700; color: var(--text-body-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
-  .pminv-status-tab.active { color: var(--navy-900); border-bottom-color: var(--navy-900); }
-  .pminv-status-tab:not(.active):hover { color: var(--text-heading); }
+  .pminv-status-tabs { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .pminv-status-tab { font-size: 12.5px; font-weight: 700; color: var(--text-body-muted); padding: 7px 15px; border-radius: 999px; border: 1px solid var(--border-subtle); background: #fff; white-space: nowrap; cursor: pointer; }
+  .pminv-status-tab.active { background: linear-gradient(135deg, var(--btn-grad-start) 0%, var(--btn-grad-end) 100%); color: #fff; border-color: transparent; }
+  .pminv-status-tab:not(.active):hover { color: var(--text-heading); background: var(--surface-soft); }
 
-  .pminv-table-wrap { background: #fff; border: 1px solid var(--border-subtle); border-top: none; border-radius: 0 0 14px 14px; overflow: hidden; overflow-x: auto; }
+  .pminv-table-wrap { background: #fff; border: 1px solid var(--border-subtle); border-top: 1px solid var(--border-subtle); border-radius: 14px; overflow: hidden; overflow-x: auto; }
   .pminv-table { width: 100%; border-collapse: collapse; min-width: 880px; }
   .pminv-table th { text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; color: #94a3b8; text-transform: uppercase; padding: 13px 20px; border-bottom: 1px solid var(--border-subtle); background: var(--surface-soft); white-space: nowrap; }
   .pminv-table td { padding: 14px 20px; border-bottom: 1px solid var(--border-subtle); font-size: 13px; color: var(--text-heading); vertical-align: middle; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; }
@@ -6135,7 +6201,7 @@
   .pminv-card-head-row { font-size: 13.5px; font-weight: 800; color: var(--text-heading); }
   .pminv-card-empty { text-align: center; padding: 30px 20px 10px; }
   .pminv-card-empty .t { font-size: 14.5px; font-weight: 800; color: var(--text-heading); margin-bottom: 6px; }
-  .pminv-card-empty .s { font-size: 12.5px; color: var(--text-body-muted); }
+  .pminv-card-empty .s { font-size: 12.5px; color: var(--text-body-muted); display: ruby; }
   .pminv-card-note { font-size: 12.5px; color: var(--text-body-muted); margin-top: 10px; }
   @media (max-width: 620px) {
     .pminv-doc-info-grid { grid-template-columns: repeat(3, 1fr); }
@@ -8487,6 +8553,8 @@
      views, the generic .modal-overlay z-index (100) isn't enough to reliably sit above them. */
   #cklReportOverlay { z-index: 900; }
   #cklDeleteOverlay { z-index: 900; }
+  #pmcklDeleteOverlay { z-index: 900; } /* same reason as #cklDeleteOverlay above: sits outside #pmDashboard in the DOM like every other top-level modal here, so needs the same bump past its z-index:300 */
+  #pmslaDeleteOverlay { z-index: 900; } /* same reason as #pmcklDeleteOverlay just above */
   .ckl-pm-modal { width: min(1000px, 100%); max-height: 88vh; display: flex; flex-direction: column; background: #fff; border-radius: 16px; overflow: hidden; }
   .ckl-pm-modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 20px 24px; border-bottom: 1px solid var(--border-subtle); flex-shrink: 0; }
   .ckl-pm-modal-body { padding: 20px 24px; overflow-y: auto; flex: 0 1 auto; height: auto; min-height: 0; }
@@ -9772,6 +9840,272 @@
     .ckl-task-desc-input { flex-basis: 100%; }
     .ckl-sec-popover { width: 260px; right: -40px; }
   }
+  /* =========================================================
+     QUOTES module (pmqr prefix — "PM Quote Requests"). Fully independent
+     of pmjr* (Job Responses) ids/state; only borrows the established
+     visual grammar (status-tab underline style from .pminv-status-tab,
+     split list+detail grid proportions from .pmjr-layout).
+  ========================================================== */
+  .pmqr-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 16px; }
+  .pmqr-search-wrap { position: relative; flex: 1 1 260px; max-width: 380px; min-width: 200px; }
+  .pmqr-search-wrap svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; }
+  .pmqr-search-wrap input { padding-left: 38px; padding-top: 9px; padding-bottom: 9px; font-size: 13px; }
+  .pmqr-clear-btn { padding: 7px 16px; border-radius: 10px; border: 1px solid var(--border-subtle); background: #fff; color: var(--text-body-muted); font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; font-family: inherit; flex-shrink: 0; }
+  .pmqr-clear-btn:hover { background: var(--surface-soft); color: var(--text-heading); }
+  .pmqr-dd-group { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pmqr-dd-group .pm-custom-dd-btn { width: auto; white-space: nowrap; }
+  .pmqr-dd-group .pm-custom-dd-btn.filter-active { border-color: var(--accent-blue); color: var(--accent-blue); background: var(--icon-tint-bg); font-weight: 700; }
+  .pmqr-dd-group .pm-custom-dd-btn.filter-active .cdd-chevron { color: var(--accent-blue); }
+
+  .pmqr-table .pmqr-jobid { color: var(--text-heading); font-weight: 800; font-size: 13px; }
+  .pmqr-table td { vertical-align: top; }
+  .pmqr-svc-name { font-weight: 700; color: var(--text-heading); font-size: 13px; line-height: 1.35; }
+  .pmqr-svc-cat { font-size: 12px; color: var(--text-body-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pmqr-prop-name { font-weight: 700; color: var(--text-heading); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pmqr-prop-addr { font-size: 12px; color: var(--text-body-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pmqr-mgr-name { font-weight: 700; color: var(--text-heading); font-size: 13px; white-space: nowrap; }
+  .pmqr-mgr-co { font-size: 12px; color: var(--text-body-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pmqr-qcount { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 26px; padding: 0 7px; border-radius: 999px; background: var(--surface-soft); color: var(--text-body-muted); font-size: 12.5px; font-weight: 700; }
+  .pmqr-qrange { color: var(--text-body-muted); font-size: 13px; }
+  .pmqr-deadline { font-size: 13px; color: var(--text-heading); }
+  .pmqr-deadline.expired { color: #c0392b; font-weight: 700; }
+  .pmqr-row { cursor: pointer; }
+  .pmqr-row:hover { background: var(--surface-soft); }
+  .pmqr-row-chevron-cell { color: #94a3b8; text-align: right; }
+  .pmqr-empty-row td { text-align: center; padding: 50px 20px; color: var(--text-body-muted); font-size: 13.5px; }
+  /* This table's own natural row count decides its height — the shared .pm-table-wrap base rule's
+     generous max-height/min-height (sized for tables with many more rows) was leaving a large empty
+     white gap below the last row here, which is what read as "too much space at the bottom". */
+  #pmqrTableWrap.pm-table-wrap { max-height: none; min-height: 0; }
+
+  .pmqr-breadcrumb { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; font-size: 13px; }
+  .pmqr-breadcrumb-back { display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: 999px; border: 1px solid var(--border-subtle); background: #fff; color: var(--text-heading); font-weight: 700; font-size: 12.5px; cursor: pointer; font-family: inherit; flex-shrink: 0; }
+  .pmqr-breadcrumb-back:hover { background: var(--surface-soft); }
+  .pmqr-breadcrumb-id { font-weight: 800; color: var(--text-heading); flex-shrink: 0; }
+  .pmqr-breadcrumb-sep { color: #cbd5e1; flex-shrink: 0; }
+  .pmqr-breadcrumb-title { color: var(--text-body-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+  .pmqr-detail-layout { display: grid; grid-template-columns: 340px 1fr; gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .pmqr-detail-layout { grid-template-columns: 1fr; } }
+  /* Sized to the list content itself (up to a sensible scroll cap) rather than a large viewport-
+     relative calc() that left mostly-empty space whenever there were only a handful of cards. */
+  .pmqr-list-col { display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 420px); min-height: 0; overflow-y: auto; padding-right: 4px; }
+
+  .pmqr-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; cursor: pointer; transition: border-color 140ms ease-out, background-color 140ms ease-out; }
+  .pmqr-card:hover { border-color: #c9d8ee; }
+  .pmqr-card.active { border-color: var(--accent-blue); background: #eef2ff; }
+  .pmqr-card-top { display: flex; gap: 10px; }
+  .pmqr-card-avatar { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12.5px; font-weight: 800; flex-shrink: 0; }
+  .pmqr-card-id-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .pmqr-card-id { font-size: 12.5px; font-weight: 800; color: var(--text-heading); }
+  .pmqr-card-title { font-size: 13.5px; font-weight: 700; color: var(--text-heading); margin-top: 3px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pmqr-card-cat { font-size: 12px; color: var(--text-body-muted); margin-top: 2px; }
+  .pmqr-card-addr { font-size: 12px; color: var(--text-body-muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pmqr-card-meta1 { margin-top: 9px; font-size: 12px; color: #94a3b8; }
+  .pmqr-card-meta2 { margin-top: 7px; padding-top: 7px; border-top: 1px solid var(--border-subtle); font-size: 12px; display: flex; gap: 6px; flex-wrap: nowrap; overflow: hidden; }
+  .pmqr-card-meta2 .lbl { font-weight: 800; flex-shrink: 0; }
+  .pmqr-card-meta2 .lbl.expired { color: #c0392b; }
+  .pmqr-card-meta2 .lbl.closed { color: var(--text-body-muted); }
+  .pmqr-card-meta2 .desc { color: var(--text-body-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+  /* Detail panel's own height now follows its (short, centered) content instead of a large
+     viewport-relative minimum, which was the other source of the excess bottom whitespace. */
+  .pmqr-detail-panel { background: #fff; border: 1px solid var(--border-subtle); border-radius: 16px; display: flex; flex-direction: column; }
+  .pmqr-detail-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 30px; min-height: 320px; }
+  .pmqr-detail-empty-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--icon-tint-bg); color: var(--accent-blue); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+  .pmqr-detail-empty.closed .pmqr-detail-empty-icon { background: var(--surface-soft); color: #94a3b8; }
+  .pmqr-detail-empty-title { font-size: 17px; font-weight: 800; color: var(--text-heading); margin-bottom: 8px; }
+  .pmqr-detail-empty-sub { font-size: 13.5px; color: var(--text-body-muted); line-height: 1.6; max-width: 420px; }
+  /* View Job stays reachable at the bottom of the viewport without scrolling the page further —
+     sticky within the scroll area, same pattern as .svcp-sticky-bar used elsewhere in this file. */
+  .pmqr-detail-foot-row {
+    position: sticky; bottom: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px;
+    padding: 14px 18px; margin-top: 16px;
+    box-shadow: 0 -6px 22px rgba(16,24,40,0.08);
+  }
+  .pmqr-detail-foot-note { font-size: 12.5px; color: var(--text-body-muted); }
+  .pmqr-view-job-btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 10px; border: 1px solid var(--border-subtle); background: #fff; color: var(--text-heading); font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; flex-shrink: 0; }
+  .pmqr-view-job-btn:hover { background: var(--surface-soft); }
+
+  /* =========================================================
+     SERVICE CHECKLISTS library page (pmckl prefix). New card visual
+     (colour-coded accent bar + toggle + counts) per reference mockup;
+     the New/Edit modal reuses the existing, already-built #pmCklModalOverlay
+     engine rather than duplicating the section/task editor.
+  ========================================================== */
+  .pmckl-toolbar { display: flex; align-items: center; gap: 12px; }
+  .pmckl-toolbar #pmcklSearchInput { padding-top: 9px; padding-bottom: 9px; font-size: 13px; }
+  .pmckl-toolbar #pmcklSearchInput { flex: 1; min-width: 200px; }
+  .pmckl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px; margin-top: 18px; }
+  .pmckl-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+  .pmckl-card-bar { height: 4px; }
+  .pmckl-card-body { padding: 16px 18px 14px; display: flex; flex-direction: column; flex: 1; }
+  .pmckl-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .pmckl-card-title { font-size: 15px; font-weight: 800; color: var(--text-heading); line-height: 1.3; }
+  .pmckl-card-cat { font-size: 12.5px; color: var(--text-body-muted); margin-top: 3px; }
+  .pmckl-card-counts { font-size: 12.5px; color: var(--text-body-muted); margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .pmckl-card-counts b { color: var(--text-body-muted); font-weight: 400; }
+  .pmckl-card-counts .req { color: #c0392b; font-weight: 700; }
+  .pmckl-card-foot { margin-top: auto; padding-top: 14px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+  .pmckl-autorun-pill { display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; padding: 4px 11px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+  .pmckl-card-actions { display: flex; gap: 8px; }
+  .pmckl-card-actions .btn { padding: 7px 13px; font-size: 12.5px; }
+  .pmckl-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 70px 24px; border: 1px dashed var(--border-subtle); border-radius: 14px; background: #fff; color: var(--text-body-muted); margin-top: 18px; }
+  .pmckl-empty-icon { width: 52px; height: 52px; border-radius: 50%; background: var(--icon-tint-bg); color: var(--accent-blue); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .pmckl-empty-title { font-size: 15.5px; font-weight: 800; color: var(--text-heading); margin-bottom: 6px; }
+
+  /* New Checklist: Category/Service picker step, shown only for the library's "+ New Checklist"
+     entry point (pmCklPickingService = true) — inserted above the existing pmCklBuildTab, which
+     stays hidden until a service is chosen. */
+  #pmCklServicePickerWrap { display: none; }
+  .pmckl-picker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 4px; }
+  @media (max-width: 560px) { .pmckl-picker-grid { grid-template-columns: 1fr; } }
+  .pmckl-picker-placeholder { text-align: center; color: var(--text-body-muted); font-size: 13.5px; padding: 40px 10px 30px; }
+
+  /* =========================================================
+     BILLING & PAYMENTS standalone page (pmbill prefix) — reuses the exact
+     card markup/copy already shipped in PM Settings > Billing & Payments.
+  ========================================================== */
+  .pmbill-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; color: #94a3b8; margin: 0 0 6px; }
+  .pmbill-intro { font-size: 13px; color: var(--text-body-muted); margin-bottom: 20px; max-width: 640px; }
+
+  /* =========================================================
+     CREDIT NOTES page (pmcn prefix).
+  ========================================================== */
+  .pmcn-tabs { display: flex; gap: 24px; border-bottom: 1px solid var(--border-subtle); margin: 0; }
+  .pmcn-tab { padding: 0 0 12px; font-size: 13.5px; font-weight: 700; color: var(--text-body-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .pmcn-tab.active { color: var(--accent-blue); border-bottom-color: var(--accent-blue); }
+  .pmcn-tab:not(.active):hover { color: var(--text-heading); }
+  .pmcn-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 70px 24px; color: var(--text-body-muted); font-size: 13.5px; }
+  .pmcn-table-wrap { margin-top: 4px; }
+  .pmcn-amt { font-weight: 700; color: #1a7a3e; }
+
+  /* =========================================================
+     SLA page (pmsla prefix) — no reference screenshot was supplied for
+     this one; matching the visual system used on Billing/Credit Notes.
+  ========================================================== */
+  /* =========================================================
+     SLA module (pmsla prefix) — General SLA + per-service SLA cards
+     with a cascading Category -> Role -> Service search-select picker.
+     Blue throughout (never green/red status colour) per the existing
+     "no traffic-light colours" rule for SLA elsewhere in this file.
+  ========================================================== */
+  .pmsla-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; color: var(--accent-blue); text-transform: uppercase; margin-bottom: 2px; }
+  .pmsla-breadcrumb-link { display: inline-flex; align-items: center; gap: 6px; background: none; border: none; padding: 0; font-family: inherit; font-size: 13px; font-weight: 700; color: var(--accent-blue); cursor: pointer; }
+  .pmsla-breadcrumb-link:hover { text-decoration: underline; }
+  #pmslaTopbarConfig h1 { margin-top: 4px; }
+
+  .pmsla-general-banner { background: var(--icon-tint-bg); border-radius: 16px; padding: 22px 24px; margin-bottom: 20px; position: relative; }
+  .pmsla-general-banner-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .pmsla-general-banner-icon { width: 38px; height: 38px; border-radius: 50%; background: var(--accent-blue); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pmsla-general-banner-title { font-size: 16px; font-weight: 800; color: var(--text-heading); flex: 1; }
+  .pmsla-edit-btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 10px; border: 1px solid var(--border-subtle); background: #fff; color: var(--text-heading); font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; }
+  .pmsla-edit-btn:hover { background: var(--surface-soft); }
+  .pmsla-commit-list { display: flex; flex-direction: column; gap: 10px; }
+  .pmsla-commit-row { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: var(--text-heading); line-height: 1.4; }
+  .pmsla-commit-check { width: 18px; height: 18px; border-radius: 50%; background: var(--accent-blue); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .pmsla-more-link { display: inline-block; margin-top: 10px; background: none; border: none; padding: 0; font-family: inherit; font-size: 12.5px; font-weight: 700; color: var(--text-body-muted); cursor: pointer; }
+  .pmsla-more-link:hover { color: var(--accent-blue); }
+  .pmsla-applied-pill { position: absolute; right: 24px; bottom: 22px; display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 1px solid var(--border-subtle); padding: 6px 13px; border-radius: 999px; font-size: 12px; font-weight: 700; color: var(--text-heading); }
+  .pmsla-applied-pill svg { color: var(--accent-blue); flex-shrink: 0; }
+  @media (max-width: 640px) { .pmsla-applied-pill { position: static; margin-top: 14px; } }
+
+  .pmsla-search-filter-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+  .pmsla-search-wrap { position: relative; flex: 1 1 260px; min-width: 200px; }
+  .pmsla-search-wrap svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; }
+  .pmsla-search-wrap input { padding-left: 38px; padding-top: 9px; padding-bottom: 9px; font-size: 13px; }
+  .pmsla-filter-dd-btn { min-width: 150px; }
+  .pmsla-filter-dd-btn svg:first-child { color: #94a3b8; }
+
+  .pmsla-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  .pmsla-service-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 18px 20px; }
+  .pmsla-service-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+  .pmsla-badge-row { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+  .pmsla-general-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--icon-tint-bg); color: var(--accent-blue); font-size: 11px; font-weight: 700; padding: 3px 10px 3px 3px; border-radius: 999px; white-space: nowrap; }
+  .pmsla-general-badge-icon { width: 16px; height: 16px; border-radius: 50%; background: var(--accent-blue); color: #fff; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pmsla-cat-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #94a3b8; }
+  .pmsla-card-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .pmsla-service-title { font-size: 16px; font-weight: 800; color: var(--text-heading); margin-bottom: 10px; line-height: 1.3; }
+  .pmsla-meta-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border-subtle); }
+  .pmsla-role-chip { font-size: 11.5px; font-weight: 700; color: var(--text-body-muted); background: var(--surface-soft); padding: 4px 10px; border-radius: 999px; }
+  .pmsla-commits-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; color: var(--text-body-muted); }
+  .pmsla-commits-pill svg { color: var(--accent-blue); }
+
+  .pmsla-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 70px 24px; border: 1px dashed var(--border-subtle); border-radius: 14px; background: #fff; }
+  .pmsla-empty-icon { width: 52px; height: 52px; border-radius: 50%; background: var(--icon-tint-bg); color: var(--accent-blue); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+  .pmsla-empty-title { font-size: 15.5px; font-weight: 800; color: var(--text-heading); margin-bottom: 6px; }
+
+  /* Edit General SLA + SLA Configuration pages */
+  .pmsla-hero-card { background: #fff; border: 1px solid var(--border-subtle); border-top: 3px solid var(--accent-blue); border-radius: 14px; padding: 22px 24px; margin-bottom: 18px; display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; position: relative; }
+  .pmsla-hero-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--icon-tint-bg); color: var(--accent-blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pmsla-hero-body { flex: 1; min-width: 240px; }
+  .pmsla-hero-body h2 { font-size: 19px; font-weight: 800; color: var(--text-heading); margin-bottom: 4px; }
+  .pmsla-hero-body p { font-size: 13px; color: var(--text-body-muted); line-height: 1.5; max-width: 620px; }
+  .pmsla-hero-card .pmsla-applied-pill { position: static; flex-shrink: 0; }
+
+  .pmsla-config-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 22px 24px; margin-bottom: 16px; }
+  .pmsla-config-card-head { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 800; color: var(--text-heading); margin-bottom: 18px; }
+  .pmsla-config-card-icon { width: 30px; height: 30px; border-radius: 8px; background: var(--icon-tint-bg); color: var(--accent-blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  .pmsla-service-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .pmsla-service-grid { grid-template-columns: 1fr; } }
+  .pmsla-field label { display: block; font-size: 12.5px; font-weight: 700; color: var(--text-body-muted); margin-bottom: 6px; }
+  .pmsla-search-select { position: relative; }
+  .pmsla-select-icon-left { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; }
+  .pmsla-select-input { width: 100%; padding: 12px 34px 12px 36px; border-radius: 11px; border: 1px solid var(--border-subtle); font-size: 13.5px; font-family: inherit; color: var(--text-heading); background: #fff; }
+  .pmsla-select-input:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(40,72,144,0.12); }
+  .pmsla-select-input:disabled { background: var(--surface-soft); color: #a6b0bf; cursor: not-allowed; }
+  .pmsla-select-input::placeholder { color: #a6b0bf; }
+  .pmsla-select-chevron { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; }
+  .pmsla-select-menu { display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0; max-height: 240px; overflow-y: auto; background: #fff; border: 1px solid var(--border-subtle); border-radius: 12px; box-shadow: 0 16px 40px rgba(16,24,40,0.14); z-index: 40; padding: 6px; }
+  .pmsla-search-select.open .pmsla-select-menu { display: block; }
+  .pmsla-select-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; border-radius: 8px; font-size: 13.5px; font-weight: 600; color: var(--text-heading); cursor: pointer; }
+  .pmsla-select-item:hover { background: var(--surface-soft); }
+  .pmsla-select-item.selected { color: var(--accent-blue); font-weight: 700; }
+  .pmsla-select-item.selected svg { display: inline-block; }
+  .pmsla-select-item svg { display: none; color: var(--accent-blue); flex-shrink: 0; }
+  .pmsla-select-empty { padding: 14px 12px; font-size: 13px; color: var(--text-body-muted); text-align: center; }
+
+  .pmsla-general-toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13.5px; font-weight: 700; color: var(--text-heading); }
+  .pmsla-general-ref-box { margin-top: 14px; background: var(--surface-soft); border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+  .pmsla-general-ref-box:empty { display: none; }
+  .pmsla-ref-row { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-body-muted); line-height: 1.4; }
+  .pmsla-ref-num { width: 18px; height: 18px; border-radius: 50%; background: var(--icon-tint-bg); color: var(--accent-blue); font-size: 10.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+  .pmsla-commit-edit-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
+  .pmsla-commit-edit-row + .pmsla-commit-edit-row { border-top: 1px solid var(--border-subtle); }
+  .pmsla-commit-num { width: 22px; height: 22px; border-radius: 50%; background: var(--icon-tint-bg); color: var(--accent-blue); font-size: 11.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pmsla-commit-input { flex: 1; min-width: 0; border: none; background: none; font-family: inherit; font-size: 13.5px; color: var(--text-heading); padding: 6px 0; }
+  .pmsla-commit-input:focus { outline: none; }
+  .pmsla-commit-input::placeholder { color: #a6b0bf; }
+  .pmsla-commit-del { width: 30px; height: 30px; border-radius: 8px; border: none; background: none; color: #c0392b; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+  .pmsla-commit-del:hover { background: #fef2f2; }
+
+  .pmsla-quickadd-label { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #94a3b8; margin: 18px 0 10px; }
+  .pmsla-quickadd-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pmsla-quickadd-pill { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--border-subtle); background: #fff; font-size: 12.5px; font-weight: 600; color: var(--text-heading); cursor: pointer; font-family: inherit; }
+  .pmsla-quickadd-pill:hover { border-color: #c9d8ee; background: var(--surface-soft); }
+  .pmsla-quickadd-pill:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pmsla-quickadd-pill:disabled:hover { background: #fff; border-color: var(--border-subtle); }
+  .pmsla-quickadd-pill svg { color: var(--accent-blue); flex-shrink: 0; }
+  .pmsla-add-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; background: none; border: none; padding: 0; font-family: inherit; font-size: 13px; font-weight: 700; color: var(--accent-blue); cursor: pointer; }
+  .pmsla-add-link:hover { text-decoration: underline; }
+
+  .pmsla-save-float {
+    position: fixed; bottom: 28px; right: 32px; z-index: 30;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 22px; border-radius: 12px; border: none;
+    background: linear-gradient(135deg, var(--btn-grad-start) 0%, var(--btn-grad-end) 100%); color: #fff;
+    font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 12px 30px rgba(16,24,40,0.22);
+  }
+  .pmsla-save-float:hover { filter: brightness(1.06); }
+  .pmsla-save-float:disabled { background: #a6b0bf; cursor: not-allowed; box-shadow: none; filter: none; }
+  @media (max-width: 900px) { .pmsla-save-float { left: 16px; right: 16px; width: calc(100% - 32px); justify-content: center; } }
+
+  .pm-custom-dd-btn:disabled { opacity: 0.55; cursor: not-allowed; background: var(--surface-soft); }
 </style>
 </head>
 <body>
@@ -9791,7 +10125,7 @@
           <path d="M190.031 17.0398V0.00976562L257.091 0.0897655L324.111 0.209765L324.231 17.1598L324.311 34.0698H257.171H190.031V17.0398Z"/>
         </svg>
       </div>
-      <div class="nav-actions">
+      <div class="nav-actions" id="navActions">
         <button type="button" class="btn-admin" id="adminNavBtn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           Admin
@@ -9799,6 +10133,15 @@
         <button type="button" class="btn-login" data-open-login="pm">Log In</button>
         <button type="button" class="btn btn-primary" data-open-signup="pm">Sign Up <span class="arrow">→</span></button>
       </div>
+      <button type="button" class="navbar-hamburger-btn" id="navbarHamburgerBtn" aria-label="Open menu"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+    </div>
+    <div class="navbar-mobile-menu" id="navbarMobileMenu">
+      <button type="button" class="btn-admin" id="adminNavBtnMobile">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Admin
+      </button>
+      <button type="button" class="btn-login" data-open-login="pm">Log In</button>
+      <button type="button" class="btn btn-primary" data-open-signup="pm">Sign Up <span class="arrow">→</span></button>
     </div>
   </header>
 
@@ -10523,6 +10866,29 @@
         <button type="button" id="pmCklModalCloseBtn" aria-label="Close" style="background:none;border:none;cursor:pointer;color:var(--text-body-muted);padding:4px;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
       </div>
       <div class="ckl-pm-modal-body">
+        <!-- Category/Service picker: only shown for the standalone library's "+ New Checklist"
+             entry point (pmCklOpenNewFromLibrary), where there's no service context yet — hidden
+             for every other entry point (editing, adapting from a template, or opened from inside
+             a specific service's own settings), which already know their service. -->
+        <div id="pmCklServicePickerWrap">
+          <div class="pmckl-picker-grid">
+            <div class="pmsvc-field" style="margin-bottom:0;">
+              <label style="display:block;font-size:11.5px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#94a3b8;margin-bottom:6px;">Category</label>
+              <div class="pm-filter-field" style="width:100%;">
+                <button type="button" class="pm-custom-dd-btn" data-dd="pmCklCategoryPick" style="width:100%;"><span class="cdd-value cdd-placeholder">Select category</span><svg class="cdd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                <div class="pm-custom-dd-menu" data-dd-menu="pmCklCategoryPick" id="pmCklCategoryPickMenu"></div>
+              </div>
+            </div>
+            <div class="pmsvc-field" style="margin-bottom:0;">
+              <label style="display:block;font-size:11.5px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#94a3b8;margin-bottom:6px;">Service</label>
+              <div class="pm-filter-field" style="width:100%;">
+                <button type="button" class="pm-custom-dd-btn" data-dd="pmCklServicePick" disabled style="width:100%;"><span class="cdd-value cdd-placeholder">Pick a category first</span><svg class="cdd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                <div class="pm-custom-dd-menu" data-dd-menu="pmCklServicePick" id="pmCklServicePickMenu"></div>
+              </div>
+            </div>
+          </div>
+          <div class="pmckl-picker-placeholder" id="pmCklPickerPlaceholder">Pick a service above to build its checklist.</div>
+        </div>
         <div class="ckl-view-toggle" id="pmCklViewToggle">
           <button type="button" class="ckl-view-toggle-btn on" data-ckl-view-tab="build">Build</button>
           <button type="button" class="ckl-view-toggle-btn" data-ckl-view-tab="preview">Preview report</button>
@@ -10578,6 +10944,36 @@
       <div class="confirm-modal-btns">
         <button type="button" class="pmprop-del-cancel" id="cklDeleteCancel">Cancel</button>
         <button type="button" class="confirm-modal-confirm" id="cklDeleteConfirm" style="background:#b91c1c;">Delete Checklist</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Service Checklists library page (PM): per-card delete confirmation, triggered by the trash
+       icon on a pmckl-card — separate trigger point from the in-modal "Delete" link above, same
+       confirm-modal-card pattern. -->
+  <div class="modal-overlay" id="pmcklDeleteOverlay">
+    <div class="confirm-modal-card">
+      <div class="confirm-modal-icon" style="background:#fef2f2;color:#b91c1c;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg></div>
+      <div class="confirm-modal-title">Delete checklist?</div>
+      <div class="confirm-modal-desc" id="pmcklDeleteDesc">This checklist will be removed. This can't be undone.</div>
+      <div class="confirm-modal-btns">
+        <button type="button" class="pmprop-del-cancel" id="pmcklDeleteCancel">Cancel</button>
+        <button type="button" class="confirm-modal-confirm" id="pmcklDeleteConfirm" style="background:#b91c1c;">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLA module: delete confirmation. Note this one is deliberately blue, not the usual red
+       destructive styling every other delete-confirm in this file uses — matches the reference
+       mockup exactly (blue detach-style icon, solid navy Delete button, not red). -->
+  <div class="modal-overlay" id="pmslaDeleteOverlay">
+    <div class="confirm-modal-card">
+      <div class="confirm-modal-icon" style="background:var(--icon-tint-bg);color:var(--accent-blue);"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></div>
+      <div class="confirm-modal-title">Delete SLA?</div>
+      <div class="confirm-modal-desc" id="pmslaDeleteDesc">This SLA will be removed and can no longer be attached to bookings. This can't be undone.</div>
+      <div class="confirm-modal-btns">
+        <button type="button" class="pmprop-del-cancel" id="pmslaDeleteCancel">Cancel</button>
+        <button type="button" class="confirm-modal-confirm" id="pmslaDeleteConfirm">Delete</button>
       </div>
     </div>
   </div>
@@ -12865,24 +13261,33 @@
           <div class="dash-content-sub">Your billing periods plus standalone invoices for paid jobs.</div>
         </div>
         <div id="pmQuotesNewTopbarTitle" style="display:none;min-width:0;">
-          <h1>Quotes</h1>
-          <div class="dash-content-sub">Coming soon.</div>
+          <h1 style="display:inline-flex;align-items:center;gap:10px;">Quotes<span class="pminb-unread-pill" style="background:var(--icon-tint-bg);border-color:transparent;color:var(--accent-blue);"><span id="pmqrCountBadge">0 requests</span></span></h1>
+          <div class="dash-content-sub">Manage quote requests across your portfolio</div>
         </div>
         <div id="pmServiceChecklistsTopbarTitle" style="display:none;min-width:0;">
-          <h1>Service Checklists</h1>
-          <div class="dash-content-sub">Coming soon.</div>
+          <h1>Service Checklist</h1>
+          <div class="dash-content-sub">Applied automatically when you book each service.</div>
         </div>
         <div id="pmBillingTopbarTitle" style="display:none;min-width:0;">
-          <h1>Billing &amp; Payments</h1>
-          <div class="dash-content-sub">Coming soon.</div>
+          <h1>Billing</h1>
+          <div class="dash-content-sub">Your Direct Debit and payment methods.</div>
         </div>
         <div id="pmCreditNotesTopbarTitle" style="display:none;min-width:0;">
-          <h1>Credit notes</h1>
-          <div class="dash-content-sub">Coming soon.</div>
+          <h1>Credit Notes</h1>
+          <div class="dash-content-sub">Refunds and adjustments applied to your upcoming bills.</div>
         </div>
         <div id="pmSlaTopbarTitle" style="display:none;min-width:0;">
-          <h1>SLA</h1>
-          <div class="dash-content-sub">Coming soon.</div>
+          <div id="pmslaTopbarList">
+            <div class="pmsla-eyebrow">Configure</div>
+            <h1>Service Level Agreements</h1>
+          </div>
+          <div id="pmslaTopbarEditGeneral" style="display:none;">
+            <button type="button" class="pmsla-breadcrumb-link" id="pmslaBackFromGeneralBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>General Agreement</button>
+          </div>
+          <div id="pmslaTopbarConfig" style="display:none;">
+            <button type="button" class="pmsla-breadcrumb-link" id="pmslaBackFromConfigBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Service Level Agreement</button>
+            <h1>SLA Configuration</h1>
+          </div>
         </div>
         <div id="pmRetainersTopbarTitle" style="display:none;min-width:0;">
           <h1>Retainers</h1>
@@ -12905,10 +13310,23 @@
         </div>
         <div class="notif-panel" id="pmNotifPanel">
           <div class="notif-panel-head">
-            <h3>Notifications</h3>
+            <div class="notif-panel-head-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>
+            <div class="notif-panel-head-text">
+              <h3>Notifications</h3>
+              <div class="notif-panel-unread-sub" id="pmNotifUnreadSub">0 unread</div>
+            </div>
+            <button type="button" id="pmMarkAllReadBtn">Mark All Read</button>
           </div>
           <div id="pmNotifListContent"></div>
           <div id="pmNotifEmpty" style="display:none;padding:32px 20px;text-align:center;font-size:13px;color:var(--text-body-muted);">No new notifications.</div>
+          <div class="notif-panel-foot" id="pmNotifFoot">
+            <span id="pmNotifRangeText">1\u201310 of 0</span>
+            <div class="notif-panel-pager">
+              <button type="button" id="pmNotifPrevBtn" aria-label="Previous page"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+              <span id="pmNotifPageText">1 / 1</span>
+              <button type="button" id="pmNotifNextBtn" aria-label="Next page"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -13041,7 +13459,7 @@
 
           <div class="dash-section">
             <div class="dash-card">
-              <div class="dash-card-head"><h3>Active Jobs</h3><span class="view-all">View all →</span></div>
+              <div class="dash-card-head"><h3>Active Jobs</h3><span class="view-all" id="dashActiveJobsViewAll">View all →</span></div>
               <div id="activeJobsContent">
                 <div class="dash-empty" style="padding-top:8px;">
                   <div class="empty-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
@@ -15138,11 +15556,251 @@
             </div>
           </div>
 
-          <div id="pmQuotesNewView" style="display:none;"><div class="dash-section"><div class="pmex-stub-card"><div class="pmex-stub-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="pmex-stub-title">Quotes</div><div class="pmex-stub-sub">This module is coming soon.</div></div></div></div>
-          <div id="pmServiceChecklistsView" style="display:none;"><div class="dash-section"><div class="pmex-stub-card"><div class="pmex-stub-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><path d="M9 17h6"/></svg></div><div class="pmex-stub-title">Service Checklists</div><div class="pmex-stub-sub">This module is coming soon.</div></div></div></div>
-          <div id="pmBillingView" style="display:none;"><div class="dash-section"><div class="pmex-stub-card"><div class="pmex-stub-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg></div><div class="pmex-stub-title">Billing &amp; Payments</div><div class="pmex-stub-sub">This module is coming soon.</div></div></div></div>
-          <div id="pmCreditNotesView" style="display:none;"><div class="dash-section"><div class="pmex-stub-card"><div class="pmex-stub-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg></div><div class="pmex-stub-title">Credit notes</div><div class="pmex-stub-sub">This module is coming soon.</div></div></div></div>
-          <div id="pmSlaView" style="display:none;"><div class="dash-section"><div class="pmex-stub-card"><div class="pmex-stub-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="pmex-stub-title">SLA</div><div class="pmex-stub-sub">This module is coming soon.</div></div></div></div>
+          <div id="pmQuotesNewView" style="display:none;">
+            <div class="dash-section">
+              <div id="pmqrListMode">
+                <div class="pmqr-toolbar">
+                  <div class="pmqr-search-wrap">
+                    <svg width="15" height="15" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="4.5"/><path d="M10 10l2.5 2.5"/></svg>
+                    <input type="text" class="field-input" id="pmqrSearchInput" placeholder="Search job, property, manager..." autocomplete="off">
+                  </div>
+                  <div class="pmqr-dd-group">
+                    <div class="pm-filter-field">
+                      <button type="button" class="pm-custom-dd-btn" data-dd="pmqrStatusFilter"><span class="cdd-value">All Statuses</span><svg class="cdd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                      <div class="pm-custom-dd-menu" data-dd-menu="pmqrStatusFilter">
+                        <div class="cdd-item selected" data-value="All Statuses">All Statuses<svg class="cdd-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <div class="cdd-item" data-value="Awaiting Quotes">Awaiting Quotes<svg class="cdd-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <div class="cdd-item" data-value="Closed">Closed<svg class="cdd-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                      </div>
+                    </div>
+                    <div class="pm-filter-field">
+                      <button type="button" class="pm-custom-dd-btn" data-dd="pmqrServiceFilter"><span class="cdd-value">All Services</span><svg class="cdd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                      <div class="pm-custom-dd-menu" data-dd-menu="pmqrServiceFilter" id="pmqrServiceFilterMenu"></div>
+                    </div>
+                    <div class="pm-filter-field">
+                      <button type="button" class="pm-custom-dd-btn" data-dd="pmqrPropertyFilter"><span class="cdd-value">All Properties</span><svg class="cdd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                      <div class="pm-custom-dd-menu" data-dd-menu="pmqrPropertyFilter" id="pmqrPropertyFilterMenu"></div>
+                    </div>
+                    <div class="pm-filter-field">
+                      <button type="button" class="pm-custom-dd-btn" data-dd="pmqrManagerFilter"><span class="cdd-value">All Managers</span><svg class="cdd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                      <div class="pm-custom-dd-menu" data-dd-menu="pmqrManagerFilter" id="pmqrManagerFilterMenu"></div>
+                    </div>
+                    <div class="pm-filter-field">
+                      <button type="button" class="pm-custom-dd-btn" data-dd="pmqrDeadlineFilter"><span class="cdd-value">Any Deadline</span><svg class="cdd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                      <div class="pm-custom-dd-menu" data-dd-menu="pmqrDeadlineFilter">
+                        <div class="cdd-item selected" data-value="Any Deadline">Any Deadline<svg class="cdd-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <div class="cdd-item" data-value="Due Soon (≤24h)">Due Soon (≤24h)<svg class="cdd-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <div class="cdd-item" data-value="Due This Week">Due This Week<svg class="cdd-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <div class="cdd-item" data-value="Overdue">Overdue<svg class="cdd-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="button" class="pmqr-clear-btn" id="pmqrClearBtn">Clear</button>
+                </div>
+
+                <div class="pm-table-wrap" id="pmqrTableWrap">
+                  <div class="pm-table-scroll">
+                    <table class="admin-table pmqr-table" style="min-width:1080px;table-layout:fixed;">
+                      <colgroup>
+                        <col style="width:8%;"><col style="width:21%;"><col style="width:19%;"><col style="width:12%;"><col style="width:7%;"><col style="width:9%;"><col style="width:9%;"><col style="width:11%;"><col style="width:4%;">
+                      </colgroup>
+                      <thead>
+                        <tr><th>Job ID</th><th>Service</th><th>Property</th><th>Manager</th><th>Quotes</th><th>Quote Range</th><th>Deadline</th><th>Status</th><th></th></tr>
+                      </thead>
+                      <tbody id="pmqrTableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div id="pmqrDetailMode" style="display:none;">
+                <div class="pmqr-breadcrumb">
+                  <button type="button" class="pmqr-breadcrumb-back" id="pmqrBackBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>All Quotes</button>
+                  <span class="pmqr-breadcrumb-id" id="pmqrBreadcrumbId">QR-0000</span>
+                  <span class="pmqr-breadcrumb-sep">·</span>
+                  <span class="status-pill amber" id="pmqrBreadcrumbStatus">Awaiting Quotes</span>
+                  <span class="pmqr-breadcrumb-sep">·</span>
+                  <span class="pmqr-breadcrumb-title" id="pmqrBreadcrumbTitle">Service name</span>
+                </div>
+
+                <div class="pmqr-detail-layout">
+                  <div class="pmqr-list-col" id="pmqrDetailList"></div>
+                  <div class="pmqr-detail-panel" id="pmqrDetailPanel"></div>
+                </div>
+
+                <div class="pmqr-detail-foot-row">
+                  <span class="pmqr-detail-foot-note" id="pmqrDetailFootNote">No action needed yet — you'll be notified as quotes arrive.</span>
+                  <button type="button" class="pmqr-view-job-btn" id="pmqrViewJobBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>View Job</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="pmServiceChecklistsView" style="display:none;">
+            <div class="dash-section">
+              <div class="pmckl-toolbar">
+                <input type="text" class="field-input" id="pmcklSearchInput" placeholder="Search checklists..." autocomplete="off">
+                <button type="button" class="btn btn-primary" id="pmcklNewBtn" style="flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>New Checklist</button>
+              </div>
+
+              <div class="pmckl-grid" id="pmcklGrid"></div>
+              <div class="pmckl-empty" id="pmcklEmpty" style="display:none;">
+                <div class="pmckl-empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><path d="M9 17h6"/></svg></div>
+                <div class="pmckl-empty-title">No checklists match your search</div>
+                <div class="dash-content-sub">Try a different service name, or clear your search.</div>
+              </div>
+            </div>
+          </div>
+          <div id="pmBillingView" style="display:none;">
+            <div class="dash-section">
+              <div class="pmbill-eyebrow">BILLING SETUP</div>
+              <p class="pmbill-intro">Authorise the BACS Direct Debit your consolidated invoices will settle against. Your billing cycle is set during onboarding and can be changed in your profile.</p>
+
+              <div class="sup-bg-check-card">
+                <div style="display:flex;gap:14px;align-items:flex-start;">
+                  <div style="width:40px;height:40px;border-radius:10px;background:#eafaf0;color:#1a7a3e;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;">
+                      <h4 style="font-size:15px;font-weight:700;color:var(--text-heading);">Direct Debit</h4>
+                      <span style="display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:0.03em;color:#1a7a3e;background:#eafaf0;padding:3px 10px;border-radius:999px;"><span style="width:5px;height:5px;border-radius:50%;background:#1a7a3e;"></span>MANDATE ACTIVE</span>
+                    </div>
+                    <p style="font-size:12.5px;color:var(--text-body-muted);line-height:1.5;margin-bottom:16px;">We'll redirect you to our payment processor to authorise a BACS Direct Debit. You stay protected by the DD guarantee — we only collect on approved invoices.</p>
+                    <div style="display:flex;gap:12px;align-items:flex-start;background:#f0fdf4;border:1px solid #c0f5d4;border-radius:10px;padding:14px 16px;">
+                      <div style="width:22px;height:22px;border-radius:50%;background:#1a7a3e;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                      <div><div style="font-size:13px;font-weight:700;color:var(--text-heading);margin-bottom:2px;">You're all set</div><div style="font-size:12.5px;color:#1a7a3e;">Approved invoices will collect automatically on your selected billing cycle. Protected by the BACS Direct Debit guarantee.</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sup-bg-check-card" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:0;">
+                <div style="width:40px;height:40px;border-radius:10px;background:#fef3c7;color:#92620a;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+                <div style="flex:1;min-width:200px;">
+                  <h4 style="font-size:15px;font-weight:700;color:var(--text-heading);margin-bottom:3px;">Manage Payment Methods</h4>
+                  <p style="font-size:12.5px;color:var(--text-body-muted);">Update your card details or switch the bank account on file. Opens the Stripe customer portal in a new tab.</p>
+                </div>
+                <button type="button" class="btn btn-primary" id="pmbillOpenStripePortalBtn" style="flex-shrink:0;">Open Portal <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg></button>
+              </div>
+            </div>
+          </div>
+          <div id="pmCreditNotesView" style="display:none;">
+            <div class="dash-section">
+              <div class="pmcn-tabs" id="pmcnTabs">
+                <div class="pmcn-tab active" data-pmcn-tab="outstanding">Outstanding</div>
+                <div class="pmcn-tab" data-pmcn-tab="applied">Applied</div>
+                <div class="pmcn-tab" data-pmcn-tab="all">All</div>
+              </div>
+
+              <div id="pmcnBody"></div>
+            </div>
+          </div>
+          <div id="pmSlaView" style="display:none;">
+            <div class="dash-section">
+              <div id="pmslaListMode">
+                <div class="pmsla-general-banner">
+                  <div class="pmsla-general-banner-head">
+                    <div class="pmsla-general-banner-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20 15.3 15.3 0 010-20z"/></svg></div>
+                    <div class="pmsla-general-banner-title">General SLA</div>
+                    <button type="button" class="pmsla-edit-btn" id="pmslaEditGeneralBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button>
+                  </div>
+                  <div class="pmsla-commit-list" id="pmslaGeneralBannerList"></div>
+                  <button type="button" class="pmsla-more-link" id="pmslaGeneralMoreBtn" style="display:none;"></button>
+                  <div class="pmsla-applied-pill" id="pmslaGeneralAppliedPill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Applied to 0 service SLAs</div>
+                </div>
+
+                <div class="pmsla-search-filter-row">
+                  <div class="pmsla-search-wrap">
+                    <svg width="15" height="15" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="4.5"/><path d="M10 10l2.5 2.5"/></svg>
+                    <input type="text" class="field-input" id="pmslaSearchInput" placeholder="Search by service, category, or role..." autocomplete="off">
+                  </div>
+                  <div class="pm-filter-field" style="width:auto;">
+                    <button type="button" class="pm-custom-dd-btn pmsla-filter-dd-btn" data-dd="pmslaCategoryFilter"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg><span class="cdd-value" id="pmslaFilterLabel">All SLA (0)</span><svg class="cdd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                    <div class="pm-custom-dd-menu" data-dd-menu="pmslaCategoryFilter" id="pmslaCategoryFilterMenu"></div>
+                  </div>
+                  <button type="button" class="btn btn-primary" id="pmslaAddBtnTopbar" style="flex-shrink:0;margin-left:auto;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add SLA</button>
+                </div>
+
+                <div class="pmsla-grid" id="pmslaGrid"></div>
+                <div class="pmsla-empty" id="pmslaEmpty" style="display:none;">
+                  <div class="pmsla-empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                  <div class="pmsla-empty-title">No SLAs match your search</div>
+                  <div class="dash-content-sub">Try a different service, category, or role.</div>
+                </div>
+              </div>
+
+              <div id="pmslaEditGeneralMode" style="display:none;">
+                <div class="pmsla-hero-card">
+                  <div class="pmsla-hero-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20 15.3 15.3 0 010-20z"/></svg></div>
+                  <div class="pmsla-hero-body">
+                    <h2>Edit General SLA</h2>
+                    <p>Set baseline commitments common to every service &mdash; define once, apply across all your SLAs.</p>
+                  </div>
+                  <div class="pmsla-applied-pill" id="pmslaEditGeneralAppliedPill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Applied to 0 service SLAs</div>
+                </div>
+
+                <div class="pmsla-config-card">
+                  <div class="pmsla-config-card-head"><span class="pmsla-config-card-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>Service Level Agreement</div>
+                  <div id="pmslaGeneralCommitRows"></div>
+                  <div class="pmsla-quickadd-label">QUICK ADD COMMON COMMITMENTS</div>
+                  <div class="pmsla-quickadd-row" id="pmslaGeneralQuickAdd"></div>
+                  <button type="button" class="pmsla-add-link" id="pmslaGeneralAddBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add</button>
+                </div>
+              </div>
+
+              <div id="pmslaConfigMode" style="display:none;">
+                <div class="pmsla-config-card">
+                  <div class="pmsla-config-card-head"><span class="pmsla-config-card-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg></span>Service</div>
+                  <div class="pmsla-service-grid">
+                    <div class="pmsla-field">
+                      <label>Category</label>
+                      <div class="pmsla-search-select" data-pmsla-select="category">
+                        <svg class="pmsla-select-icon-left" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                        <input type="text" class="pmsla-select-input" id="pmslaCategoryInput" placeholder="Select a category..." autocomplete="off">
+                        <svg class="pmsla-select-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        <div class="pmsla-select-menu" id="pmslaCategoryMenu"></div>
+                      </div>
+                    </div>
+                    <div class="pmsla-field">
+                      <label>Role</label>
+                      <div class="pmsla-search-select" data-pmsla-select="role">
+                        <svg class="pmsla-select-icon-left" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                        <input type="text" class="pmsla-select-input" id="pmslaRoleInput" placeholder="Select a category first" autocomplete="off" disabled>
+                        <svg class="pmsla-select-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        <div class="pmsla-select-menu" id="pmslaRoleMenu"></div>
+                      </div>
+                    </div>
+                    <div class="pmsla-field">
+                      <label>Service</label>
+                      <div class="pmsla-search-select" data-pmsla-select="service">
+                        <svg class="pmsla-select-icon-left" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                        <input type="text" class="pmsla-select-input" id="pmslaServiceInput" placeholder="Select a category first" autocomplete="off" disabled>
+                        <svg class="pmsla-select-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        <div class="pmsla-select-menu" id="pmslaServiceMenu"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pmsla-config-card">
+                  <div class="pmsla-config-card-head"><span class="pmsla-config-card-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5M3 17l9 5 9-5"/></svg></span>General SLA</div>
+                  <div class="pmsla-general-toggle-row">
+                    <span>Apply the General SLA to this service</span>
+                    <button type="button" class="toggle-switch on" id="pmslaGeneralToggle" role="switch" aria-checked="true"><span class="thumb"></span></button>
+                  </div>
+                  <div class="pmsla-general-ref-box" id="pmslaGeneralRefBox"></div>
+                </div>
+
+                <div class="pmsla-config-card">
+                  <div class="pmsla-config-card-head"><span class="pmsla-config-card-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>Service Level Agreement</div>
+                  <div id="pmslaCommitRows"></div>
+                  <div class="pmsla-quickadd-label">QUICK ADD COMMON COMMITMENTS</div>
+                  <div class="pmsla-quickadd-row" id="pmslaQuickAdd"></div>
+                  <button type="button" class="pmsla-add-link" id="pmslaAddCommitBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add</button>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="pmsla-save-float" id="pmslaSaveGeneralBtn" style="display:none;">Save Changes <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+            <button type="button" class="pmsla-save-float" id="pmslaSaveConfigBtn" style="display:none;" disabled>Save <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+          </div>
           <div id="pmRetainersView" style="display:none;"><div class="dash-section"><div class="pmex-stub-card"><div class="pmex-stub-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div><div class="pmex-stub-title">Retainers</div><div class="pmex-stub-sub">This module is coming soon.</div></div></div></div>
 
           <div id="pmPropertiesView" style="display:none;">
@@ -22571,6 +23229,26 @@
   document.getElementById('adminNavBtn').addEventListener('click', function () {
     openAdminLogin();
   });
+  document.getElementById('adminNavBtnMobile').addEventListener('click', function () {
+    document.getElementById('navbarMobileMenu').classList.remove('open');
+    openAdminLogin();
+  });
+  document.getElementById('navbarHamburgerBtn').addEventListener('click', function (e) {
+    e.stopPropagation();
+    document.getElementById('navbarMobileMenu').classList.toggle('open');
+  });
+  // Any nav-triggered action (Log In / Sign Up, wired elsewhere via their shared
+  // [data-open-login]/[data-open-signup] delegated listeners) should also close this menu, same as
+  // Admin's own mobile button above already does explicitly.
+  document.querySelectorAll('#navbarMobileMenu [data-open-login], #navbarMobileMenu [data-open-signup]').forEach(function (btn) {
+    btn.addEventListener('click', function () { document.getElementById('navbarMobileMenu').classList.remove('open'); });
+  });
+  document.addEventListener('click', function (e) {
+    var navMenu = document.getElementById('navbarMobileMenu');
+    if (navMenu && navMenu.classList.contains('open') && !navMenu.contains(e.target) && e.target.id !== 'navbarHamburgerBtn' && !e.target.closest('#navbarHamburgerBtn')) {
+      navMenu.classList.remove('open');
+    }
+  });
 
   document.getElementById('adminEyeToggle').addEventListener('click', function () {
     var input = document.getElementById('adminPassword');
@@ -25690,6 +26368,140 @@
   /* =========================================================
      PM: JOB RESPONSES
   ========================================================== */
+  /* =========================================================
+     QUOTES module data (PMQR prefix) — fully independent of PMJR_JOBS
+     (Job Responses) above/below: separate ids, separate state, own
+     mock dataset. Properties/services/supplier names are reused verbatim
+     from PMJR_JOBS and the Job Bookings service-category filter so the
+     portfolio reads as the same underlying data across modules.
+  ========================================================== */
+  var PMQR_COLORS = { purple: '#7c5cdb', navy: '#1e2a44', teal: '#0f9488', brown: '#b0703f' };
+  var PMQR_SERVICES = [
+    { name: 'Biohazard / Trauma Clean', category: 'Cleaner' },
+    { name: 'Boiler Repair / No Hot Water / Gas Leak Emergency', category: 'Gas Safe Engineer' },
+    { name: 'Carpet / Stair Carpet Steam Clean', category: 'Cleaner' },
+    { name: 'Door Entry / Intercom / Smart Doorbell', category: 'Electrician' },
+    { name: 'Post-Build / Upholstery / Oven / Mould Clean', category: 'Cleaner' }
+  ];
+  var PMQR_PROPERTIES = [
+    { id: 'carrington', name: 'Carrington, PO Box 81490, London', addr: 'London \u00b7 SW18 9WR', initials: 'CP', color: PMQR_COLORS.purple },
+    { id: 'oldshades', name: 'Old Shades, 37 Whitehall, London', addr: 'London \u00b7 SW1A 2BX', initials: 'OS', color: PMQR_COLORS.navy },
+    { id: 'qq', name: 'Q & Q Recovery, West Road, Barnsley', addr: 'Barnsley \u00b7 S75 2DH', initials: 'QQ', color: PMQR_COLORS.teal }
+  ];
+  var PMQR_MANAGERS = [{ name: 'Thomas Davies', company: 'KEY RIDERS LTD' }];
+  function pmqrPropByName(n) { return PMQR_PROPERTIES.find(function (p) { return p.name === n; }); }
+  function pmqrSvcByName(n) { return PMQR_SERVICES.find(function (s) { return s.name === n; }); }
+
+  var PMQR_REQUESTS = [
+    { id: 'QR-2764', service: 'Boiler Repair / No Hot Water / Gas Leak Emergency', property: 'Q & Q Recovery, West Road, Barnsley', manager: 'Thomas Davies', status: 'awaiting', deadline: 'expired', respondedBy: null, respondedAction: null, respondedDate: null },
+    { id: 'QR-2746', service: 'Door Entry / Intercom / Smart Doorbell', property: 'Carrington, PO Box 81490, London', manager: 'Thomas Davies', status: 'awaiting', deadline: 'expired', respondedBy: 'KEY RIDERS LTD', respondedAction: 'responded', respondedDate: '02/07/2026' },
+    { id: 'QR-2743', service: 'Carpet / Stair Carpet Steam Clean', property: 'Carrington, PO Box 81490, London', manager: 'Thomas Davies', status: 'closed', deadline: 'closed', respondedBy: 'Nadia Reid Gardener', respondedAction: 'submitted a quote', respondedDate: '01/07/2026' },
+    { id: 'QR-2742', service: 'Carpet / Stair Carpet Steam Clean', property: 'Carrington, PO Box 81490, London', manager: 'Thomas Davies', status: 'closed', deadline: 'closed', respondedBy: 'Nadia Reid Gardener', respondedAction: 'responded', respondedDate: '01/07/2026' },
+    { id: 'QR-2741', service: 'Carpet / Stair Carpet Steam Clean', property: 'Carrington, PO Box 81490, London', manager: 'Thomas Davies', status: 'closed', deadline: 'closed', respondedBy: 'Nadia Reid Gardener', respondedAction: 'responded', respondedDate: '01/07/2026' },
+    { id: 'QR-2738', service: 'Carpet / Stair Carpet Steam Clean', property: 'Carrington, PO Box 81490, London', manager: 'Thomas Davies', status: 'closed', deadline: 'closed', respondedBy: 'Nadia Reid Gardener', respondedAction: 'responded', respondedDate: '01/07/2026' },
+    { id: 'QR-2737', service: 'Carpet / Stair Carpet Steam Clean', property: 'Carrington, PO Box 81490, London', manager: 'Thomas Davies', status: 'closed', deadline: 'closed', respondedBy: 'Nadia Reid Gardener', respondedAction: 'responded', respondedDate: '30/06/2026' },
+    { id: 'QR-2736', service: 'Post-Build / Upholstery / Oven / Mould Clean', property: 'Carrington, PO Box 81490, London', manager: 'Thomas Davies', status: 'closed', deadline: 'closed', respondedBy: 'Nadia Reid Gardener', respondedAction: 'responded', respondedDate: '30/06/2026' },
+    { id: 'QR-2735', service: 'Biohazard / Trauma Clean', property: 'Carrington, PO Box 81490, London', manager: 'Thomas Davies', status: 'closed', deadline: 'closed', respondedBy: 'Nadia Reid Gardener', respondedAction: 'responded', respondedDate: '30/06/2026' },
+    { id: 'QR-2724', service: 'Carpet / Stair Carpet Steam Clean', property: 'Old Shades, 37 Whitehall, London', manager: 'Thomas Davies', status: 'closed', deadline: 'closed', respondedBy: 'Nadia Reid Gardener', respondedAction: 'responded', respondedDate: '28/06/2026' }
+  ];
+
+  /* =========================================================
+     SLA module data (PMSLA prefix) — General SLA (baseline commitments
+     applied across every service) plus per-service SLA configuration
+     with a Category -> Role -> Service taxonomy. Deliberately blue
+     throughout (checkmarks etc), never green/red status colour — same
+     "no traffic-light colours" rule already established for SLA Policy
+     elsewhere in this file.
+  ========================================================== */
+  var PMSLA_QUICK_ADD = [
+    'Respond within 4 hours', 'Acknowledge within 1 hour', 'Arrive on the agreed date & time',
+    'Complete within 48 hours', 'Provide photo proof of completion', 'Notify immediately of any delays',
+    'Use qualified, insured staff', 'Leave the work area clean'
+  ];
+  var pmslaGeneral = {
+    commitments: [
+      'Provide access arrangements at least 24 hours before the visit',
+      'Respond to supplier queries within 1 working day',
+      'Approve completed work within 3 working days',
+      'Notify suppliers of any access changes immediately'
+    ]
+  };
+  // Category -> role -> services taxonomy for the SLA Configuration cascading pickers.
+  var PMSLA_TAXONOMY = [
+    { category: 'Cleaning', roles: [
+      { role: 'Cleaner', services: ['Airbnb Turnover Clean', 'Carpet / Stair Carpet Steam Clean', 'End of Tenancy Clean', 'Biohazard / Trauma Clean', 'Post-Build / Upholstery / Oven / Mould Clean'] }
+    ] },
+    { category: 'Compliance & Legal', roles: [
+      { role: 'DEA Assessor', services: ['Domestic Energy Assessment (EPC)'] },
+      { role: 'Risk Assessor', services: ['Fire Risk Assessment'] },
+      { role: 'Gas Safe Engineer', services: ['Gas Safety Certificate (CP12)'] },
+      { role: 'Retrofit Assessor', services: ['Whole House Retrofit Assessment / Ventilation'] },
+      { role: 'Retrofit Coordinator', services: ['Retrofit Works Coordination'] },
+      { role: 'Thermal Imaging Surveyor', services: ['Thermal Imaging Survey'] },
+      { role: 'Asbestos Surveyor', services: ['Asbestos Management Survey'] }
+    ] },
+    { category: 'Appliances', roles: [
+      { role: 'Appliance Engineer', services: ['Oven / Cooker / Microwave / Extractor Repair', 'Appliance Installation (all white goods)'] }
+    ] },
+    { category: 'Damp, Mould & Structural', roles: [
+      { role: 'Damp Surveyor', services: ['Damp & Mould Survey'] },
+      { role: 'Structural Engineer', services: ['Structural Survey'] }
+    ] },
+    { category: 'Electrical', roles: [
+      { role: 'Electrician', services: ['Door Entry / Intercom / Smart Doorbell', 'Battery Storage System Installation', 'EV Charger Installation'] }
+    ] },
+    { category: 'Electrical + compliance & legal', roles: [
+      { role: 'Electrician', services: ['EICR \u2014 Electrical Installation Condition Report'] }
+    ] },
+    { category: 'Electrical General', roles: [
+      { role: 'Electrician', services: ['Rewiring', 'Electrical Installation / Minor Works Certificate'] }
+    ] },
+    { category: 'Gas & Heating', roles: [
+      { role: 'Gas Safe Engineer', services: ['Boiler Repair / No Hot Water / Gas Leak Emergency', 'Powerflush (Central Heating)'] }
+    ] },
+    { category: 'Plumbing', roles: [
+      { role: 'Plumber', services: ['Leak Detection & Repair', 'Drainage Clearance'] }
+    ] },
+    { category: 'Locksmith & Security', roles: [
+      { role: 'Locksmith', services: ['Lock Change / Key Cutting'] },
+      { role: 'Security Installer', services: ['Carbon Monoxide Alarm Installation / Inspection'] }
+    ] },
+    { category: 'Marketing & Inventory', roles: [
+      { role: 'Photographer', services: ['Marketing Photography'] },
+      { role: 'Inventory Clerk', services: ['Property Inspection'] },
+      { role: 'Signage Installer', services: ["'To Let' / 'For Sale' Boards"] }
+    ] },
+    { category: 'Pest Control', roles: [
+      { role: 'Pest Controller', services: ['General Pest Treatment'] }
+    ] }
+  ];
+  var pmslaUid = 0;
+  function pmslaNextId() { pmslaUid += 1; return 'sla_' + pmslaUid; }
+  var PMSLA_SERVICES = [
+    {
+      id: pmslaNextId(), service: 'Airbnb Turnover Clean', category: 'Cleaning', role: 'Cleaner',
+      generalApplied: true,
+      commitments: ['Respond within 4 hours', 'Arrive on the agreed date & time', 'Provide photo proof of completion', 'Acknowledge within 1 hour', 'Use qualified, insured staff', 'Leave the work area clean']
+    },
+    {
+      id: pmslaNextId(), service: 'Carpet / Stair Carpet Steam Clean', category: 'Cleaning', role: 'Cleaner',
+      generalApplied: true,
+      commitments: ['Respond within 4 hours', 'Arrive on the agreed date & time', 'Provide photo proof of completion', 'Notify immediately of any delays']
+    }
+  ];
+  function pmslaCategoryNames() { return PMSLA_TAXONOMY.map(function (c) { return c.category; }); }
+  function pmslaRolesForCategory(catName) {
+    var cat = PMSLA_TAXONOMY.find(function (c) { return c.category === catName; });
+    return cat ? cat.roles.map(function (r) { return r.role; }) : [];
+  }
+  function pmslaServicesForRole(catName, roleName) {
+    var cat = PMSLA_TAXONOMY.find(function (c) { return c.category === catName; });
+    if (!cat) return [];
+    var role = cat.roles.find(function (r) { return r.role === roleName; });
+    return role ? role.services.slice() : [];
+  }
+  function pmslaAppliedCount() { return PMSLA_SERVICES.filter(function (s) { return s.generalApplied; }).length; }
+
   var PMJR_COLORS = { purple: '#7c5cdb', navy: '#1e2a44', brown: '#b0703f', teal: '#0f9488' };
   var PMJR_DEFAULT_REQUIREMENTS = ['Provide access arrangements at least 24 hours before the visit', 'Respond to supplier queries within 1 working day', 'Approve completed work within 3 working days', 'Notify suppliers of any access changes immediately', 'Respond within 4 hours', 'Arrive on the agreed date & time', 'Provide photo proof of completion', 'Use qualified, insured staff'];
 
@@ -29054,7 +29866,11 @@
     { id: 'eot', name: 'End of Tenancy / Deep / Regular / Communal', category: 'Cleaning', role: 'End-of-Tenancy Cleaner', type: 'fixed', basePrice: 124, icon: 'sparkle', active: true, awardMode: 'First-Accepts Mode', description: '',
       cleanTypes: [{ name: 'End of Tenancy', base: 100 }, { name: 'Deep', base: 80 }, { name: 'Regular', base: 60 }, { name: 'Communal', base: 70 }],
       bedroomBase: 20, perBedroom: 15, bedroomIncluded: 1, perBathroom: 30, perExtraRoom: 25 },
-    { id: 'doorentry', name: 'Door Entry / Intercom / Smart Doorbell', category: 'Security & Access', role: 'Smart Home Installer', type: 'quote', icon: 'bolt', active: false, noOfQuotes: 5, description: '' },
+    { id: 'doorentry', name: 'Door Entry / Intercom / Smart Doorbell', category: 'Security & Access', role: 'Smart Home Installer', type: 'quote', icon: 'bolt', active: true, noOfQuotes: 5, description: '' },
+    { id: 'airbnbclean', name: 'Airbnb Turnover Clean', category: 'Cleaning', role: 'Cleaner', type: 'fixed', basePrice: 147.60, icon: 'sparkle', active: true, awardMode: 'First-Accepts Mode', description: '' },
+    { id: 'carpetclean', name: 'Carpet / Stair Carpet Steam Clean', category: 'Cleaning', role: 'Cleaner', type: 'quote', icon: 'sparkle', active: true, noOfQuotes: 5, description: '' },
+    { id: 'boilerservice', name: 'Boiler Service (Annual)', category: 'Gas & Heating', role: 'Gas Safe Engineer', type: 'fixed', basePrice: 120, icon: 'bolt', active: true, awardMode: 'First-Accepts Mode', description: '' },
+    { id: 'boilerrepair', name: 'Boiler Repair / No Hot Water / Gas Leak Emergency', category: 'Gas & Heating', role: 'Gas Safe Engineer', type: 'quote', icon: 'bolt', active: true, noOfQuotes: 5, description: '' },
     { id: 'legionella', name: 'Legionella Risk Assessment', category: 'Compliance & Legal', role: 'Legionella Risk Assessor', type: 'fixed', basePrice: 1240, icon: 'doc', active: true, awardMode: 'First-Accepts Mode', description: '' },
     { id: 'airbnbcheckin', name: 'Airbnb Check-in', category: 'Property Marketing & Agency', role: 'Check-In Clerk', type: 'fixed', basePrice: 97.96, icon: 'wrench', active: true, awardMode: 'First-Accepts Mode', description: '' },
     { id: 'pat', name: 'PAT Testing', category: 'Electrical + compliance & legal', role: 'PAT Tester', type: 'fixed', basePrice: 620, icon: 'wrench', active: true, awardMode: 'First-Accepts Mode', description: '' },
@@ -29083,7 +29899,7 @@
   // (and the Custom Booking "Supplier net price" field, once a card's template is applied) starts
   // from, so re-deriving the same total from that net is self-consistent rather than compounding
   // the fee twice.
-  function pmbookNetFromCardTotal(total) { return total / 1.24; }
+  function pmbookNetFromCardTotal(total) { return Math.round((total / 1.24) * 100) / 100; }
 
   var pmbookInitialized = false;
   var pmbookActiveTab = 'quick';
@@ -31957,6 +32773,8 @@
     if (disputesTitleWrap) disputesTitleWrap.style.display = (view === 'disputes') ? '' : 'none';
     if (disputeDetailTitleWrap) disputeDetailTitleWrap.style.display = (view === 'disputedetail') ? '' : 'none';
     if (invoicesTitleWrap) invoicesTitleWrap.style.display = (view === 'invoices') ? '' : 'none';
+    // Quotes/Service Checklists/Billing/Credit Notes/SLA now match every other module: topbar title
+    // replaces the greeting, heading+subheading live in the topbar rather than in-page.
     if (quotesNewTitleWrap) quotesNewTitleWrap.style.display = (view === 'quotes-new') ? '' : 'none';
     if (serviceChecklistsTitleWrap) serviceChecklistsTitleWrap.style.display = (view === 'service-checklists') ? '' : 'none';
     if (billingTitleWrap) billingTitleWrap.style.display = (view === 'billing') ? '' : 'none';
@@ -34134,7 +34952,7 @@
     // On narrow/mobile widths the sidebar is a slide-in drawer, not a collapsible rail \u2014 the same
     // button should close the drawer there instead of shrinking it to icon-only width. Mirrors the
     // Supplier side's collapse button exactly.
-    if (window.innerWidth <= 420) {
+    if (window.innerWidth <= 860) {
       dashSidebar.classList.remove('mobile-open');
     } else {
       dashSidebar.classList.toggle('collapsed');
@@ -34172,14 +34990,19 @@
         pmbookOpenTplCreate();
       } else if (item.getAttribute('data-nav') === 'quotes-new') {
         showPMView('quotes-new');
+        initPmqrOnce();
       } else if (item.getAttribute('data-nav') === 'service-checklists') {
         showPMView('service-checklists');
+        initPmcklOnce();
       } else if (item.getAttribute('data-nav') === 'billing') {
         showPMView('billing');
+        initPmbillOnce();
       } else if (item.getAttribute('data-nav') === 'credit-notes') {
         showPMView('credit-notes');
+        initPmcnOnce();
       } else if (item.getAttribute('data-nav') === 'sla') {
         showPMView('sla');
+        initPmslaOnce();
       } else if (item.getAttribute('data-nav') === 'retainers') {
         showPMView('retainers');
       } else if (item.getAttribute('data-nav') === 'invoices') {
@@ -34277,14 +35100,31 @@
     ['support', 'finance', 'manager'].forEach(pmObRenderExtraContacts);
   });
   document.getElementById('managePropertiesBtn').addEventListener('click', function () {
-    showToast('Manage Properties isn\u2019t wired up in this prototype yet.');
+    document.querySelectorAll('#pmDashboard .dash-nav-item').forEach(function (i) { i.classList.remove('active'); });
+    var navItem = document.querySelector('#pmDashboard .dash-nav-item[data-nav="properties"]');
+    if (navItem) navItem.classList.add('active');
+    showPMView('properties');
+    initPmpropOnce();
   });
   document.getElementById('bookServiceBtn').addEventListener('click', function () {
-    showToast('Booking flow isn\u2019t wired up in this prototype yet.');
+    pmbookOpenNewBooking();
   });
+  document.getElementById('dashActiveJobsViewAll').addEventListener('click', function () {
+    document.querySelectorAll('#pmDashboard .dash-nav-item').forEach(function (i) { i.classList.remove('active'); });
+    var navItem = document.querySelector('#pmDashboard .dash-nav-item[data-nav="responses"]');
+    if (navItem) navItem.classList.add('active');
+    showPMView('responses');
+    initPmJobsOnce();
+  });
+  // Dashboard Quick Book tiles hand off to the exact same flow a native New Booking > Quick Book
+  // card's "Book Now"/"Request Quote" button triggers (pmbookApplyTemplate): navigate to New
+  // Booking, land on Quick Book, then jump straight into Custom Booking prefilled from that
+  // service's template — not just a search shortcut.
   document.querySelectorAll('.quick-book-tile').forEach(function (tile) {
     tile.addEventListener('click', function () {
-      showToast('Quick-booking "' + tile.getAttribute('data-service') + '" isn\u2019t wired up in this prototype yet.');
+      var svc = PMBOOK_QUICK_SERVICES.find(function (s) { return s.name === tile.getAttribute('data-service'); });
+      pmbookOpenNewBooking();
+      if (svc) pmbookApplyTemplate(svc);
     });
   });
 
@@ -34728,7 +35568,7 @@
   document.getElementById('supSidebarCollapseBtn').addEventListener('click', function () {
     // On narrow/mobile widths the sidebar is a slide-in drawer, not a collapsible rail — the same
     // button should close the drawer there instead of shrinking it to icon-only width.
-    if (window.innerWidth <= 420) {
+    if (window.innerWidth <= 860) {
       supDashSidebar.classList.remove('mobile-open');
     } else {
       supDashSidebar.classList.toggle('collapsed');
@@ -34752,7 +35592,14 @@
     if (!menuBtn || !sidebar) return;
     menuBtn.addEventListener('click', function (e) {
       e.stopPropagation();
+      var opening = !sidebar.classList.contains('mobile-open');
       sidebar.classList.toggle('mobile-open');
+      // The desktop-only icon-rail state can be lingering here from before the viewport ever
+      // dropped into drawer range (e.g. auto-collapsed on a medium-width load, or a manual toggle
+      // at a wider size earlier in the session) — a drawer opening in that state shows icons with
+      // no labels, which isn't a usable nav on a phone. Opening the drawer should always show the
+      // full, labelled version regardless of whatever desktop state it's carrying.
+      if (opening) sidebar.classList.remove('collapsed');
     });
     document.addEventListener('click', function (e) {
       if (sidebar.classList.contains('mobile-open') && !sidebar.contains(e.target) && e.target !== menuBtn && !menuBtn.contains(e.target)) {
@@ -40139,7 +40986,42 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
 
   var adminNotifications = []; // populated dynamically as real events happen (onboarding submitted, edit requests, resubmissions, chat, document resubmits)
   var supNotifications = [];   // same idea, supplier-side (chat from admin, approved/declined, resubmit requested)
-  var pmNotifications = [];    // same idea again, PM-side
+  // PM-side. Unlike supNotifications/adminNotifications (which stay empty until something happens
+  // live in the session), this one is seeded with a realistic notification history up front — the
+  // reference mockup shows an established, many-page inbox (bills, deposits, supplier activity,
+  // compliance), not an empty one, and the whole point of the redesign is to show that pattern
+  // working convincingly. Newest-first, matching how pushPmNotification prepends new entries too.
+  var pmNotifications = [
+    { type: 'update', title: 'Your bill has been finalised', desc: 'Your billing period 2026-07-01 \u2013 2026-07-15 has been finalised at \u00a33,174.94. This will collect via Direct Debit on 15 Jul 2026.', date: 'Yesterday', unread: true },
+    { type: 'update', title: 'Your pre-invoice is ready for review', desc: 'Your billing period 2026-07-01 \u2013 2026-07-15 is ready. The total is \u00a33,174.94 and you have 48 hours to flag any line items before it locks.', date: '3 days ago', unread: true },
+    { type: 'update', title: 'Deposit of \u00a31,019.98 received', desc: 'Your deposit of \u00a31,019.98 for job #2628 (Appliance Installation (all white goods)) has been received and the job has been scheduled.', date: '6 days ago', unread: true },
+    { type: 'update', title: 'Supplier did not show up', desc: 'Your job was not completed as scheduled. We\u2019ve marked it as a no-show and notified the supplier \u2014 you can rebook or raise a dispute from the job.', date: '6 days ago', unread: true },
+    { type: 'update', title: 'New supplier ticket', desc: 'Liam Greenwood: Found work larger than agreed \u2014 the scope on-site doesn\u2019t match the booking. Review and respond from Tickets.', date: '6 days ago', unread: true },
+    { type: 'update', title: 'EICR \u2014 Electrical Installation Condition Report expiring', desc: 'Homeland Heights\u2019 EICR expires in 30 days. Book a renewal now to avoid a compliance gap.', date: '6 days ago', unread: true },
+    { type: 'update', title: 'Quote received for Boiler Repair', desc: 'KEY RIDERS LTD submitted a quote of \u00a3175.68 for the emergency boiler repair at Travelodge Hotels Ltd. Review and award from Quotes.', date: '1 week ago', unread: true },
+    { type: 'update', title: 'Job awarded', desc: 'Rewiring at 45-47 has been awarded to GRIFFIN RAIL WHEEL LTD. Scheduled for 9 Jul 2026.', date: '1 week ago', unread: true },
+    { type: 'update', title: 'Credit note applied', desc: 'A credit note of \u00a324.00 for Carpet / Stair Carpet Steam Clean at Q & Q Recovery has been applied to your next billing period.', date: '1 week ago', unread: true },
+    { type: 'update', title: 'Dispute resolved', desc: 'Your dispute on Boiler Service (Annual) at Old Shades has been resolved \u2014 a partial refund of \u00a364.00 has been credited.', date: '1 week ago', unread: true },
+    { type: 'update', title: 'Gas Safety Certificate expired', desc: 'Homeland 2\u2019s CP12 expired 155 days ago. This property can\u2019t be safely let until a new certificate is on file.', date: '2 weeks ago', unread: true },
+    { type: 'update', title: 'Your bill has been finalised', desc: 'Your billing period 2026-06-16 \u2013 2026-06-30 has been finalised at \u00a32,918.40. This has collected via Direct Debit.', date: '2 weeks ago', unread: true },
+    { type: 'update', title: 'New message from supplier', desc: 'Nadia Reid: Running about 20 minutes late to Flat 59, 128 Mill Lane \u2014 traffic on the way over.', date: '2 weeks ago', unread: true },
+    { type: 'update', title: 'Job completed', desc: 'PAT Testing at Q & Q Recovery has been marked complete with photo evidence attached. Approve to release payment.', date: '2 weeks ago', unread: true },
+    { type: 'update', title: 'Quote request expiring soon', desc: 'Your quote request for Door Entry / Intercom / Smart Doorbell at Carrington expires in 2 hours with no responses yet.', date: '2 weeks ago', unread: false },
+    { type: 'update', title: 'Deposit of \u00a3588.96 received', desc: 'Your deposit of \u00a3588.96 for job #2778 (End of Tenancy / Deep / Regular / Communal) has been received and the job has been scheduled.', date: '3 weeks ago', unread: false },
+    { type: 'update', title: 'Property compliance updated', desc: 'Oakwood Cottage\u2019s LOLER certificate has been renewed and is now compliant until 20 Mar 2027.', date: '3 weeks ago', unread: false },
+    { type: 'update', title: 'Your pre-invoice is ready for review', desc: 'Your billing period 2026-06-16 \u2013 2026-06-30 is ready. The total is \u00a32,918.40 and you have 48 hours to flag any line items.', date: '3 weeks ago', unread: false },
+    { type: 'update', title: 'New supplier ticket', desc: 'rajat: Access code for Q & Q Recovery didn\u2019t work on arrival \u2014 had to call the tenant directly.', date: '3 weeks ago', unread: false },
+    { type: 'update', title: 'Job awarded', desc: 'Gas Safety Certificate (CP12) at Old Shades has been awarded to Liam Greenwood. Scheduled for 10 Jul 2026.', date: '3 weeks ago', unread: false },
+    { type: 'update', title: 'Quote received for Carpet Clean', desc: 'Nadia Reid Gardener submitted a quote for Carpet / Stair Carpet Steam Clean at Carrington. Review and award from Quotes.', date: '3 weeks ago', unread: false },
+    { type: 'update', title: 'Deposit of \u00a3403.20 received', desc: 'Your deposit of \u00a3403.20 for job #2758 (Boiler Service (Annual)) has been received and the job has been scheduled.', date: '4 weeks ago', unread: false },
+    { type: 'update', title: 'Your bill has been finalised', desc: 'Your billing period 2026-06-01 \u2013 2026-06-15 has been finalised at \u00a32,104.16. This has collected via Direct Debit.', date: '4 weeks ago', unread: false },
+    { type: 'update', title: 'EPC \u2014 Energy Performance Certificate expired', desc: 'Flat 59, 128 Mill Lane\u2019s EPC expired 2 days ago. Book a renewal to keep this property lettable.', date: '4 weeks ago', unread: false },
+    { type: 'update', title: 'Job completed', desc: 'Communal Area Clean at Carrington has been marked complete with photo evidence attached. Approve to release payment.', date: '4 weeks ago', unread: false },
+    { type: 'update', title: 'New message from supplier', desc: 'KEY RIDERS LTD: Job at Carrington finished ahead of schedule, photos uploaded for sign-off.', date: '1 month ago', unread: false },
+    { type: 'update', title: 'Credit note applied', desc: 'A credit note of \u00a312.00 for PAT Testing at Q & Q Recovery has been applied to your next billing period.', date: '1 month ago', unread: false },
+    { type: 'update', title: 'Property added to portfolio', desc: 'Flat 8, 22 Park Avenue has been added to your portfolio under the Manchester branch.', date: '1 month ago', unread: false }
+  ];
+  // same idea again, PM-side
 
   var jobIcon = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>';
   var alertIcon = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>';
@@ -40151,11 +41033,13 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
     chat: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>',
     document: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>',
     approved: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
-    declined: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>'
+    declined: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+    update: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>'
   };
   var NOTIF_ICON_CLASS = {
     onboarding: 'type-job', request: 'type-warn', resubmit: 'type-warn',
-    chat: 'type-job', document: 'type-warn', approved: 'type-success', declined: 'type-alert'
+    chat: 'type-job', document: 'type-warn', approved: 'type-success', declined: 'type-alert',
+    update: 'type-job'
   };
   function notifIconHtml(type) { return NOTIF_ICON_HTML[type] || alertIcon; }
   function notifIconClass(type) { return NOTIF_ICON_CLASS[type] || 'type-alert'; }
@@ -40379,7 +41263,7 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
     // Below 420px the sidebar is a slide-in drawer, not a collapsible rail — the collapse button
     // should close the drawer there instead of shrinking it to icon-only width (which would leave
     // a narrow, half-open drawer rather than actually getting it out of the way).
-    if (window.innerWidth <= 420) {
+    if (window.innerWidth <= 860) {
       sidebarEl.classList.remove('mobile-open');
     } else {
       sidebarEl.classList.toggle('collapsed');
@@ -43357,25 +44241,59 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
       });
     });
   }
-  // PM's own equivalent — same shape as renderSupNotifications, minus the supplier-only floating
-  // toast integration (supRequestFloatNotif), which PM doesn't have.
+  // PM's own equivalent of renderSupNotifications — richer than the shared shape (paginated, with
+  // an unread-count subtitle and a title-row date + expand/collapse chevron per row), since PM's
+  // notification panel follows its own reference mockup rather than the plain shared layout.
+  var pmNotifPage = 1;
+  var PM_NOTIF_PAGE_SIZE = 10;
   function renderPmNotifications() {
     var list = document.getElementById('pmNotifListContent');
     var empty = document.getElementById('pmNotifEmpty');
+    var foot = document.getElementById('pmNotifFoot');
     if (!list) return;
-    list.innerHTML = pmNotifications.map(function (n, i) {
-      return '<div class="notif-row' + (n.unread ? ' unread' : '') + '" data-pm-notif-idx="' + i + '">' +
+    var total = pmNotifications.length;
+    var totalPages = Math.max(1, Math.ceil(total / PM_NOTIF_PAGE_SIZE));
+    if (pmNotifPage > totalPages) pmNotifPage = totalPages;
+    if (pmNotifPage < 1) pmNotifPage = 1;
+    var startIdx = (pmNotifPage - 1) * PM_NOTIF_PAGE_SIZE;
+    var pageItems = pmNotifications.slice(startIdx, startIdx + PM_NOTIF_PAGE_SIZE);
+
+    list.innerHTML = pageItems.map(function (n, i) {
+      var idx = startIdx + i;
+      return '<div class="notif-row' + (n.unread ? ' unread' : '') + '" data-pm-notif-idx="' + idx + '">' +
         '<div class="nr-icon ' + notifIconClass(n.type) + '">' + notifIconHtml(n.type) + '</div>' +
-        '<div class="nr-body"><div class="nr-title">' + n.title + '</div><div class="nr-desc">' + n.desc + '</div><div class="nr-date">' + n.date + '</div></div>' +
-        (n.unread ? '<div class="nr-dot"></div>' : '') +
+        '<div class="nr-body">' +
+          '<div class="nr-title-row"><div class="nr-title">' + n.title + '</div><div class="nr-date">' + n.date + '</div></div>' +
+          '<div class="nr-desc">' + n.desc + '</div>' +
+        '</div>' +
+        '<div class="nr-side">' +
+          (n.unread ? '<div class="nr-dot"></div>' : '<div style="width:8px;height:8px;"></div>') +
+          '<button type="button" class="nr-chevron" data-pm-notif-chevron aria-label="Expand"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>' +
+        '</div>' +
       '</div>';
     }).join('');
-    if (empty) empty.style.display = pmNotifications.length ? 'none' : '';
+
+    if (empty) empty.style.display = total ? 'none' : '';
+    if (foot) foot.style.display = total ? '' : 'none';
+
     var unreadCount = pmNotifications.filter(function (n) { return n.unread; }).length;
     var dot = document.getElementById('pmBellDot');
     if (dot) dot.style.display = unreadCount > 0 ? '' : 'none';
+    var unreadSub = document.getElementById('pmNotifUnreadSub');
+    if (unreadSub) unreadSub.textContent = unreadCount + ' unread';
+
+    var rangeText = document.getElementById('pmNotifRangeText');
+    if (rangeText) rangeText.textContent = total ? ((startIdx + 1) + '\u2013' + Math.min(startIdx + PM_NOTIF_PAGE_SIZE, total) + ' of ' + total) : '0 of 0';
+    var pageText = document.getElementById('pmNotifPageText');
+    if (pageText) pageText.textContent = pmNotifPage + ' / ' + totalPages;
+    var prevBtn = document.getElementById('pmNotifPrevBtn');
+    if (prevBtn) prevBtn.disabled = pmNotifPage <= 1;
+    var nextBtn = document.getElementById('pmNotifNextBtn');
+    if (nextBtn) nextBtn.disabled = pmNotifPage >= totalPages;
+
     list.querySelectorAll('.notif-row').forEach(function (row) {
-      row.addEventListener('click', function () {
+      row.addEventListener('click', function (e) {
+        if (e.target.closest('[data-pm-notif-chevron]')) return;
         var idx = parseInt(row.getAttribute('data-pm-notif-idx'), 10);
         var n = pmNotifications[idx];
         if (!n) return;
@@ -43385,6 +44303,13 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
         if (typeof n.onClick === 'function') n.onClick();
         renderPmNotifications();
       });
+      var chevron = row.querySelector('[data-pm-notif-chevron]');
+      if (chevron) {
+        chevron.addEventListener('click', function (e) {
+          e.stopPropagation();
+          row.classList.toggle('expanded');
+        });
+      }
     });
   }
   function checkAdminNewRequestNotification() {
@@ -43507,6 +44432,23 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
       pmNotifPanel.classList.remove('open');
     }
   });
+  document.getElementById('pmMarkAllReadBtn').addEventListener('click', function () {
+    pmNotifications.forEach(function (n) { n.unread = false; });
+    renderPmNotifications();
+  });
+  document.getElementById('pmNotifPrevBtn').addEventListener('click', function () {
+    if (this.disabled) return;
+    pmNotifPage -= 1;
+    renderPmNotifications();
+    document.getElementById('pmNotifListContent').scrollIntoView({ block: 'nearest' });
+  });
+  document.getElementById('pmNotifNextBtn').addEventListener('click', function () {
+    if (this.disabled) return;
+    pmNotifPage += 1;
+    renderPmNotifications();
+    document.getElementById('pmNotifListContent').scrollIntoView({ block: 'nearest' });
+  });
+  renderPmNotifications();
   // Seed one starting example of each purely event-driven notification type (the ones with no
   // persistent state to derive from — a submitted application, an incoming chat message, a specific
   // document coming back) so both notification panels show the full range described in the product
@@ -49541,8 +50483,101 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
       description: 'Annual gas safety inspection and certification.',
       serviceIds: [svcpServices[1].id], // Gas Safety Certificate (CP12)
       sections: [cklMakeSection('Boiler', cklSampleTasks().concat([cklMakeTask('Share working video', 'done', false)]))]
+    }),
+    /* ---------- PM's own checklist library (Service Checklists page) ----------
+       One checklist per bookable service, auto-run when that service is booked.
+       Not tied to svcpServices (the smaller Explore Services catalog) — these map
+       to the broader quote/job-booking service taxonomy instead, so serviceIds
+       stays empty and the service name lives directly on `name`. */
+    cklMakeChecklist({
+      source: 'pm', name: 'Airbnb Turnover Clean',
+      sections: [
+        cklMakeSection('Entrance', [cklMakeTask('Confirm keys/access code reset', 'yesno', true), cklMakeTask('Photograph entrance condition', 'done', false)]),
+        cklMakeSection('Kitchen', [cklMakeTask('Clean and sanitise all surfaces', 'done', true), cklMakeTask('Restock welcome consumables', 'done', false)]),
+        cklMakeSection('Bathroom', [cklMakeTask('Clean and restock toiletries', 'done', false), cklMakeTask('Check for leaks', 'yesno', false)]),
+        cklMakeSection('Bedroom', [cklMakeTask('Change and launder all linen', 'done', true), cklMakeTask('Check under furniture for items left behind', 'done', false)]),
+        cklMakeSection('Living Room', [cklMakeTask('Vacuum and tidy', 'done', false), cklMakeTask('Reset thermostat/electronics', 'done', false)])
+      ]
+    }),
+    cklMakeChecklist({
+      source: 'pm', name: "'To Let' / 'For Sale' Boards",
+      sections: [cklMakeSection("'To Let' / 'For Sale' Boards", [
+        cklMakeTask('Confirm board type and wording with agent', 'yesno', true),
+        cklMakeTask('Install board securely and photograph', 'done', true),
+        cklMakeTask('Confirm compliant positioning (no obstruction)', 'yesno', false)
+      ], true)]
+    }),
+    cklMakeChecklist({
+      source: 'pm', name: 'Oven / Cooker / Microwave / Extractor Repair',
+      sections: [cklMakeSection('Oven / Cooker / Microwave / Extractor Repair', [
+        cklMakeTask('Confirm work area is safe to access', 'yesno', true),
+        cklMakeTask('Complete the service as specified', 'done', true),
+        cklMakeTask('Photograph completed work', 'done', false),
+        cklMakeTask('Share working Video', 'done', false)
+      ], true)]
+    }),
+    cklMakeChecklist({
+      source: 'pm', name: 'Carpet / Stair Carpet Steam Clean', description: 'Carpet Cleaning',
+      sections: [cklMakeSection('Carpet / Stair Carpet Steam Clean', [
+        cklMakeTask('Pre-treat visible stains', 'yesno', true),
+        cklMakeTask('Steam clean all carpeted areas', 'done', true),
+        cklMakeTask('Photograph before and after', 'done', false)
+      ], true)]
+    }),
+    cklMakeChecklist({
+      source: 'pm', name: 'Carbon Monoxide Alarm Installation / Inspection',
+      sections: [cklMakeSection('CO Alarm', [
+        cklMakeTask('Test existing alarm(s) if present', 'passfail', true),
+        cklMakeTask('Install/replace alarm per building regs', 'done', true),
+        cklMakeTask('Confirm alarm is audible and within date', 'yesno', true),
+        cklMakeTask('Photograph installed alarm', 'done', false)
+      ])]
+    }),
+    cklMakeChecklist({
+      source: 'pm', name: 'Legionella Risk Assessment',
+      sections: [cklMakeSection('Legionella Risk Assessment', [
+        cklMakeTask('Inspect water system and outlets', 'done', true),
+        cklMakeTask('Record temperatures at sentinel points', 'number', true),
+        cklMakeTask('Photograph tank/cylinder condition', 'done', false)
+      ], true)]
+    }),
+    cklMakeChecklist({
+      source: 'pm', name: 'Battery Storage System Installation',
+      sections: [cklMakeSection('Battery Storage System Installation', [
+        cklMakeTask('Confirm unit sited per manufacturer spec', 'yesno', true),
+        cklMakeTask('Complete electrical installation', 'done', true),
+        cklMakeTask('Test system and confirm charge cycle', 'passfail', true),
+        cklMakeTask('Photograph completed installation', 'done', false)
+      ], true)]
+    }),
+    cklMakeChecklist({
+      source: 'pm', name: 'Electrical Installation / Minor Works Certificate',
+      sections: [cklMakeSection('Electrical Installation / Minor Works Certificate', [
+        cklMakeTask('Confirm isolation before work begins', 'yesno', true),
+        cklMakeTask('Complete works and test circuit', 'passfail', true),
+        cklMakeTask('Photograph completed work', 'done', false)
+      ], true)]
+    }),
+    cklMakeChecklist({
+      source: 'pm', name: 'Door Entry / Intercom / Smart Doorbell',
+      sections: [cklMakeSection('Door', [
+        cklMakeTask('Confirm work area is safe to access', 'yesno', true),
+        cklMakeTask('Complete the service as specified', 'done', true),
+        cklMakeTask('Photograph completed work', 'done', false)
+      ])]
+    }),
+    cklMakeChecklist({
+      source: 'pm', name: 'Biohazard / Trauma Clean',
+      sections: [cklMakeSection('Biohazard / Trauma Clean', [
+        cklMakeTask('Confirm PPE and biohazard protocol followed', 'yesno', true),
+        cklMakeTask('Complete decontamination and disposal', 'done', true),
+        cklMakeTask('Photograph completed area', 'done', false)
+      ], true)]
     })
   ];
+  // Every checklist card uses the single Keylr accent blue (bar / toggle / "Auto-run" pill) rather
+  // than a per-checklist colour palette, keeping the grid visually calm and on-brand.
+  function pmcklAccent() { return '#284890'; }
 
   var cklWorking = null;       // editable clone of the open checklist (admin's on-page editor)
   var cklActiveId = null;      // id of the checklist currently open; null while creating a new one
@@ -50142,6 +51177,17 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
     document.getElementById('pmCklModalOverlay').classList.remove('open');
     pmCklWorking = null;
     pmCklEditingExistingId = null;
+    pmCklPickingService = false;
+  }
+  // Restores the modal's normal (non-picker) layout: view toggle + name/description/sections
+  // visible, the library's Category/Service picker step hidden. Every entry point that already
+  // knows its service (adapt-from-template, edit-own, the plain "New" opened from inside a
+  // service's own settings) calls this so the modal never gets stuck in the picker's collapsed
+  // state left over from a previous, cancelled library "+ New Checklist" flow.
+  function pmCklShowNormalForm() {
+    pmCklPickingService = false;
+    document.getElementById('pmCklServicePickerWrap').style.display = 'none';
+    document.getElementById('pmCklViewToggle').style.display = '';
   }
   // "Start from template": always opens a fresh, independent clone of the admin's checklist -
   // saving always produces a new PM-owned entry, never edits the shared admin original.
@@ -50153,6 +51199,7 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
     pmCklEditingExistingId = null;
     cklResetKeys(pmCklOpenSections);
     pmCklOpenSectionMenu = null;
+    pmCklShowNormalForm();
     document.getElementById('pmCklModalTitle').textContent = prefillName;
     document.getElementById('pmCklModalSub').textContent = 'From Keylr\u2019s ' + prefillName + ' \u2014 edit freely, this becomes your own copy.';
     document.getElementById('pmCklDeleteWrap').style.display = 'none';
@@ -50169,25 +51216,104 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
     pmCklEditingExistingId = id;
     cklResetKeys(pmCklOpenSections);
     pmCklOpenSectionMenu = null;
-    document.getElementById('pmCklModalTitle').textContent = pmCklWorking.name;
-    document.getElementById('pmCklModalSub').textContent = 'Update this checklist\u2019s sections and tasks.';
+    // Auto-expand a single-section checklist (the common case for these service checklists) so its
+    // tasks are visible immediately, matching the reference "Edit Checklist" mockup, rather than
+    // requiring an extra click to see what's inside the only section there is.
+    if (pmCklWorking.sections.length === 1) pmCklOpenSections[pmCklWorking.sections[0].id] = true;
+    pmCklShowNormalForm();
+    document.getElementById('pmCklModalTitle').textContent = 'Edit Checklist';
+    document.getElementById('pmCklModalSub').textContent = pmCklWorking.name;
+    document.getElementById('pmCklSectionsHint').textContent = 'Editing the saved checklist for this service.';
     document.getElementById('pmCklDeleteWrap').style.display = '';
-    document.getElementById('pmCklSaveBtn').textContent = 'Update Checklist';
+    document.getElementById('pmCklSaveBtn').textContent = 'Save Changes';
     pmCklRenderModal();
     pmCklOpenModal();
   }
-  // "Build custom" -> "+ New checklist": a blank one.
+  // "Build custom" -> "+ New checklist": a blank one (opened from inside a service's own settings,
+  // where the service context is already implicit — no picker needed).
   function pmCklOpenNew() {
     pmCklWorking = cklMakeChecklist({ source: 'pm' });
     pmCklEditingExistingId = null;
     cklResetKeys(pmCklOpenSections);
     pmCklOpenSectionMenu = null;
+    pmCklShowNormalForm();
     document.getElementById('pmCklModalTitle').textContent = 'New Checklist';
     document.getElementById('pmCklModalSub').textContent = 'Build your own checklist for this template.';
+    document.getElementById('pmCklSectionsHint').textContent = 'Add sections, then edit their tasks.';
     document.getElementById('pmCklDeleteWrap').style.display = 'none';
     document.getElementById('pmCklSaveBtn').textContent = 'Save Checklist';
     pmCklRenderModal();
     pmCklOpenModal();
+  }
+
+  /* ---------- Service Checklists library page: "+ New Checklist" (pmckl) ----------
+     Opens the same modal in a Category/Service-picker state first (matching the reference "New
+     Service Checklist" mockup), since the library has no pre-established service context. Once a
+     service is chosen this reveals the normal build form, pre-populated with the same "sample
+     tasks mapped from this service" starting point the Admin editor uses for a new section. */
+  var pmCklPickingService = false;
+  var PMCKL_CATEGORIES = [
+    { name: 'Cleaning', services: ['Airbnb Turnover Clean', 'Carpet / Stair Carpet Steam Clean', 'Biohazard / Trauma Clean', 'Post-Build / Upholstery / Oven / Mould Clean'] },
+    { name: 'Compliance & Safety', services: ['Carbon Monoxide Alarm Installation / Inspection', 'Legionella Risk Assessment', 'Electrical Installation / Minor Works Certificate'] },
+    { name: 'Electrical', services: ['Door Entry / Intercom / Smart Doorbell', 'Battery Storage System Installation'] },
+    { name: 'Gas & Heating', services: ['Boiler Repair / No Hot Water / Gas Leak Emergency'] },
+    { name: 'Marketing', services: ["'To Let' / 'For Sale' Boards"] },
+    { name: 'Appliance Repair', services: ['Oven / Cooker / Microwave / Extractor Repair'] }
+  ];
+  function pmCklPickerResetUI() {
+    var catBtn = document.querySelector('.pm-custom-dd-btn[data-dd="pmCklCategoryPick"]');
+    var svcBtn = document.querySelector('.pm-custom-dd-btn[data-dd="pmCklServicePick"]');
+    catBtn.querySelector('.cdd-value').textContent = 'Select category';
+    catBtn.querySelector('.cdd-value').classList.add('cdd-placeholder');
+    svcBtn.querySelector('.cdd-value').textContent = 'Pick a category first';
+    svcBtn.querySelector('.cdd-value').classList.add('cdd-placeholder');
+    svcBtn.disabled = true;
+    document.getElementById('pmCklCategoryPickMenu').innerHTML = PMCKL_CATEGORIES.map(function (c) {
+      return '<div class="cdd-item" data-value="' + c.name + '">' + c.name + '<svg class="cdd-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>';
+    }).join('');
+    document.getElementById('pmCklServicePickMenu').innerHTML = '';
+    document.getElementById('pmCklPickerPlaceholder').style.display = '';
+    document.getElementById('pmCklViewToggle').style.display = 'none';
+    document.getElementById('pmCklBuildTab').style.display = 'none';
+    document.getElementById('pmCklPreviewTab').style.display = 'none';
+  }
+  function pmCklOpenNewFromLibrary() {
+    pmCklPickingService = true;
+    pmCklWorking = null;
+    pmCklEditingExistingId = null;
+    document.getElementById('pmCklModalTitle').textContent = 'New Service Checklist';
+    document.getElementById('pmCklModalSub').textContent = 'Pick a service, then edit its sections and tasks.';
+    document.getElementById('pmCklDeleteWrap').style.display = 'none';
+    document.getElementById('pmCklSaveBtn').textContent = 'Save Checklist';
+    document.getElementById('pmCklServicePickerWrap').style.display = 'block';
+    pmCklPickerResetUI();
+    pmCklOpenModal();
+  }
+  // Called once a service is chosen in the library's picker step. If that service already has a
+  // PM checklist, opens it for editing instead of silently creating a duplicate; otherwise starts
+  // a fresh one pre-populated with one section (named after the service) and the same 3 sample
+  // tasks a newly-added predefined section gets in the Admin/embedded editor.
+  function pmCklPickerChooseService(serviceName) {
+    var existing = svcpChecklists.find(function (c) { return c.source === 'pm' && c.name === serviceName; });
+    if (existing) {
+      showToast('That service already has a checklist \u2014 opening it to edit.');
+      pmCklOpenEditOwn(existing.id);
+      return;
+    }
+    pmCklWorking = cklMakeChecklist({ source: 'pm', name: serviceName, sections: [cklMakeSection(serviceName, cklSampleTasks(), true)] });
+    pmCklEditingExistingId = null;
+    cklResetKeys(pmCklOpenSections);
+    pmCklOpenSectionMenu = null;
+    pmCklOpenSections[pmCklWorking.sections[0].id] = true;
+    document.getElementById('pmCklModalTitle').textContent = serviceName;
+    document.getElementById('pmCklModalSub').textContent = 'Build the checklist for this service.';
+    document.getElementById('pmCklSectionsHint').textContent = 'Sections + sample tasks mapped from this service \u2014 edit, then save.';
+    // Once a service is actually chosen, the picker step is done with -- hide it entirely (matching
+    // the reference "New Service Checklist" mockup, a clean name/sections form with no leftover
+    // Category/Service row) rather than leaving those dropdowns sitting above the form.
+    document.getElementById('pmCklServicePickerWrap').style.display = 'none';
+    document.getElementById('pmCklViewToggle').style.display = '';
+    pmCklRenderModal();
   }
 
   /* ---------- Job Media Permissions (PM checklist modal only) ----------
@@ -50684,7 +51810,12 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
   });
   document.getElementById('pmCklDescInput').addEventListener('input', function () { if (pmCklWorking) pmCklWorking.description = this.value; });
   document.getElementById('pmCklSaveBtn').addEventListener('click', function () {
-    if (!pmCklWorking || !pmsvcWorking) return;
+    // Guard only needs pmCklWorking now — pmsvcWorking is only set when this modal was opened from
+    // inside a specific service's own "Checklist & job report" section; opened from the standalone
+    // Service Checklists library page (pmckl*) there's no service context to update, so that whole
+    // side-effect block below is conditional rather than assumed.
+    if (!pmCklWorking) return;
+    if (pmCklPickingService && !pmCklWorking.name) return; // library "New" flow: must pick a service first
     var savedId;
     if (pmCklEditingExistingId) {
       var idx = svcpChecklists.findIndex(function (c) { return c.id === pmCklEditingExistingId; });
@@ -50695,10 +51826,13 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
       svcpChecklists.push(toSave);
       savedId = toSave.id;
     }
-    pmsvcWorking.config.checklist.checklistId = savedId;
+    if (pmsvcWorking) {
+      pmsvcWorking.config.checklist.checklistId = savedId;
+      pmsvcRenderSections();
+      pmsvcUpdateDirty();
+    }
     pmCklCloseModal();
-    pmsvcRenderSections();
-    pmsvcUpdateDirty();
+    if (typeof pmcklRenderGrid === 'function') pmcklRenderGrid();
     showToast('Checklist saved.');
   });
   document.getElementById('pmCklDeleteBtn').addEventListener('click', function () {
@@ -50708,9 +51842,45 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
       pmsvcWorking.config.checklist.checklistId = null;
     }
     pmCklCloseModal();
-    pmsvcRenderSections();
-    pmsvcUpdateDirty();
+    if (pmsvcWorking) { pmsvcRenderSections(); pmsvcUpdateDirty(); }
+    if (typeof pmcklRenderGrid === 'function') pmcklRenderGrid();
     showToast('Checklist deleted.');
+  });
+
+  /* ---------- New Service Checklist: Category/Service picker (library-only flow) ----------
+     These two menus get their contents rebuilt each time the picker resets (category list on
+     open, service list once a category is chosen), so they need their own delegated listeners on
+     the stable menu container rather than the generic once-at-load-time [data-dd] item wiring,
+     which only ever saw them empty. */
+  document.getElementById('pmCklCategoryPickMenu').addEventListener('click', function (e) {
+    var item = e.target.closest('.cdd-item');
+    if (!item) return;
+    var catName = item.getAttribute('data-value');
+    var catBtn = document.querySelector('.pm-custom-dd-btn[data-dd="pmCklCategoryPick"]');
+    var catValueEl = catBtn.querySelector('.cdd-value');
+    catValueEl.textContent = catName;
+    catValueEl.classList.remove('cdd-placeholder');
+    closeAllCustomDropdowns();
+    var cat = PMCKL_CATEGORIES.find(function (c) { return c.name === catName; });
+    var svcBtn = document.querySelector('.pm-custom-dd-btn[data-dd="pmCklServicePick"]');
+    svcBtn.disabled = false;
+    var svcValueEl = svcBtn.querySelector('.cdd-value');
+    svcValueEl.textContent = 'Select service';
+    svcValueEl.classList.add('cdd-placeholder');
+    document.getElementById('pmCklServicePickMenu').innerHTML = cat ? cat.services.map(function (s) {
+      return '<div class="cdd-item" data-value="' + supjrEscapeHtml(s) + '">' + supjrEscapeHtml(s) + '<svg class="cdd-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>';
+    }).join('') : '';
+  });
+  document.getElementById('pmCklServicePickMenu').addEventListener('click', function (e) {
+    var item = e.target.closest('.cdd-item');
+    if (!item) return;
+    var svcName = item.getAttribute('data-value');
+    var svcBtn = document.querySelector('.pm-custom-dd-btn[data-dd="pmCklServicePick"]');
+    var svcValueEl = svcBtn.querySelector('.cdd-value');
+    svcValueEl.textContent = svcName;
+    svcValueEl.classList.remove('cdd-placeholder');
+    closeAllCustomDropdowns();
+    pmCklPickerChooseService(svcName);
   });
 
   /* ---------- PM checklist modal: section / task authoring + dropdown delegate (mirrors Admin's) ---------- */
@@ -56907,6 +58077,784 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
   renderApplicantList();
   renderSupplierList();
   renderSupAppList();
+
+  /* =========================================================
+     QUOTES module (PMQR) — list table + filters, plus the split
+     list/detail view entered by clicking a row or table entry.
+  ========================================================== */
+  var pmqrSearchQuery = '';
+  var pmqrFilters = { status: 'All Statuses', service: 'All Services', property: 'All Properties', manager: 'All Managers', deadline: 'Any Deadline' };
+  var pmqrSelectedId = null;
+  var PMQR_DD_DEFAULTS = { pmqrStatusFilter: 'All Statuses', pmqrServiceFilter: 'All Services', pmqrPropertyFilter: 'All Properties', pmqrManagerFilter: 'All Managers', pmqrDeadlineFilter: 'Any Deadline' };
+
+  function pmqrCddItem(value, selected) {
+    return '<div class="cdd-item' + (selected ? ' selected' : '') + '" data-value="' + supjrEscapeHtml(value) + '">' + supjrEscapeHtml(value) + '<svg class="cdd-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>';
+  }
+  function pmqrPopulateFilterMenus() {
+    document.getElementById('pmqrServiceFilterMenu').innerHTML = pmqrCddItem('All Services', true) +
+      PMQR_SERVICES.map(function (s) { return pmqrCddItem(s.name, false); }).join('');
+    document.getElementById('pmqrPropertyFilterMenu').innerHTML = pmqrCddItem('All Properties', true) +
+      PMQR_PROPERTIES.map(function (p) { return pmqrCddItem(p.name, false); }).join('');
+    document.getElementById('pmqrManagerFilterMenu').innerHTML = pmqrCddItem('All Managers', true) +
+      PMQR_MANAGERS.map(function (m) { return pmqrCddItem(m.name, false); }).join('');
+  }
+
+  function pmqrFilteredRequests() {
+    var q = pmqrSearchQuery.trim().toLowerCase();
+    return PMQR_REQUESTS.filter(function (r) {
+      if (pmqrFilters.status === 'Awaiting Quotes' && r.status !== 'awaiting') return false;
+      if (pmqrFilters.status === 'Closed' && r.status !== 'closed') return false;
+      if (pmqrFilters.service !== 'All Services' && r.service !== pmqrFilters.service) return false;
+      if (pmqrFilters.property !== 'All Properties' && r.property !== pmqrFilters.property) return false;
+      if (pmqrFilters.manager !== 'All Managers' && r.manager !== pmqrFilters.manager) return false;
+      if (pmqrFilters.deadline !== 'Any Deadline' && r.deadline !== 'expired') return false;
+      if (q) {
+        var hay = (r.id + ' ' + r.service + ' ' + r.property + ' ' + r.manager).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function pmqrDeadlineText(r) { return r.deadline === 'closed' ? 'Closed' : 'Expired'; }
+  function pmqrStatusPillHtml(status) {
+    return status === 'awaiting'
+      ? '<span class="status-pill amber"><span class="dot"></span>Awaiting Quotes</span>'
+      : '<span class="status-pill gray"><span class="dot"></span>Closed</span>';
+  }
+
+  function pmqrTableRowHtml(r) {
+    var svc = pmqrSvcByName(r.service);
+    var prop = pmqrPropByName(r.property);
+    var mgr = PMQR_MANAGERS[0];
+    return '<tr class="pmqr-row" data-qr-id="' + r.id + '">' +
+      '<td class="pmqr-jobid">' + r.id + '</td>' +
+      '<td><div class="pmqr-svc-name">' + supjrEscapeHtml(r.service) + '</div><div class="pmqr-svc-cat">' + supjrEscapeHtml(svc ? svc.category : '') + '</div></td>' +
+      '<td><div class="pmqr-prop-name">' + supjrEscapeHtml(prop ? prop.name : r.property) + '</div><div class="pmqr-prop-addr">' + supjrEscapeHtml(prop ? prop.addr : '') + '</div></td>' +
+      '<td><div class="pmqr-mgr-name">' + supjrEscapeHtml(r.manager) + '</div><div class="pmqr-mgr-co">' + supjrEscapeHtml(mgr.company) + '</div></td>' +
+      '<td><span class="pmqr-qcount">0</span></td>' +
+      '<td class="pmqr-qrange">\u2014</td>' +
+      '<td class="pmqr-deadline' + (r.deadline === 'expired' ? ' expired' : '') + '">' + pmqrDeadlineText(r) + '</td>' +
+      '<td>' + pmqrStatusPillHtml(r.status) + '</td>' +
+      '<td class="pmqr-row-chevron-cell"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></td>' +
+    '</tr>';
+  }
+
+  function pmqrRenderTable() {
+    var body = document.getElementById('pmqrTableBody');
+    var list = pmqrFilteredRequests();
+    body.innerHTML = list.length ? list.map(pmqrTableRowHtml).join('') : '<tr class="pmqr-empty-row"><td colspan="9">No quote requests match your filters.</td></tr>';
+    body.querySelectorAll('.pmqr-row').forEach(function (row) {
+      row.addEventListener('click', function () { pmqrOpenDetail(row.getAttribute('data-qr-id')); });
+    });
+    document.getElementById('pmqrCountBadge').textContent = PMQR_REQUESTS.length + ' request' + (PMQR_REQUESTS.length === 1 ? '' : 's');
+  }
+
+  function pmqrCardHtml(r, active) {
+    var prop = pmqrPropByName(r.property);
+    var svc = pmqrSvcByName(r.service);
+    var footer = r.respondedBy
+      ? '<span class="lbl ' + (r.deadline === 'expired' ? 'expired' : 'closed') + '">' + pmqrDeadlineText(r) + '</span><span class="desc">' + supjrEscapeHtml(r.respondedBy) + ' ' + supjrEscapeHtml(r.respondedAction || '') + ' \u00b7 ' + supjrEscapeHtml(r.respondedDate || '') + '</span>'
+      : '';
+    return '<div class="pmqr-card' + (active ? ' active' : '') + '" data-qr-id="' + r.id + '">' +
+      '<div class="pmqr-card-top">' +
+      '<div class="pmqr-card-avatar" style="background:' + (prop ? prop.color : '#284890') + ';">' + (prop ? prop.initials : '??') + '</div>' +
+      '<div style="flex:1;min-width:0;">' +
+      '<div class="pmqr-card-id-row"><span class="pmqr-card-id">' + r.id + '</span>' + pmqrStatusPillHtml(r.status) + '</div>' +
+      '<div class="pmqr-card-title">' + supjrEscapeHtml(r.service) + '</div>' +
+      '<div class="pmqr-card-cat">' + supjrEscapeHtml(svc ? svc.category : '') + '</div>' +
+      '<div class="pmqr-card-addr">' + supjrEscapeHtml(prop ? prop.name : r.property) + '</div>' +
+      '</div></div>' +
+      '<div class="pmqr-card-meta1">Awaiting quotes \u2014 \u2014</div>' +
+      (footer ? '<div class="pmqr-card-meta2">' + footer + '</div>' : '') +
+    '</div>';
+  }
+
+  function pmqrRenderDetailList() {
+    var wrap = document.getElementById('pmqrDetailList');
+    var list = pmqrFilteredRequests();
+    if (!list.length) { wrap.innerHTML = '<div class="pmqr-detail-foot-note" style="padding:30px 10px;text-align:center;">No requests match your filters.</div>'; return; }
+    if (!pmqrSelectedId || !list.some(function (r) { return r.id === pmqrSelectedId; })) {
+      pmqrSelectedId = list[0].id;
+    }
+    wrap.innerHTML = list.map(function (r) { return pmqrCardHtml(r, r.id === pmqrSelectedId); }).join('');
+    wrap.querySelectorAll('.pmqr-card').forEach(function (card) {
+      card.addEventListener('click', function () {
+        pmqrSelectedId = card.getAttribute('data-qr-id');
+        pmqrRenderDetailList();
+        pmqrRenderDetailPanel();
+        pmqrUpdateBreadcrumb();
+      });
+    });
+  }
+
+  function pmqrRenderDetailPanel() {
+    var panel = document.getElementById('pmqrDetailPanel');
+    var footNote = document.getElementById('pmqrDetailFootNote');
+    var r = PMQR_REQUESTS.find(function (x) { return x.id === pmqrSelectedId; });
+    if (!r) { panel.innerHTML = ''; return; }
+    if (r.status === 'awaiting') {
+      panel.innerHTML = '<div class="pmqr-detail-empty">' +
+        '<div class="pmqr-detail-empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>' +
+        '<div class="pmqr-detail-empty-title">Awaiting Supplier Quotes</div>' +
+        '<div class="pmqr-detail-empty-sub">Your request has been broadcast to matched suppliers. Quotes will appear here the moment they\u2019re submitted.</div>' +
+      '</div>';
+      footNote.textContent = 'No action needed yet \u2014 you\u2019ll be notified as quotes arrive.';
+    } else {
+      panel.innerHTML = '<div class="pmqr-detail-empty closed">' +
+        '<div class="pmqr-detail-empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>' +
+        '<div class="pmqr-detail-empty-title">Request Closed</div>' +
+        '<div class="pmqr-detail-empty-sub">' + (r.respondedBy ? (supjrEscapeHtml(r.respondedBy) + ' ' + supjrEscapeHtml(r.respondedAction || 'responded') + ' on ' + supjrEscapeHtml(r.respondedDate || '') + '. This request is no longer open for new quotes.') : 'This request closed without any supplier quotes.') + '</div>' +
+      '</div>';
+      footNote.textContent = 'This quote request is closed.';
+    }
+  }
+
+  function pmqrUpdateBreadcrumb() {
+    var r = PMQR_REQUESTS.find(function (x) { return x.id === pmqrSelectedId; });
+    if (!r) return;
+    document.getElementById('pmqrBreadcrumbId').textContent = r.id;
+    var statusEl = document.getElementById('pmqrBreadcrumbStatus');
+    statusEl.textContent = r.status === 'awaiting' ? 'Awaiting Quotes' : 'Closed';
+    statusEl.className = 'status-pill ' + (r.status === 'awaiting' ? 'amber' : 'gray');
+    document.getElementById('pmqrBreadcrumbTitle').textContent = r.service;
+  }
+
+  function pmqrShowListMode() {
+    document.getElementById('pmqrListMode').style.display = '';
+    document.getElementById('pmqrDetailMode').style.display = 'none';
+    pmqrRenderTable();
+  }
+  function pmqrOpenDetail(id) {
+    pmqrSelectedId = id;
+    document.getElementById('pmqrListMode').style.display = 'none';
+    document.getElementById('pmqrDetailMode').style.display = '';
+    pmqrRenderDetailList();
+    pmqrRenderDetailPanel();
+    pmqrUpdateBreadcrumb();
+  }
+
+  function pmqrSyncFilterDD(key, value) {
+    var btn = document.querySelector('.pm-custom-dd-btn[data-dd="' + key + '"]');
+    if (!btn) return;
+    btn.querySelector('.cdd-value').textContent = value;
+    btn.classList.toggle('filter-active', value !== PMQR_DD_DEFAULTS[key]);
+    var menu = document.querySelector('.pm-custom-dd-menu[data-dd-menu="' + key + '"]');
+    if (menu) menu.querySelectorAll('.cdd-item').forEach(function (it) { it.classList.toggle('selected', it.getAttribute('data-value') === value); });
+  }
+
+  var pmqrDDHandlers = {
+    pmqrStatusFilter: function (v) { pmqrFilters.status = v; pmqrRenderTable(); },
+    pmqrServiceFilter: function (v) { pmqrFilters.service = v; pmqrRenderTable(); },
+    pmqrPropertyFilter: function (v) { pmqrFilters.property = v; pmqrRenderTable(); },
+    pmqrManagerFilter: function (v) { pmqrFilters.manager = v; pmqrRenderTable(); },
+    pmqrDeadlineFilter: function (v) { pmqrFilters.deadline = v; pmqrRenderTable(); }
+  };
+
+  // Wires every .cdd-item currently inside a filter's menu directly (not via delegation on the
+  // menu container). This is deliberate: the app-wide generic dropdown handler is already bound
+  // straight to each .cdd-item for the two *static* menus here (Status, Deadline — present in the
+  // HTML at page load) and calls e.stopPropagation() once it handles a click, which silently
+  // swallows the event before it can bubble up to any delegated listener on the parent menu. Direct,
+  // per-item listeners like the generic system's own aren't affected by that — multiple listeners on
+  // the *same* element all still run; stopPropagation only blocks bubbling to ancestors. Re-called
+  // after the two dynamically-populated menus (Service/Property/Manager) get their innerHTML filled.
+  function pmqrWireFilterMenu(key) {
+    var menu = document.querySelector('.pm-custom-dd-menu[data-dd-menu="' + key + '"]');
+    if (!menu) return;
+    menu.querySelectorAll('.cdd-item[data-value]').forEach(function (item) {
+      item.addEventListener('click', function () {
+        var val = item.getAttribute('data-value');
+        pmqrSyncFilterDD(key, val);
+        pmqrDDHandlers[key](val);
+        closeAllCustomDropdowns();
+      });
+    });
+  }
+
+  function initPmqrOnce() {
+    pmqrRenderTable();
+    if (pmqrInitDone) return;
+    pmqrInitDone = true;
+
+    pmqrPopulateFilterMenus();
+    Object.keys(pmqrDDHandlers).forEach(pmqrWireFilterMenu);
+
+    document.getElementById('pmqrSearchInput').addEventListener('input', function () {
+      pmqrSearchQuery = this.value;
+      pmqrRenderTable();
+    });
+    document.getElementById('pmqrClearBtn').addEventListener('click', function () {
+      pmqrSearchQuery = '';
+      pmqrFilters = { status: 'All Statuses', service: 'All Services', property: 'All Properties', manager: 'All Managers', deadline: 'Any Deadline' };
+      document.getElementById('pmqrSearchInput').value = '';
+      Object.keys(PMQR_DD_DEFAULTS).forEach(function (key) { pmqrSyncFilterDD(key, PMQR_DD_DEFAULTS[key]); });
+      pmqrRenderTable();
+    });
+
+    document.getElementById('pmqrBackBtn').addEventListener('click', pmqrShowListMode);
+    document.getElementById('pmqrViewJobBtn').addEventListener('click', function () {
+      document.querySelectorAll('#pmDashboard .dash-nav-item').forEach(function (i) { i.classList.remove('active'); });
+      var navItem = document.querySelector('.dash-nav-item[data-nav="responses"]');
+      if (navItem) navItem.classList.add('active');
+      showPMView('responses');
+      initPmJobsOnce();
+    });
+  }
+  var pmqrInitDone = false;
+
+  /* =========================================================
+     SERVICE CHECKLISTS library page (PMCKL) — card grid over the PM's
+     own (source:'pm') entries in svcpChecklists, "+ New Checklist"
+     opens the shared #pmCklModalOverlay engine via pmCklOpenNewFromLibrary.
+  ========================================================== */
+  var pmcklSearchQuery = '';
+  var pmcklPendingDeleteId = null;
+
+  function pmcklCardHtml(c) {
+    var counts = cklChecklistCounts(c);
+    var required = 0;
+    c.sections.forEach(function (s) { s.tasks.forEach(function (t) { if (t.required) required++; }); });
+    var accent = pmcklAccent(c.name);
+    return '<div class="pmckl-card" data-pmckl-id="' + c.id + '">' +
+      '<div class="pmckl-card-bar" style="background:' + accent + ';"></div>' +
+      '<div class="pmckl-card-body">' +
+      '<div class="pmckl-card-head">' +
+      '<div><div class="pmckl-card-title">' + supjrEscapeHtml(c.name) + '</div>' +
+      (c.description ? '<div class="pmckl-card-cat">' + supjrEscapeHtml(c.description) + '</div>' : '') + '</div>' +
+      '<button type="button" class="toggle-switch' + (c.active ? ' on' : '') + '"' + (c.active ? ' style="background:' + accent + ';"' : '') + ' data-pmckl-toggle="' + c.id + '" role="switch" aria-checked="' + c.active + '" aria-label="Auto-run on booking"><span class="thumb"></span></button>' +
+      '</div>' +
+      '<div class="pmckl-card-counts"><span>' + counts.sections + ' section' + (counts.sections === 1 ? '' : 's') + '</span><span>' + counts.checks + ' task' + (counts.checks === 1 ? '' : 's') + '</span><span class="req">' + required + ' required</span></div>' +
+      '<div class="pmckl-card-foot">' +
+      (c.active ? '<span class="pmckl-autorun-pill" style="color:' + accent + ';">Auto-run on booking</span>' : '<span></span>') +
+      '<div class="pmckl-card-actions">' +
+      '<button type="button" class="btn btn-secondary-light" data-pmckl-edit="' + c.id + '"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:-1px;"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button>' +
+      '<button type="button" class="svcp-icon-btn danger" data-pmckl-del="' + c.id + '" data-tooltip="Delete checklist" aria-label="Delete checklist"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg></button>' +
+      '</div></div>' +
+      '</div></div>';
+  }
+
+  function pmcklRenderGrid() {
+    var grid = document.getElementById('pmcklGrid');
+    var empty = document.getElementById('pmcklEmpty');
+    if (!grid) return;
+    var q = pmcklSearchQuery.trim().toLowerCase();
+    var list = svcpChecklists.filter(function (c) { return c.source === 'pm'; });
+    if (q) list = list.filter(function (c) { return c.name.toLowerCase().indexOf(q) !== -1; });
+    if (!list.length) { grid.innerHTML = ''; empty.style.display = ''; return; }
+    empty.style.display = 'none';
+    grid.innerHTML = list.map(pmcklCardHtml).join('');
+  }
+
+  function initPmcklOnce() {
+    pmcklRenderGrid();
+    if (pmcklInitDone) return;
+    pmcklInitDone = true;
+
+    document.getElementById('pmcklNewBtn').addEventListener('click', pmCklOpenNewFromLibrary);
+    document.getElementById('pmcklSearchInput').addEventListener('input', function () {
+      pmcklSearchQuery = this.value;
+      pmcklRenderGrid();
+    });
+    document.getElementById('pmcklGrid').addEventListener('click', function (e) {
+      var toggleBtn = e.target.closest('[data-pmckl-toggle]');
+      if (toggleBtn) {
+        var c = cklChecklistById(toggleBtn.getAttribute('data-pmckl-toggle'));
+        if (c) { c.active = !c.active; pmcklRenderGrid(); }
+        return;
+      }
+      var editBtn = e.target.closest('[data-pmckl-edit]');
+      if (editBtn) { pmCklOpenEditOwn(editBtn.getAttribute('data-pmckl-edit')); return; }
+      var delBtn = e.target.closest('[data-pmckl-del]');
+      if (delBtn) {
+        pmcklPendingDeleteId = delBtn.getAttribute('data-pmckl-del');
+        var c2 = cklChecklistById(pmcklPendingDeleteId);
+        document.getElementById('pmcklDeleteDesc').textContent = c2 ? '\u201c' + c2.name + '\u201d will be removed. This can\u2019t be undone.' : 'This checklist will be removed. This can\u2019t be undone.';
+        var pmcklDelOverlay = document.getElementById('pmcklDeleteOverlay');
+        pmcklDelOverlay.classList.add('open');
+        void pmcklDelOverlay.offsetWidth; // force a reflow so the opacity/visibility transition reliably kicks off right away, same as every other confirm-modal-card trigger in this file
+      }
+    });
+    document.getElementById('pmcklDeleteCancel').addEventListener('click', function () {
+      document.getElementById('pmcklDeleteOverlay').classList.remove('open');
+      pmcklPendingDeleteId = null;
+    });
+    document.getElementById('pmcklDeleteOverlay').addEventListener('click', function (e) {
+      if (e.target === this) { this.classList.remove('open'); pmcklPendingDeleteId = null; }
+    });
+    document.getElementById('pmcklDeleteConfirm').addEventListener('click', function () {
+      if (!pmcklPendingDeleteId) return;
+      svcpChecklists = svcpChecklists.filter(function (c) { return c.id !== pmcklPendingDeleteId; });
+      document.getElementById('pmcklDeleteOverlay').classList.remove('open');
+      pmcklPendingDeleteId = null;
+      pmcklRenderGrid();
+      showToast('Checklist deleted.');
+    });
+  }
+  var pmcklInitDone = false;
+
+  /* =========================================================
+     BILLING & PAYMENTS standalone page (PMBILL) — same behaviour as the
+     identical card already shipped in PM Settings > Billing & Payments.
+  ========================================================== */
+  function initPmbillOnce() {
+    if (pmbillInitDone) return;
+    pmbillInitDone = true;
+    document.getElementById('pmbillOpenStripePortalBtn').addEventListener('click', function () {
+      showToast('This would open the Stripe customer portal in a new tab.');
+    });
+  }
+  var pmbillInitDone = false;
+
+  /* =========================================================
+     CREDIT NOTES page (PMCN) — Outstanding/Applied/All tabs, all empty
+     in this mock account (no credit notes have been issued yet).
+  ========================================================== */
+  function pmcnRenderBody() {
+    var body = document.getElementById('pmcnBody');
+    if (!body) return;
+    body.innerHTML = '<div class="pmcn-empty">No credit notes in this view.</div>';
+  }
+  function initPmcnOnce() {
+    pmcnRenderBody();
+    if (pmcnInitDone) return;
+    pmcnInitDone = true;
+    document.querySelectorAll('#pmcnTabs .pmcn-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        document.querySelectorAll('#pmcnTabs .pmcn-tab').forEach(function (t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+        pmcnRenderBody();
+      });
+    });
+  }
+  var pmcnInitDone = false;
+
+  /* =========================================================
+     SLA module (PMSLA) — list (General SLA banner + per-service card
+     grid), Edit General SLA, and SLA Configuration (add/edit a
+     per-service SLA with a cascading Category -> Role -> Service
+     search-select), plus its delete confirmation.
+  ========================================================== */
+  var pmslaMode = 'list'; // 'list' | 'editGeneral' | 'config'
+  var pmslaEditingId = null; // id of the service SLA being edited in config mode, null = new
+  var pmslaWorking = null; // { category, role, service, generalApplied, commitments: [] } while in config mode
+  var pmslaGeneralWorking = null; // working copy of pmslaGeneral.commitments while in editGeneral mode
+  var pmslaSearchQuery = '';
+  var pmslaCategoryFilterValue = 'All SLA';
+  var pmslaGeneralBannerExpanded = false;
+  var pmslaExpandedCards = {}; // service-SLA id -> true once its "+N more" has been expanded
+  var pmslaPendingDeleteId = null;
+  var pmslaOpenSelectKey = null; // 'category' | 'role' | 'service' | null
+
+  function pmslaCommitRowHtml(text) {
+    return '<div class="pmsla-commit-row"><span class="pmsla-commit-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span>' + supjrEscapeHtml(text) + '</span></div>';
+  }
+
+  /* ---------- List mode ---------- */
+  function pmslaRenderGeneralBanner() {
+    var list = document.getElementById('pmslaGeneralBannerList');
+    var moreBtn = document.getElementById('pmslaGeneralMoreBtn');
+    var commits = pmslaGeneral.commitments;
+    var shown = pmslaGeneralBannerExpanded ? commits : commits.slice(0, 3);
+    list.innerHTML = shown.map(pmslaCommitRowHtml).join('');
+    var remaining = commits.length - shown.length;
+    if (remaining > 0) {
+      moreBtn.style.display = '';
+      moreBtn.textContent = '+' + remaining + ' more';
+    } else if (pmslaGeneralBannerExpanded && commits.length > 3) {
+      moreBtn.style.display = '';
+      moreBtn.textContent = 'Show less';
+    } else {
+      moreBtn.style.display = 'none';
+    }
+    document.getElementById('pmslaGeneralAppliedPill').lastChild.textContent = ' Applied to ' + pmslaAppliedCount() + ' service SLA' + (pmslaAppliedCount() === 1 ? '' : 's');
+  }
+
+  function pmslaServiceCardHtml(s) {
+    var commits = s.commitments;
+    var expanded = !!pmslaExpandedCards[s.id];
+    var shown = expanded ? commits : commits.slice(0, 3);
+    var remaining = commits.length - shown.length;
+    return '<div class="pmsla-service-card" data-pmsla-card="' + s.id + '">' +
+      '<div class="pmsla-service-card-head">' +
+        '<div class="pmsla-badge-row">' +
+          (s.generalApplied ? '<span class="pmsla-general-badge"><span class="pmsla-general-badge-icon"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20 15.3 15.3 0 010-20z"/></svg></span>General SLA</span>' : '') +
+          '<span class="pmsla-cat-label">' + supjrEscapeHtml(s.category) + '</span>' +
+        '</div>' +
+        '<div class="pmsla-card-actions">' +
+          '<button type="button" class="svcp-icon-btn" data-pmsla-edit="' + s.id + '" data-tooltip="Edit SLA" aria-label="Edit SLA"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
+          '<button type="button" class="svcp-icon-btn danger" data-pmsla-del="' + s.id + '" data-tooltip="Delete SLA" aria-label="Delete SLA"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg></button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pmsla-service-title">' + supjrEscapeHtml(s.service) + '</div>' +
+      '<div class="pmsla-meta-row"><span class="pmsla-role-chip">' + supjrEscapeHtml(s.role) + '</span><span class="pmsla-commits-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' + commits.length + ' commitment' + (commits.length === 1 ? '' : 's') + '</span></div>' +
+      '<div class="pmsla-commit-list">' + shown.map(pmslaCommitRowHtml).join('') + '</div>' +
+      (remaining > 0 ? '<button type="button" class="pmsla-more-link" data-pmsla-more="' + s.id + '">+' + remaining + ' more</button>' : (expanded && commits.length > 3 ? '<button type="button" class="pmsla-more-link" data-pmsla-more="' + s.id + '">Show less</button>' : '')) +
+    '</div>';
+  }
+
+  function pmslaFilteredServices() {
+    var q = pmslaSearchQuery.trim().toLowerCase();
+    return PMSLA_SERVICES.filter(function (s) {
+      if (pmslaCategoryFilterValue !== 'All SLA' && s.category !== pmslaCategoryFilterValue) return false;
+      if (q) {
+        var hay = (s.service + ' ' + s.category + ' ' + s.role).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function pmslaRenderGrid() {
+    var grid = document.getElementById('pmslaGrid');
+    var empty = document.getElementById('pmslaEmpty');
+    var list = pmslaFilteredServices();
+    if (!list.length) { grid.innerHTML = ''; empty.style.display = ''; return; }
+    empty.style.display = 'none';
+    grid.innerHTML = list.map(pmslaServiceCardHtml).join('');
+  }
+
+  function pmslaFilterLabelFor(value) {
+    var n = value === 'All SLA' ? PMSLA_SERVICES.length : PMSLA_SERVICES.filter(function (s) { return s.category === value; }).length;
+    return (value === 'All SLA' ? 'All SLA' : value) + ' (' + n + ')';
+  }
+  function pmslaPopulateCategoryFilter() {
+    var cats = [];
+    PMSLA_SERVICES.forEach(function (s) { if (cats.indexOf(s.category) === -1) cats.push(s.category); });
+    var menu = document.getElementById('pmslaCategoryFilterMenu');
+    menu.innerHTML = ['All SLA'].concat(cats).map(function (c) {
+      return '<div class="cdd-item' + (c === pmslaCategoryFilterValue ? ' selected' : '') + '" data-value="' + supjrEscapeHtml(c) + '">' + supjrEscapeHtml(pmslaFilterLabelFor(c)) + '<svg class="cdd-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>';
+    }).join('');
+    document.getElementById('pmslaFilterLabel').textContent = pmslaFilterLabelFor(pmslaCategoryFilterValue);
+    menu.querySelectorAll('.cdd-item').forEach(function (item) {
+      item.addEventListener('click', function () {
+        pmslaCategoryFilterValue = item.getAttribute('data-value');
+        document.getElementById('pmslaFilterLabel').textContent = pmslaFilterLabelFor(pmslaCategoryFilterValue);
+        menu.querySelectorAll('.cdd-item').forEach(function (i) { i.classList.toggle('selected', i === item); });
+        closeAllCustomDropdowns();
+        pmslaRenderGrid();
+      });
+    });
+  }
+
+  function pmslaRenderListMode() {
+    pmslaPopulateCategoryFilter();
+    pmslaRenderGeneralBanner();
+    pmslaRenderGrid();
+  }
+
+  /* ---------- Mode switching + topbar breadcrumb ---------- */
+  function pmslaShowMode(mode) {
+    pmslaMode = mode;
+    document.getElementById('pmslaListMode').style.display = mode === 'list' ? '' : 'none';
+    document.getElementById('pmslaEditGeneralMode').style.display = mode === 'editGeneral' ? '' : 'none';
+    document.getElementById('pmslaConfigMode').style.display = mode === 'config' ? '' : 'none';
+    document.getElementById('pmslaTopbarList').style.display = mode === 'list' ? '' : 'none';
+    document.getElementById('pmslaTopbarEditGeneral').style.display = mode === 'editGeneral' ? '' : 'none';
+    document.getElementById('pmslaTopbarConfig').style.display = mode === 'config' ? '' : 'none';
+    document.querySelectorAll('.pmsla-save-float').forEach(function (b) { b.style.display = 'none'; });
+    if (mode === 'editGeneral') document.getElementById('pmslaSaveGeneralBtn').style.display = '';
+    if (mode === 'config') document.getElementById('pmslaSaveConfigBtn').style.display = '';
+    document.querySelector('#pmDashboard .dash-scroll-area').scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function pmslaGoToList() { pmslaShowMode('list'); pmslaRenderListMode(); }
+
+  /* ---------- Edit General SLA mode ---------- */
+  function pmslaRenderGeneralEditRows() {
+    var wrap = document.getElementById('pmslaGeneralCommitRows');
+    wrap.innerHTML = pmslaGeneralWorking.map(function (text, i) {
+      return '<div class="pmsla-commit-edit-row"><span class="pmsla-commit-num">' + (i + 1) + '</span>' +
+        '<input type="text" class="pmsla-commit-input" data-pmsla-general-idx="' + i + '" value="' + supjrEscapeHtml(text) + '" placeholder="e.g. Respond within 4 hours">' +
+        '<button type="button" class="pmsla-commit-del" data-pmsla-general-del="' + i + '" aria-label="Delete commitment"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg></button>' +
+      '</div>';
+    }).join('');
+  }
+  function pmslaRenderGeneralQuickAdd() {
+    var wrap = document.getElementById('pmslaGeneralQuickAdd');
+    wrap.innerHTML = PMSLA_QUICK_ADD.map(function (t) {
+      var already = pmslaGeneralWorking.indexOf(t) !== -1;
+      return '<button type="button" class="pmsla-quickadd-pill" data-pmsla-general-quickadd="' + supjrEscapeHtml(t) + '"' + (already ? ' disabled' : '') + '><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>' + supjrEscapeHtml(t) + '</button>';
+    }).join('');
+  }
+  function pmslaOpenEditGeneral() {
+    pmslaGeneralWorking = pmslaGeneral.commitments.slice();
+    document.getElementById('pmslaEditGeneralAppliedPill').lastChild.textContent = ' Applied to ' + pmslaAppliedCount() + ' service SLA' + (pmslaAppliedCount() === 1 ? '' : 's');
+    pmslaRenderGeneralEditRows();
+    pmslaRenderGeneralQuickAdd();
+    pmslaShowMode('editGeneral');
+  }
+
+  /* ---------- SLA Configuration mode (add/edit a service SLA) ---------- */
+  function pmslaSearchSelectSync(key) {
+    var input = document.getElementById('pmsla' + key.charAt(0).toUpperCase() + key.slice(1) + 'Input');
+    input.value = pmslaWorking[key] || '';
+  }
+  function pmslaRenderCategoryMenu(filterText) {
+    var menu = document.getElementById('pmslaCategoryMenu');
+    var items = pmslaCategoryNames().filter(function (c) { return !filterText || c.toLowerCase().indexOf(filterText.toLowerCase()) !== -1; });
+    menu.innerHTML = items.length ? items.map(function (c) {
+      return '<div class="pmsla-select-item' + (c === pmslaWorking.category ? ' selected' : '') + '" data-pmsla-pick="' + supjrEscapeHtml(c) + '">' + supjrEscapeHtml(c) + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>';
+    }).join('') : '<div class="pmsla-select-empty">No matching category.</div>';
+  }
+  function pmslaRenderRoleMenu(filterText) {
+    var menu = document.getElementById('pmslaRoleMenu');
+    var roles = pmslaWorking.category ? pmslaRolesForCategory(pmslaWorking.category) : [];
+    var items = roles.filter(function (r) { return !filterText || r.toLowerCase().indexOf(filterText.toLowerCase()) !== -1; });
+    menu.innerHTML = items.length ? items.map(function (r) {
+      return '<div class="pmsla-select-item' + (r === pmslaWorking.role ? ' selected' : '') + '" data-pmsla-pick="' + supjrEscapeHtml(r) + '">' + supjrEscapeHtml(r) + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>';
+    }).join('') : '<div class="pmsla-select-empty">No matching role.</div>';
+  }
+  function pmslaRenderServiceMenu(filterText) {
+    var menu = document.getElementById('pmslaServiceMenu');
+    var services = (pmslaWorking.category && pmslaWorking.role) ? pmslaServicesForRole(pmslaWorking.category, pmslaWorking.role) : [];
+    var items = services.filter(function (s) { return !filterText || s.toLowerCase().indexOf(filterText.toLowerCase()) !== -1; });
+    menu.innerHTML = items.length ? items.map(function (s) {
+      return '<div class="pmsla-select-item' + (s === pmslaWorking.service ? ' selected' : '') + '" data-pmsla-pick="' + supjrEscapeHtml(s) + '">' + supjrEscapeHtml(s) + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>';
+    }).join('') : '<div class="pmsla-select-empty">No matching service.</div>';
+  }
+  function pmslaUpdateCascadeEnabled() {
+    var roleInput = document.getElementById('pmslaRoleInput');
+    var svcInput = document.getElementById('pmslaServiceInput');
+    roleInput.disabled = !pmslaWorking.category;
+    roleInput.placeholder = pmslaWorking.category ? 'Select a role...' : 'Select a category first';
+    svcInput.disabled = !(pmslaWorking.category && pmslaWorking.role);
+    svcInput.placeholder = (pmslaWorking.category && pmslaWorking.role) ? 'Search or select a service...' : 'Select a category first';
+  }
+  function pmslaRenderGeneralRefBox() {
+    var box = document.getElementById('pmslaGeneralRefBox');
+    box.innerHTML = pmslaWorking.generalApplied
+      ? pmslaGeneral.commitments.map(function (t, i) { return '<div class="pmsla-ref-row"><span class="pmsla-ref-num">' + (i + 1) + '</span><span>' + supjrEscapeHtml(t) + '</span></div>'; }).join('')
+      : '';
+  }
+  function pmslaRenderCommitRows() {
+    var wrap = document.getElementById('pmslaCommitRows');
+    wrap.innerHTML = pmslaWorking.commitments.map(function (text, i) {
+      return '<div class="pmsla-commit-edit-row"><span class="pmsla-commit-num">' + (i + 1) + '</span>' +
+        '<input type="text" class="pmsla-commit-input" data-pmsla-commit-idx="' + i + '" value="' + supjrEscapeHtml(text) + '" placeholder="e.g. Respond within 4 hours">' +
+        '<button type="button" class="pmsla-commit-del" data-pmsla-commit-del="' + i + '" aria-label="Delete commitment"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg></button>' +
+      '</div>';
+    }).join('');
+  }
+  function pmslaRenderCommitQuickAdd() {
+    var wrap = document.getElementById('pmslaQuickAdd');
+    wrap.innerHTML = PMSLA_QUICK_ADD.map(function (t) {
+      var already = pmslaWorking.commitments.indexOf(t) !== -1;
+      return '<button type="button" class="pmsla-quickadd-pill" data-pmsla-commit-quickadd="' + supjrEscapeHtml(t) + '"' + (already ? ' disabled' : '') + '><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>' + supjrEscapeHtml(t) + '</button>';
+    }).join('');
+  }
+  function pmslaUpdateSaveState() {
+    var ready = !!(pmslaWorking.category && pmslaWorking.role && pmslaWorking.service);
+    document.getElementById('pmslaSaveConfigBtn').disabled = !ready;
+  }
+  function pmslaRenderConfigMode() {
+    pmslaSearchSelectSync('category');
+    pmslaSearchSelectSync('role');
+    pmslaSearchSelectSync('service');
+    pmslaUpdateCascadeEnabled();
+    var toggle = document.getElementById('pmslaGeneralToggle');
+    toggle.classList.toggle('on', pmslaWorking.generalApplied);
+    toggle.setAttribute('aria-checked', pmslaWorking.generalApplied);
+    pmslaRenderGeneralRefBox();
+    pmslaRenderCommitRows();
+    pmslaRenderCommitQuickAdd();
+    pmslaUpdateSaveState();
+  }
+  function pmslaOpenAddConfig() {
+    pmslaEditingId = null;
+    pmslaWorking = { category: '', role: '', service: '', generalApplied: true, commitments: [''] };
+    pmslaShowMode('config');
+    pmslaRenderConfigMode();
+  }
+  function pmslaOpenEditConfig(id) {
+    var src = PMSLA_SERVICES.find(function (s) { return s.id === id; });
+    if (!src) return;
+    pmslaEditingId = id;
+    pmslaWorking = { category: src.category, role: src.role, service: src.service, generalApplied: src.generalApplied, commitments: src.commitments.slice() };
+    pmslaShowMode('config');
+    pmslaRenderConfigMode();
+  }
+
+  /* Generic wiring for the three cascading search-selects (category/role/service) — same
+     open-on-focus, filter-as-you-type, click-to-pick, click-outside-resets shape for all three. */
+  function pmslaCloseAllSelects() {
+    document.querySelectorAll('.pmsla-search-select.open').forEach(function (el) { el.classList.remove('open'); });
+    if (pmslaOpenSelectKey) { pmslaSearchSelectSync(pmslaOpenSelectKey); }
+    pmslaOpenSelectKey = null;
+  }
+  function pmslaWireSearchSelect(key, renderMenu) {
+    var wrap = document.querySelector('.pmsla-search-select[data-pmsla-select="' + key + '"]');
+    var input = wrap.querySelector('.pmsla-select-input');
+    var menu = wrap.querySelector('.pmsla-select-menu');
+    input.addEventListener('focus', function () {
+      if (input.disabled) return;
+      pmslaCloseAllSelects();
+      wrap.classList.add('open');
+      pmslaOpenSelectKey = key;
+      renderMenu('');
+    });
+    input.addEventListener('input', function () { renderMenu(input.value); });
+    menu.addEventListener('click', function (e) {
+      var item = e.target.closest('.pmsla-select-item[data-pmsla-pick]');
+      if (!item) return;
+      var val = item.getAttribute('data-pmsla-pick');
+      pmslaWorking[key] = val;
+      if (key === 'category') { pmslaWorking.role = ''; pmslaWorking.service = ''; }
+      if (key === 'role') { pmslaWorking.service = ''; }
+      pmslaCloseAllSelects();
+      pmslaRenderConfigMode();
+      if (key === 'category') { document.getElementById('pmslaRoleInput').focus(); }
+      if (key === 'role') { document.getElementById('pmslaServiceInput').focus(); }
+    });
+  }
+
+  /* ---------- Delete confirmation ---------- */
+  function pmslaOpenDeleteConfirm(id) {
+    var s = PMSLA_SERVICES.find(function (x) { return x.id === id; });
+    if (!s) return;
+    pmslaPendingDeleteId = id;
+    document.getElementById('pmslaDeleteDesc').innerHTML = '\u201c' + supjrEscapeHtml(s.service) + '\u201d will be removed and can no longer be attached to bookings. This can\u2019t be undone.';
+    document.getElementById('pmslaDeleteOverlay').classList.add('open');
+  }
+
+  function initPmslaOnce() {
+    if (pmslaMode === 'list') pmslaRenderListMode();
+    if (pmslaInitDone) return;
+    pmslaInitDone = true;
+
+    document.getElementById('pmslaAddBtnTopbar').addEventListener('click', pmslaOpenAddConfig);
+    document.getElementById('pmslaEditGeneralBtn').addEventListener('click', pmslaOpenEditGeneral);
+    document.getElementById('pmslaBackFromGeneralBtn').addEventListener('click', pmslaGoToList);
+    document.getElementById('pmslaBackFromConfigBtn').addEventListener('click', pmslaGoToList);
+
+    document.getElementById('pmslaSearchInput').addEventListener('input', function () {
+      pmslaSearchQuery = this.value;
+      pmslaRenderGrid();
+    });
+    document.getElementById('pmslaGeneralMoreBtn').addEventListener('click', function () {
+      pmslaGeneralBannerExpanded = !pmslaGeneralBannerExpanded;
+      pmslaRenderGeneralBanner();
+    });
+    document.getElementById('pmslaGrid').addEventListener('click', function (e) {
+      var editBtn = e.target.closest('[data-pmsla-edit]');
+      if (editBtn) { pmslaOpenEditConfig(editBtn.getAttribute('data-pmsla-edit')); return; }
+      var delBtn = e.target.closest('[data-pmsla-del]');
+      if (delBtn) { pmslaOpenDeleteConfirm(delBtn.getAttribute('data-pmsla-del')); return; }
+      var moreBtn = e.target.closest('[data-pmsla-more]');
+      if (moreBtn) {
+        var id = moreBtn.getAttribute('data-pmsla-more');
+        pmslaExpandedCards[id] = !pmslaExpandedCards[id];
+        pmslaRenderGrid();
+      }
+    });
+
+    // Edit General SLA: row edits, delete, quick-add, add blank, save
+    document.getElementById('pmslaGeneralCommitRows').addEventListener('input', function (e) {
+      var input = e.target.closest('[data-pmsla-general-idx]');
+      if (!input) return;
+      pmslaGeneralWorking[parseInt(input.getAttribute('data-pmsla-general-idx'), 10)] = input.value;
+    });
+    document.getElementById('pmslaGeneralCommitRows').addEventListener('click', function (e) {
+      var delBtn = e.target.closest('[data-pmsla-general-del]');
+      if (!delBtn) return;
+      pmslaGeneralWorking.splice(parseInt(delBtn.getAttribute('data-pmsla-general-del'), 10), 1);
+      pmslaRenderGeneralEditRows();
+      pmslaRenderGeneralQuickAdd();
+    });
+    document.getElementById('pmslaGeneralQuickAdd').addEventListener('click', function (e) {
+      var pill = e.target.closest('[data-pmsla-general-quickadd]');
+      if (!pill || pill.disabled) return;
+      pmslaGeneralWorking.push(pill.getAttribute('data-pmsla-general-quickadd'));
+      pmslaRenderGeneralEditRows();
+      pmslaRenderGeneralQuickAdd();
+    });
+    document.getElementById('pmslaGeneralAddBtn').addEventListener('click', function () {
+      pmslaGeneralWorking.push('');
+      pmslaRenderGeneralEditRows();
+      var rows = document.querySelectorAll('#pmslaGeneralCommitRows [data-pmsla-general-idx]');
+      if (rows.length) rows[rows.length - 1].focus();
+    });
+    document.getElementById('pmslaSaveGeneralBtn').addEventListener('click', function () {
+      pmslaGeneral.commitments = pmslaGeneralWorking.filter(function (t) { return t.trim(); });
+      showToast('General SLA updated.');
+      pmslaGoToList();
+    });
+
+    // SLA Configuration: cascading selects, general toggle, commitment edits, quick-add, save
+    pmslaWireSearchSelect('category', pmslaRenderCategoryMenu);
+    pmslaWireSearchSelect('role', pmslaRenderRoleMenu);
+    pmslaWireSearchSelect('service', pmslaRenderServiceMenu);
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.pmsla-search-select')) pmslaCloseAllSelects();
+    });
+    document.getElementById('pmslaGeneralToggle').addEventListener('click', function () {
+      pmslaWorking.generalApplied = !pmslaWorking.generalApplied;
+      this.classList.toggle('on', pmslaWorking.generalApplied);
+      this.setAttribute('aria-checked', pmslaWorking.generalApplied);
+      pmslaRenderGeneralRefBox();
+    });
+    document.getElementById('pmslaCommitRows').addEventListener('input', function (e) {
+      var input = e.target.closest('[data-pmsla-commit-idx]');
+      if (!input) return;
+      pmslaWorking.commitments[parseInt(input.getAttribute('data-pmsla-commit-idx'), 10)] = input.value;
+    });
+    document.getElementById('pmslaCommitRows').addEventListener('click', function (e) {
+      var delBtn = e.target.closest('[data-pmsla-commit-del]');
+      if (!delBtn) return;
+      pmslaWorking.commitments.splice(parseInt(delBtn.getAttribute('data-pmsla-commit-del'), 10), 1);
+      pmslaRenderCommitRows();
+      pmslaRenderCommitQuickAdd();
+    });
+    document.getElementById('pmslaQuickAdd').addEventListener('click', function (e) {
+      var pill = e.target.closest('[data-pmsla-commit-quickadd]');
+      if (!pill || pill.disabled) return;
+      pmslaWorking.commitments.push(pill.getAttribute('data-pmsla-commit-quickadd'));
+      pmslaRenderCommitRows();
+      pmslaRenderCommitQuickAdd();
+    });
+    document.getElementById('pmslaAddCommitBtn').addEventListener('click', function () {
+      pmslaWorking.commitments.push('');
+      pmslaRenderCommitRows();
+      var rows = document.querySelectorAll('#pmslaCommitRows [data-pmsla-commit-idx]');
+      if (rows.length) rows[rows.length - 1].focus();
+    });
+    document.getElementById('pmslaSaveConfigBtn').addEventListener('click', function () {
+      if (this.disabled) return;
+      var cleanCommitments = pmslaWorking.commitments.filter(function (t) { return t.trim(); });
+      if (pmslaEditingId) {
+        var idx = PMSLA_SERVICES.findIndex(function (s) { return s.id === pmslaEditingId; });
+        if (idx !== -1) {
+          PMSLA_SERVICES[idx].category = pmslaWorking.category;
+          PMSLA_SERVICES[idx].role = pmslaWorking.role;
+          PMSLA_SERVICES[idx].service = pmslaWorking.service;
+          PMSLA_SERVICES[idx].generalApplied = pmslaWorking.generalApplied;
+          PMSLA_SERVICES[idx].commitments = cleanCommitments;
+        }
+        showToast('SLA updated.');
+      } else {
+        PMSLA_SERVICES.push({ id: pmslaNextId(), category: pmslaWorking.category, role: pmslaWorking.role, service: pmslaWorking.service, generalApplied: pmslaWorking.generalApplied, commitments: cleanCommitments });
+        showToast('SLA added.');
+      }
+      pmslaGoToList();
+    });
+
+    // Delete confirmation modal
+    document.getElementById('pmslaDeleteCancel').addEventListener('click', function () {
+      document.getElementById('pmslaDeleteOverlay').classList.remove('open');
+      pmslaPendingDeleteId = null;
+    });
+    document.getElementById('pmslaDeleteOverlay').addEventListener('click', function (e) {
+      if (e.target === this) { this.classList.remove('open'); pmslaPendingDeleteId = null; }
+    });
+    document.getElementById('pmslaDeleteConfirm').addEventListener('click', function () {
+      if (!pmslaPendingDeleteId) return;
+      PMSLA_SERVICES = PMSLA_SERVICES.filter(function (s) { return s.id !== pmslaPendingDeleteId; });
+      document.getElementById('pmslaDeleteOverlay').classList.remove('open');
+      pmslaPendingDeleteId = null;
+      showToast('SLA deleted.');
+      pmslaRenderListMode();
+    });
+  }
+  var pmslaInitDone = false;
 
 })();
 </script>
