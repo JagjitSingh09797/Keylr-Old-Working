@@ -6023,6 +6023,127 @@
   .pmex-rebook-btn:hover { background: var(--surface-soft); }
 
   .pmex-emergency-banner { display: flex; align-items: center; justify-content: space-between; gap: 20px; background: #fff8ec; border: 1px solid #f5dc9e; border-radius: 14px; padding: 20px 24px; margin-top: 34px; flex-wrap: wrap; }
+  .pmex-stub-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 16px; padding: 60px 30px; text-align: center; }
+  .pmex-stub-icon { width: 56px; height: 56px; border-radius: 14px; background: var(--icon-tint-bg); color: var(--accent-blue); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
+  .pmex-stub-title { font-size: 18px; font-weight: 800; color: var(--text-heading); margin-bottom: 6px; }
+  .pmex-stub-sub { font-size: 13px; color: var(--text-body-muted); }
+
+  /* ==========================================================================
+     PM INVOICES — per-job invoice table (6 status tabs), Approve & Pay modal,
+     self-billed invoice PDF viewer, and the Consolidated Payments statement view.
+     ========================================================================== */
+  .pminv-toptabs { display: inline-flex; gap: 4px; background: var(--surface-soft); border-radius: 12px; padding: 4px; margin-bottom: 22px; }
+  .pminv-toptab { display: flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 9px; font-size: 13px; font-weight: 700; color: var(--text-body-muted); background: none; border: none; cursor: pointer; font-family: inherit; }
+  .pminv-toptab.active { background: linear-gradient(135deg, var(--btn-grad-start) 0%, var(--btn-grad-end) 100%); color: #fff; }
+  .pminv-toptab:not(.active):hover { color: var(--text-heading); }
+  .pminv-section-label { font-size: 11px; font-weight: 800; letter-spacing: 0.05em; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; }
+  .pminv-section-desc { font-size: 12.5px; color: var(--text-body-muted); margin-bottom: 20px; max-width: 900px; line-height: 1.5; }
+  .pminv-status-tabs { display: flex; gap: 24px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 0; flex-wrap: wrap; }
+  .pminv-status-tab { padding: 0 0 12px; font-size: 13.5px; font-weight: 700; color: var(--text-body-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .pminv-status-tab.active { color: var(--navy-900); border-bottom-color: var(--navy-900); }
+  .pminv-status-tab:not(.active):hover { color: var(--text-heading); }
+
+  .pminv-table-wrap { background: #fff; border: 1px solid var(--border-subtle); border-top: none; border-radius: 0 0 14px 14px; overflow: hidden; overflow-x: auto; }
+  .pminv-table { width: 100%; border-collapse: collapse; min-width: 880px; }
+  .pminv-table th { text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; color: #94a3b8; text-transform: uppercase; padding: 13px 20px; border-bottom: 1px solid var(--border-subtle); background: var(--surface-soft); white-space: nowrap; }
+  .pminv-table td { padding: 14px 20px; border-bottom: 1px solid var(--border-subtle); font-size: 13px; color: var(--text-heading); vertical-align: middle; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; }
+  .pminv-table tr:last-child td { border-bottom: none; }
+  .pminv-table tr.clickable { cursor: pointer; }
+  .pminv-table tr.clickable:hover td { background: var(--surface-soft); }
+  .pminv-id-link { font-weight: 800; color: var(--accent-blue); }
+  .pminv-id-sub { font-size: 11px; font-weight: 600; color: var(--text-body-muted); margin-top: 1px; }
+  .pminv-amount { font-weight: 800; }
+  .pminv-dash-cell { color: #cbd5e1; }
+  .pminv-approve-btn { background: linear-gradient(135deg, var(--btn-grad-start) 0%, var(--btn-grad-end) 100%); color: #fff; border: none; border-radius: 8px; padding: 8px 15px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; }
+  .pminv-approve-btn:hover { opacity: 0.88; }
+  .pminv-pdf-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border-subtle); background: #fff; color: var(--text-body-muted); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+  .pminv-pdf-btn:hover { background: var(--surface-soft); color: var(--text-heading); }
+  .pminv-pdf-btn[disabled] { opacity: 0.4; cursor: default; pointer-events: none; }
+  .pminv-empty-state { padding: 60px 30px; text-align: center; font-size: 13px; color: var(--text-body-muted); line-height: 1.6; max-width: 560px; margin: 0 auto; }
+
+  /* Pay modal */
+  .pminv-modal { background: #fff; border-radius: 18px; padding: 30px 30px 26px; max-width: 460px; width: 100%; }
+  .pminv-modal-icon { width: 42px; height: 42px; border-radius: 11px; background: var(--icon-tint-bg); color: var(--accent-blue); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .pminv-modal-title { font-size: 19px; font-weight: 800; color: var(--text-heading); margin-bottom: 8px; }
+  .pminv-modal-sub { font-size: 13px; color: var(--text-body-muted); line-height: 1.5; margin-bottom: 20px; }
+  .pminv-modal-sub strong { color: var(--text-heading); }
+  .pminv-modal-amtbox { background: var(--surface-soft); border-radius: 12px; padding: 4px 16px; margin-bottom: 22px; }
+  .pminv-modal-amtrow { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; font-size: 13.5px; color: var(--text-body-muted); }
+  .pminv-modal-amtrow:not(:last-child) { border-bottom: 1px solid var(--border-subtle); }
+  .pminv-modal-amtrow.strong { font-weight: 800; color: var(--text-heading); font-size: 14.5px; }
+  .pminv-modal-label { font-size: 11px; font-weight: 800; letter-spacing: 0.05em; color: #94a3b8; text-transform: uppercase; margin-bottom: 10px; }
+  .pminv-paymethod-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+  .pminv-paymethod-card { border: 1.5px solid var(--border-subtle); border-radius: 12px; padding: 14px 15px; cursor: pointer; }
+  .pminv-paymethod-card .t { font-size: 13.5px; font-weight: 800; color: var(--text-heading); margin-bottom: 3px; }
+  .pminv-paymethod-card .s { font-size: 11.5px; color: var(--text-body-muted); line-height: 1.4; }
+  .pminv-paymethod-card.active { background: linear-gradient(135deg, var(--btn-grad-start) 0%, var(--btn-grad-end) 100%); border-color: var(--btn-grad-end); }
+  .pminv-paymethod-card.active .t, .pminv-paymethod-card.active .s { color: #fff; }
+  .pminv-paymethod-card.active .s { color: rgba(255,255,255,0.7); }
+  .pminv-modal-btns { display: flex; gap: 10px; }
+  .pminv-modal-btns .btn { flex: 1; justify-content: center; }
+
+  /* Invoice PDF viewer */
+  .pminv-pdf-modal { background: #fff; border-radius: 16px; max-width: 900px; width: 100%; max-height: 86vh; display: flex; flex-direction: column; overflow: hidden; }
+  .pminv-pdf-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--border-subtle); flex-shrink: 0; }
+  .pminv-pdf-head-title { font-size: 15px; font-weight: 800; color: var(--text-heading); }
+  .pminv-pdf-head-sub { font-size: 12.5px; color: var(--text-body-muted); margin-top: 2px; }
+  .pminv-pdf-close { width: 30px; height: 30px; border-radius: 8px; border: none; background: var(--surface-soft); color: var(--text-body-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+  .pminv-pdf-close:hover { background: #e8ecf0; color: var(--text-heading); }
+  .pminv-pdf-scroll { flex: 1; overflow-y: auto; padding: 34px 40px; }
+  .pminv-pdf-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid var(--border-subtle); flex-shrink: 0; }
+  .pminv-pdf-foot .btn svg { margin-right: 6px; }
+
+  .pminv-doc-title { font-size: 26px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.01em; margin-bottom: 4px; }
+  .pminv-doc-issuer { font-size: 12.5px; color: var(--text-body-muted); max-width: 420px; line-height: 1.5; margin-bottom: 22px; }
+  .pminv-doc-top-row { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; flex-wrap: wrap; gap: 16px; }
+  .pminv-doc-company { text-align: right; font-size: 12.5px; color: var(--text-body-muted); line-height: 1.5; }
+  .pminv-doc-company strong { display: block; font-size: 15px; font-weight: 800; color: var(--text-heading); margin-bottom: 3px; }
+  .pminv-doc-divider { border: none; border-top: 2px solid var(--navy-900); margin: 0 0 20px; }
+  .pminv-doc-info-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; margin-bottom: 26px; }
+  .pminv-doc-info-item .lbl { font-size: 9.5px; font-weight: 700; letter-spacing: 0.03em; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; line-height: 1.3; }
+  .pminv-doc-info-item .val { font-size: 13px; font-weight: 700; color: var(--text-heading); }
+  .pminv-doc-parties { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 26px; }
+  .pminv-doc-party-label { font-size: 11px; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 0.02em; padding-bottom: 6px; border-bottom: 1.5px solid var(--accent-blue); margin-bottom: 9px; }
+  .pminv-doc-party-name { font-size: 14px; font-weight: 800; color: var(--text-heading); margin-bottom: 6px; }
+  .pminv-doc-party-addr { font-size: 12px; color: var(--text-body-muted); line-height: 1.55; }
+  .pminv-doc-party-addr em { font-style: italic; display: block; margin-top: 8px; }
+  .pminv-doc-svc-label { font-size: 13px; color: var(--text-heading); margin-bottom: 12px; }
+  .pminv-doc-table { width: 100%; border-collapse: collapse; }
+  .pminv-doc-table th { background: var(--navy-900); color: #fff; text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em; padding: 11px 13px; }
+  .pminv-doc-table td { padding: 11px 13px; border-bottom: 1px solid var(--border-subtle); font-size: 12.5px; color: var(--text-heading); }
+
+  /* Consolidated Payments */
+  .pminv-stmt-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 16px; padding: 22px 26px; margin-bottom: 16px; }
+  .pminv-stmt-head-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 22px; }
+  .pminv-stmt-eyebrow { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 800; letter-spacing: 0.04em; color: var(--accent-blue); text-transform: uppercase; margin-bottom: 8px; }
+  .pminv-stmt-title { font-size: 22px; font-weight: 800; color: var(--text-heading); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .pminv-stmt-dash { color: #94a3b8; font-weight: 600; }
+  .pminv-stmt-sub { font-size: 12.5px; color: var(--text-body-muted); margin-top: 6px; }
+  .pminv-stmt-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 780px) { .pminv-stmt-stats { grid-template-columns: repeat(2, 1fr); } }
+  .pminv-stmt-stat { border: 1px solid var(--border-subtle); border-radius: 12px; padding: 14px 16px; }
+  .pminv-stmt-stat .lbl { font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; }
+  .pminv-stmt-stat .val { font-size: 19px; font-weight: 800; color: var(--text-heading); }
+  .pminv-stmt-stat.paid { border-color: #bfe3cc; }
+  .pminv-stmt-stat.paid .val { color: #1a7a3e; }
+  .pminv-stmt-stat.outstanding { border-color: #f5dc9e; }
+  .pminv-stmt-stat.outstanding .val { color: #b45309; }
+  .pminv-stmt-stat.overdue .val { color: #94a3b8; }
+  .pminv-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 16px; padding: 22px 26px; margin-bottom: 16px; }
+  .pminv-card-head { display: flex; align-items: center; gap: 9px; font-size: 13.5px; font-weight: 800; color: var(--text-heading); margin-bottom: 4px; }
+  .pminv-card-head svg { color: var(--accent-blue); flex-shrink: 0; }
+  .pminv-card-head-row { font-size: 13.5px; font-weight: 800; color: var(--text-heading); }
+  .pminv-card-empty { text-align: center; padding: 30px 20px 10px; }
+  .pminv-card-empty .t { font-size: 14.5px; font-weight: 800; color: var(--text-heading); margin-bottom: 6px; }
+  .pminv-card-empty .s { font-size: 12.5px; color: var(--text-body-muted); }
+  .pminv-card-note { font-size: 12.5px; color: var(--text-body-muted); margin-top: 10px; }
+  @media (max-width: 620px) {
+    .pminv-doc-info-grid { grid-template-columns: repeat(3, 1fr); }
+    .pminv-doc-parties { grid-template-columns: 1fr; }
+    .pminv-doc-company { text-align: left; }
+    .pminv-doc-top-row { flex-direction: column; }
+    .pminv-pdf-scroll { padding: 22px 18px; }
+  }
   .pmex-emergency-eyebrow { font-size: 10.5px; font-weight: 800; letter-spacing: 0.06em; color: #b45309; margin-bottom: 5px; }
   .pmex-emergency-title { font-size: 15.5px; font-weight: 800; color: var(--text-heading); margin-bottom: 3px; }
   .pmex-emergency-sub { font-size: 12.5px; color: var(--text-body-muted); }
@@ -6534,14 +6655,22 @@
   /* =========================================================
      PM: TICKETS
   ========================================================== */
-  #pmtkTabs { display: flex; gap: 4px; background: #EEF0F4; padding: 5px; border-radius: 14px; margin-top: 20px; width: fit-content; }
-  #pmtkTabs .pmjr-tab { padding: 7px 13px; font-size: 13px; border-radius: 9px; border-bottom: none; margin-bottom: 0; }
-  #pmtkTabs .pmjr-tab.active { background: linear-gradient(135deg, var(--btn-grad-start) 0%, var(--btn-grad-end) 100%); color: #fff; }
-  #pmtkTabs .pmjr-tab .pmjr-tab-count { background: var(--surface-white); }
-  #pmtkTabs .pmjr-tab.active .pmjr-tab-count { background: rgba(255,255,255,0.25); color: #fff; }
 
   .pmtk-header-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 
+  .pmtk-toolbar-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .pmtk-search-btn-group { display: flex; align-items: center; gap: 10px; margin-left: auto; flex: 1; min-width: 280px; max-width: 480px; }
+  .pmtk-search-bar { flex: 1; min-width: 160px; }
+  .pmtk-pill-count { font-size: 11px; font-weight: 700; color: var(--text-body-muted); background: #fff; padding: 1px 8px; border-radius: 999px; margin-left: 2px; }
+  .pm-tab-pill.active .pmtk-pill-count { background: rgba(255,255,255,0.22); color: #fff; }
+  @media (max-width: 900px) {
+    .pmtk-search-btn-group { margin-left: 0; flex: 1 1 100%; max-width: none; order: 2; }
+    #pmtkTabs { order: 1; width: 100%; }
+  }
+  @media (max-width: 560px) {
+    .pmtk-search-btn-group { flex-direction: column; align-items: stretch; }
+    .pmtk-search-bar { min-width: 0; }
+  }
   .pmtk-table-wrap { margin-top: 20px; border: 1px solid var(--border-subtle); border-radius: 14px; overflow: hidden; background: #fff; }
   .pmtk-table { width: 100%; border-collapse: collapse; }
   .pmtk-table thead th { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-body-muted); padding: 14px 18px; background: var(--surface-soft); border-bottom: 1px solid var(--border-subtle); white-space: nowrap; }
@@ -12532,7 +12661,6 @@
 
       <nav class="dash-nav-scroll">
         <div class="dash-nav-group">
-          <div class="dash-nav-group-label">Workspace</div>
           <div class="dash-nav-item active" data-nav="home">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
             <span class="nav-label">Home</span>
@@ -12542,47 +12670,95 @@
             <span class="nav-label">Inbox</span>
             <span class="dash-nav-badge" id="badgeInbox" hidden></span>
           </div>
+          <div class="dash-nav-item" data-nav="tickets">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a2 2 0 002 2v3a2 2 0 01-2 2H3a2 2 0 01-2-2v-3a2 2 0 000-4V8a2 2 0 012-2h18a2 2 0 012 2v3a2 2 0 00-2 2z"/><path d="M9 9v.01M9 12v.01M9 15v.01"/></svg>
+            <span class="nav-label">Tickets</span>
+          </div>
+        </div>
+
+        <div class="dash-nav-group">
+          <div class="dash-nav-group-label">Jobs</div>
+          <div class="dash-nav-item" data-nav="explore">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <span class="nav-label">Explore Services</span>
+          </div>
           <div class="dash-nav-item" data-nav="responses">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
-            <span class="nav-label">Jobs</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+            <span class="nav-label">Job Bookings</span>
             <span class="dash-nav-badge" id="badgeResponses" hidden></span>
+          </div>
+          <div class="dash-nav-item" data-nav="newbooking">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+            <span class="nav-label">New Booking</span>
           </div>
           <div class="dash-nav-item" data-nav="quotes">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15h6M9 11h3"/></svg>
-            <span class="nav-label">Supplier quotes</span>
+            <span class="nav-label">Job Responses</span>
             <span class="dash-nav-badge" id="badgeQuotes" hidden></span>
           </div>
+          <div class="dash-nav-item" data-nav="quotes-new">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <span class="nav-label">Quotes</span>
+          </div>
+        </div>
+
+        <div class="dash-nav-group">
+          <div class="dash-nav-group-label">Properties &amp; Suppliers</div>
           <div class="dash-nav-item" data-nav="properties">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a1 1 0 011-1h6a1 1 0 011 1v18"/><path d="M14 9h5a1 1 0 011 1v12"/><path d="M2 22h20"/><path d="M9 7h.01M9 11h.01M9 15h.01M17 13h.01M17 17h.01"/></svg>
             <span class="nav-label">Properties</span>
           </div>
-        </div>
-
-        <div class="dash-nav-group">
-          <div class="dash-nav-group-label">Suppliers</div>
-          <div class="dash-nav-item" data-nav="services-pricing">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-            <span class="nav-label">Services &amp; pricing</span>
-          </div>
           <div class="dash-nav-item" data-nav="suppliers">
             <svg viewBox="0 -10.5 96 96" fill="currentColor" stroke="none"><path d="M95.1211 0.882894C94.5586 0.320394 93.7969 0.00398433 93 8.43304e-05H44.82C39.3239 -0.0155407 34.043 2.14068 30.125 6.00008H3C1.3438 6.00008 0 7.34388 0 9.00008V48.0001C0 49.6563 1.3438 51.0001 3 51.0001H11.0664C15.0469 50.9923 18.8672 52.5743 21.6714 55.3985L38.6444 72.3635C42.1522 75.8791 47.8475 75.883 51.3634 72.3752C52.4611 71.2775 53.2579 69.9143 53.6759 68.4182C58.34 69.4573 63.004 66.6604 64.2809 62.0549C68.9645 63.0979 73.6403 60.2776 74.9019 55.6487C79.7144 56.7503 84.5035 53.7425 85.6049 48.9299C85.7494 48.3088 85.8236 47.6721 85.8315 47.0315C85.8393 46.3479 85.7729 45.6682 85.6322 45.0003L92.9994 45.0042C94.6556 45.0042 95.9994 43.6604 95.9994 42.0042V3.00421C95.9994 2.20733 95.6836 1.44539 95.1211 0.882894ZM78.8871 49.0939C77.6527 50.1955 75.7699 50.1291 74.6176 48.9455L64.1016 38.4255C62.9297 37.2536 61.0313 37.2536 59.8594 38.4255C58.6875 39.5974 58.6875 41.4958 59.8594 42.6677L68.3438 51.1521C69.5157 52.324 69.5196 54.2224 68.3477 55.3943C67.1758 56.5662 65.2774 56.5701 64.1055 55.3982L55.6172 46.9099C54.4375 45.7497 52.5352 45.7654 51.375 46.945C50.2266 48.113 50.2266 49.9841 51.375 51.152L57.7383 57.5153C58.9102 58.6872 58.9102 60.5856 57.7383 61.7575C56.5664 62.9294 54.668 62.9294 53.4961 61.7575L47.1328 55.3981C45.9726 54.2184 44.0703 54.2028 42.8906 55.363C41.7109 56.5231 41.6953 58.4255 42.8554 59.6052C42.8672 59.6169 42.8789 59.6286 42.8906 59.6403L47.1328 63.8825C48.3047 65.0544 48.3047 66.9528 47.1328 68.1247C45.9609 69.2966 44.0625 69.2966 42.8906 68.1247L25.9136 51.1517C21.9839 47.1986 16.6363 44.9837 11.0656 44.9994H5.99921V11.9994H24.1242L16.4562 19.6713C12.9406 23.1869 12.9406 28.8861 16.4562 32.4013C19.9718 35.9169 25.671 35.9169 29.1862 32.4013L35.4284 26.1591C42.2995 19.288 53.4444 19.2841 60.3194 26.1591L78.9524 44.7881C80.1243 45.96 80.1204 47.8584 78.9485 49.0303C78.929 49.0499 78.9094 49.0694 78.8899 49.0889L78.8871 49.0939ZM90.0001 38.9999H81.6446L64.5586 21.9139C55.3438 12.6951 40.3986 12.6951 31.1836 21.91L24.9414 28.1522C23.75 29.3045 21.8516 29.2694 20.6992 28.078C19.5781 26.9139 19.5781 25.0702 20.6992 23.91L34.2152 10.398C37.0199 7.57377 40.8402 5.98777 44.8202 5.99957H90.0002L90.0001 38.9999Z"/></svg>
-            <span class="nav-label">Preferred suppliers</span>
+            <span class="nav-label">Preferred Suppliers</span>
           </div>
-          <div class="dash-nav-item" data-nav="explore">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <span class="nav-label">Explore suppliers</span>
+          <div class="dash-nav-item" data-nav="services-pricing">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            <span class="nav-label">Services &amp; Pricing</span>
           </div>
         </div>
 
         <div class="dash-nav-group">
-          <div class="dash-nav-group-label">Finance &amp; People</div>
+          <div class="dash-nav-group-label">Library</div>
+          <div class="dash-nav-item" data-nav="job-templates">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6M9 9h1"/></svg>
+            <span class="nav-label">Job Templates</span>
+          </div>
+          <div class="dash-nav-item" data-nav="service-checklists">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><path d="M9 17h6"/></svg>
+            <span class="nav-label">Service Checklists</span>
+          </div>
+        </div>
+
+        <div class="dash-nav-group">
+          <div class="dash-nav-group-label">Finance</div>
           <div class="dash-nav-item" data-nav="invoices">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg>
+            <span class="nav-label">Invoices</span>
+          </div>
+          <div class="dash-nav-item" data-nav="billing">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
-            <span class="nav-label">Billing &amp; payments</span>
+            <span class="nav-label">Billing &amp; Payments</span>
           </div>
           <div class="dash-nav-item" data-nav="disputes">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 11-5.8-1.6"/></svg>
             <span class="nav-label">Disputes</span>
+          </div>
+          <div class="dash-nav-item" data-nav="credit-notes">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg>
+            <span class="nav-label">Credit notes</span>
+          </div>
+        </div>
+
+        <div class="dash-nav-group">
+          <div class="dash-nav-group-label">Contracts</div>
+          <div class="dash-nav-item" data-nav="sla">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span class="nav-label">SLA</span>
+          </div>
+          <div class="dash-nav-item" data-nav="retainers">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+            <span class="nav-label">Retainers</span>
           </div>
           <div class="dash-nav-item" data-nav="teams">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
@@ -12647,17 +12823,17 @@
         </div>
         <button type="button" class="pmprop-delete-btn" id="pmpropFormDeleteBtn" style="display:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg><span> Delete</span></button>
         <div id="pmJobDetailTopbarTitle" class="pmjd-breadcrumb" style="display:none;min-width:0;">
-          <button type="button" class="pmjd-breadcrumb-back" id="pmJobDetailBackLink"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Jobs</button>
+          <button type="button" class="pmjd-breadcrumb-back" id="pmJobDetailBackLink"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Job Booking</button>
           <span class="pmjd-breadcrumb-sep">/</span>
           <span class="pmjd-breadcrumb-title" id="pmJobDetailBreadcrumbTitle">Job title</span>
           <span class="pmjd-breadcrumb-id" id="pmJobDetailBreadcrumbId">#Job-0000</span>
         </div>
         <div id="pmJobsTopbarTitle" style="display:none;min-width:0;">
-          <h1>Jobs</h1>
+          <h1>Job Bookings</h1>
           <div class="dash-content-sub">Manage every job across your portfolio.</div>
         </div>
         <div id="pmQuotesTopbarTitle" style="display:none;min-width:0;">
-          <h1>Supplier Quotes</h1>
+          <h1>Job Responses</h1>
           <div class="dash-content-sub">Review supplier responses and award jobs.</div>
         </div>
         <div id="pmInboxTopbarTitle" style="display:none;min-width:0;">
@@ -12684,10 +12860,41 @@
           <h1 id="pmDisputeDetailHeading">Dispute DSP-0</h1>
           <div class="dash-content-sub">Review the thread and respond to keep this dispute moving.</div>
         </div>
-        <div id="pmBookTopbarTitle" class="pmjd-breadcrumb" style="display:none;min-width:0;">
-          <button type="button" class="pmjd-breadcrumb-back" id="pmBookTopbarBackLink"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Jobs</button>
-          <span class="pmjd-breadcrumb-sep">/</span>
-          <span class="pmjd-breadcrumb-title">New Booking</span>
+        <div id="pmInvoicesTopbarTitle" style="display:none;min-width:0;">
+          <h1>Invoices</h1>
+          <div class="dash-content-sub">Your billing periods plus standalone invoices for paid jobs.</div>
+        </div>
+        <div id="pmQuotesNewTopbarTitle" style="display:none;min-width:0;">
+          <h1>Quotes</h1>
+          <div class="dash-content-sub">Coming soon.</div>
+        </div>
+        <div id="pmServiceChecklistsTopbarTitle" style="display:none;min-width:0;">
+          <h1>Service Checklists</h1>
+          <div class="dash-content-sub">Coming soon.</div>
+        </div>
+        <div id="pmBillingTopbarTitle" style="display:none;min-width:0;">
+          <h1>Billing &amp; Payments</h1>
+          <div class="dash-content-sub">Coming soon.</div>
+        </div>
+        <div id="pmCreditNotesTopbarTitle" style="display:none;min-width:0;">
+          <h1>Credit notes</h1>
+          <div class="dash-content-sub">Coming soon.</div>
+        </div>
+        <div id="pmSlaTopbarTitle" style="display:none;min-width:0;">
+          <h1>SLA</h1>
+          <div class="dash-content-sub">Coming soon.</div>
+        </div>
+        <div id="pmRetainersTopbarTitle" style="display:none;min-width:0;">
+          <h1>Retainers</h1>
+          <div class="dash-content-sub">Coming soon.</div>
+        </div>
+        <div id="pmTicketsTopbarTitle" style="display:none;min-width:0;">
+          <h1>Tickets</h1>
+          <div class="dash-content-sub">Communication hub — tenants, suppliers &amp; Keylr Support.</div>
+        </div>
+        <div id="pmBookTopbarTitle" style="display:none;min-width:0;">
+          <h1>New Booking</h1>
+          <div class="dash-content-sub">Quick book from a saved template or create a custom one-off booking.</div>
         </div>
         <div class="pmex-topbar-actions" style="margin-left:auto;display:flex;align-items:center;gap:12px;">
           <button type="button" class="pmex-quotelist-btn" id="pmexQuoteListBtn" style="display:none;">Quote list <span class="pmex-quotelist-count" id="pmexQuoteListCount">0</span></button>
@@ -13624,26 +13831,21 @@
           <!-- Tickets view -->
           <div id="pmTicketsView" style="display:none;">
             <div class="dash-section">
-              <div class="dash-header">
-                <div>
-                  <h2>Tickets</h2>
-                  <div class="dash-content-sub">Communication hub — tenants, suppliers &amp; Keylr Support</div>
+              <div class="pmtk-toolbar-row">
+                <div id="pmtkTabs" class="pm-tab-pills">
+                  <div class="pm-tab-pill active" data-pmtk-tab="all">All <span class="pmtk-pill-count" id="pmtkCountAll">0</span></div>
+                  <div class="pm-tab-pill" data-pmtk-tab="tenant">Tenant <span class="pmtk-pill-count" id="pmtkCountTenant">0</span></div>
+                  <div class="pm-tab-pill" data-pmtk-tab="supplier">Supplier <span class="pmtk-pill-count" id="pmtkCountSupplier">0</span></div>
+                  <div class="pm-tab-pill" data-pmtk-tab="support">Support <span class="pmtk-pill-count" id="pmtkCountSupport">0</span></div>
+                  <div class="pm-tab-pill" data-pmtk-tab="unread">Unread <span class="pmtk-pill-count" id="pmtkCountUnread">0</span></div>
                 </div>
-                <div class="dash-header-actions">
-                  <div class="dash-search-bar" style="max-width:280px;">
+                <div class="pmtk-search-btn-group">
+                  <div class="dash-search-bar pmtk-search-bar">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
                     <input type="text" id="pmtkSearchInput" placeholder="Search ticket, property, tenant, job...">
                   </div>
-                  <button type="button" class="btn btn-primary" id="pmtkNewTicketBtn" style="white-space:nowrap;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>New Tenant Ticket</button>
+                  <button type="button" class="btn btn-primary" id="pmtkNewTicketBtn" style="white-space:nowrap;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>New Tenant Ticket</button>
                 </div>
-              </div>
-
-              <div id="pmtkTabs" style="margin-top:16px;">
-                <div class="pmjr-tab active" data-pmtk-tab="all">All <span class="pmjr-tab-count" id="pmtkCountAll">0</span></div>
-                <div class="pmjr-tab" data-pmtk-tab="tenant">Tenant <span class="pmjr-tab-count" id="pmtkCountTenant">0</span></div>
-                <div class="pmjr-tab" data-pmtk-tab="supplier">Supplier <span class="pmjr-tab-count" id="pmtkCountSupplier">0</span></div>
-                <div class="pmjr-tab" data-pmtk-tab="support">Support <span class="pmjr-tab-count" id="pmtkCountSupport">0</span></div>
-                <div class="pmjr-tab" data-pmtk-tab="unread">Unread <span class="pmjr-tab-count" id="pmtkCountUnread">0</span></div>
               </div>
 
               <div class="pmtk-table-wrap">
@@ -14812,6 +15014,136 @@
               </div>
             </div>
           </div>
+
+          <div id="pmInvoicesView" style="display:none;">
+            <div class="dash-section">
+              <div class="pminv-toptabs">
+                <button type="button" class="pminv-toptab active" data-inv-tab="invoices"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg>Invoices</button>
+                <button type="button" class="pminv-toptab" data-inv-tab="consolidated"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Consolidated Payments</button>
+              </div>
+
+              <div id="pminvInvoicesPane">
+                <div class="pminv-section-label">Per-job invoices</div>
+                <div class="pminv-section-desc">Standalone invoices for jobs you paid outside the consolidated cycle (early-pay) — click a row to download the supplier invoice and Keylr handling-fee invoice.</div>
+
+                <div class="pminv-status-tabs" id="pminvStatusTabs">
+                  <div class="pminv-status-tab active" data-status="awaiting">Awaiting Approval</div>
+                  <div class="pminv-status-tab" data-status="open">Open</div>
+                  <div class="pminv-status-tab" data-status="paid">Paid</div>
+                  <div class="pminv-status-tab" data-status="escrowed">Escrowed</div>
+                  <div class="pminv-status-tab" data-status="disputed">Disputed</div>
+                  <div class="pminv-status-tab" data-status="failed">Failed</div>
+                </div>
+
+                <div class="pminv-table-wrap" id="pminvTableWrap">
+                  <table class="pminv-table">
+                    <thead><tr><th>Invoice</th><th>Job</th><th>Property</th><th>Supplier</th><th>Due</th><th>Amount</th><th>Status</th><th>Pay</th><th>PDF</th></tr></thead>
+                    <tbody id="pminvTableBody"></tbody>
+                  </table>
+                  <div class="pminv-empty-state" id="pminvEmptyState" style="display:none;"></div>
+                </div>
+              </div>
+
+              <div id="pminvConsolidatedPane" style="display:none;">
+                <div class="pminv-stmt-card">
+                  <div class="pminv-stmt-head-row">
+                    <div>
+                      <div class="pminv-stmt-eyebrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Statement period</div>
+                      <div class="pminv-stmt-title">1 Jul 2026 <span class="pminv-stmt-dash">–</span> 15 Jul 2026 <span class="status-pill green">Approved</span></div>
+                      <div class="pminv-stmt-sub">3 suppliers · 9 invoices · fortnightly · DD 15 Jul 2026</div>
+                    </div>
+                    <div style="position:relative;">
+                      <button type="button" class="pm-custom-dd-btn" data-dd="pminvPeriod" style="min-width:210px;"><span class="cdd-value">1 Jul 2026 – 15 Jul 2026</span><svg class="cdd-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                      <div class="pm-custom-dd-menu" data-dd-menu="pminvPeriod">
+                        <div class="cdd-item selected" data-value="1 Jul 2026 – 15 Jul 2026">1 Jul 2026 – 15 Jul 2026</div>
+                        <div class="cdd-item" data-value="16 Jun 2026 – 30 Jun 2026">16 Jun 2026 – 30 Jun 2026</div>
+                        <div class="cdd-item" data-value="1 Jun 2026 – 15 Jun 2026">1 Jun 2026 – 15 Jun 2026</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pminv-stmt-stats">
+                    <div class="pminv-stmt-stat"><div class="lbl">Total billed</div><div class="val">£3,894.96</div></div>
+                    <div class="pminv-stmt-stat paid"><div class="lbl">Paid</div><div class="val">£720.02</div></div>
+                    <div class="pminv-stmt-stat outstanding"><div class="lbl">Outstanding</div><div class="val">£3,174.94</div></div>
+                    <div class="pminv-stmt-stat overdue"><div class="lbl">Overdue</div><div class="val">£0.00</div></div>
+                  </div>
+                </div>
+
+                <div class="pminv-card">
+                  <div class="pminv-card-head"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg>Statement breakdown</div>
+                  <div class="pminv-card-empty">
+                    <div class="t">Statement is being generated</div>
+                    <div class="s">It appears once the billing period is finalised. Check back shortly.</div>
+                  </div>
+                </div>
+
+                <div class="pminv-card">
+                  <div class="pminv-card-head-row"><span>Payouts to suppliers</span></div>
+                  <div class="pminv-card-note">Waiting for the Direct Debit to clear.</div>
+                </div>
+
+                <div class="pminv-card">
+                  <div class="pminv-card-empty" style="padding:20px 0;">
+                    <div class="s"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px;"><path d="M20 6L9 17l-5-5"/></svg>No disputed payments — everything's clear.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-overlay" id="pminvPayModalOverlay">
+            <div class="pminv-modal">
+              <div class="pminv-modal-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 11-14h-7l1-6z"/></svg></div>
+              <div class="pminv-modal-title">Pay This Job Now</div>
+              <div class="pminv-modal-sub"><strong id="pminvPayModalJobRef">JOB-0000</strong> — we'll release the supplier payment immediately. Your DD for the rest of the period is unaffected.</div>
+
+              <div class="pminv-modal-amtbox">
+                <div class="pminv-modal-amtrow"><span>Job Total</span><span id="pminvPayModalTotal">£0.00</span></div>
+                <div class="pminv-modal-amtrow strong"><span>Pay Now</span><span id="pminvPayModalNow">£0.00</span></div>
+              </div>
+
+              <div class="pminv-modal-label">Payment method</div>
+              <div class="pminv-paymethod-row">
+                <div class="pminv-paymethod-card active" data-paymethod="card">
+                  <div class="t">Card</div>
+                  <div class="s">Instant. Charged via Stripe.</div>
+                </div>
+                <div class="pminv-paymethod-card" data-paymethod="bank">
+                  <div class="t">Pay by Bank</div>
+                  <div class="s">Open Banking — confirm in your bank app.</div>
+                </div>
+              </div>
+
+              <div class="pminv-modal-btns">
+                <button type="button" class="btn" id="pminvPayModalCancelBtn">Cancel</button>
+                <button type="button" class="btn btn-primary" id="pminvPayModalContinueBtn">Continue</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-overlay" id="pminvPdfModalOverlay">
+            <div class="pminv-pdf-modal">
+              <div class="pminv-pdf-head">
+                <div>
+                  <div class="pminv-pdf-head-title" id="pminvPdfHeadTitle">SB-2026-000000 · KS-2026-000000</div>
+                  <div class="pminv-pdf-head-sub" id="pminvPdfHeadSub">Job title</div>
+                </div>
+                <button type="button" class="pminv-pdf-close" id="pminvPdfCloseBtn" aria-label="Close"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+              </div>
+              <div class="pminv-pdf-scroll" id="pminvPdfScroll"></div>
+              <div class="pminv-pdf-foot">
+                <button type="button" class="btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print</button>
+                <button type="button" class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print / PDF</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="pmQuotesNewView" style="display:none;"><div class="dash-section"><div class="pmex-stub-card"><div class="pmex-stub-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="pmex-stub-title">Quotes</div><div class="pmex-stub-sub">This module is coming soon.</div></div></div></div>
+          <div id="pmServiceChecklistsView" style="display:none;"><div class="dash-section"><div class="pmex-stub-card"><div class="pmex-stub-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><path d="M9 17h6"/></svg></div><div class="pmex-stub-title">Service Checklists</div><div class="pmex-stub-sub">This module is coming soon.</div></div></div></div>
+          <div id="pmBillingView" style="display:none;"><div class="dash-section"><div class="pmex-stub-card"><div class="pmex-stub-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg></div><div class="pmex-stub-title">Billing &amp; Payments</div><div class="pmex-stub-sub">This module is coming soon.</div></div></div></div>
+          <div id="pmCreditNotesView" style="display:none;"><div class="dash-section"><div class="pmex-stub-card"><div class="pmex-stub-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg></div><div class="pmex-stub-title">Credit notes</div><div class="pmex-stub-sub">This module is coming soon.</div></div></div></div>
+          <div id="pmSlaView" style="display:none;"><div class="dash-section"><div class="pmex-stub-card"><div class="pmex-stub-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="pmex-stub-title">SLA</div><div class="pmex-stub-sub">This module is coming soon.</div></div></div></div>
+          <div id="pmRetainersView" style="display:none;"><div class="dash-section"><div class="pmex-stub-card"><div class="pmex-stub-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div><div class="pmex-stub-title">Retainers</div><div class="pmex-stub-sub">This module is coming soon.</div></div></div></div>
 
           <div id="pmPropertiesView" style="display:none;">
             <div class="dash-section">
@@ -29620,14 +29952,6 @@
     if (pmbookInitialized) return;
     pmbookInitialized = true;
 
-    document.getElementById('pmBookTopbarBackLink').addEventListener('click', function () {
-      document.querySelectorAll('#pmDashboard .dash-nav-item').forEach(function (i) { i.classList.remove('active'); });
-      var jobsNavItem = document.querySelector('#pmDashboard .dash-nav-item[data-nav="responses"]');
-      if (jobsNavItem) jobsNavItem.classList.add('active');
-      showPMView('responses');
-      pmjobsRenderList();
-    });
-
     document.querySelectorAll('#pmbookTabsRow .pmbook-tab').forEach(function (tab) {
       tab.addEventListener('click', function () { pmbookSwitchTab(tab.getAttribute('data-book-tab')); });
     });
@@ -30669,6 +30993,44 @@
       log: [{ title: 'Dispute raised by the PM', sub: 'No-show', date: '12/07/2026', resolved: false }],
       financials: { jobTotal: 175.68, disputed: 175.68, netToSupplier: 0 }, chatUpdates: 0 }
   ];
+
+  /* =========================================================
+     PM INVOICES — per-job invoices across six statuses, plus the Consolidated Payments statement
+     view. Amounts intentionally line up with the £3,174.94 outstanding figure already used in the
+     Inbox module's own pre-invoice message, so the two modules feel like one connected system
+     rather than two disconnected demos quoting different numbers for the same billing period.
+  ========================================================== */
+  var PMINV_STATUS_TONE = { awaiting: 'amber', open: 'gray', paid: 'green', escrowed: 'blue', disputed: 'purple', failed: 'red' };
+  var PMINV_STATUS_LABEL = { awaiting: 'Awaiting', open: 'Open', paid: 'Paid', escrowed: 'Escrowed', disputed: 'Disputed', failed: 'Overdue' };
+  var PMINV_INVOICES = [
+    { id: 'SB-2026-000070', job: 'End of Tenancy / Deep / Regular / Communal', property: 'Carrington, PO Box 81490, London', supplier: 'Nadia Reid', due: '15 Jul 2026', amount: 64.80, status: 'awaiting', jobRef: 'JOB-2760' },
+    { id: 'SB-2026-000068', job: 'End of Tenancy / Deep / Regular / Communal', property: 'Carrington, PO Box 81490, London', supplier: 'Nadia Reid', due: '15 Jul 2026', amount: 72.00, status: 'awaiting', jobRef: 'JOB-2761' },
+    { id: 'SB-2026-000067', job: 'Appliance Installation (all white goods)', property: 'Carrington, PO Box 81490, London', supplier: 'Nadia Reid', due: '15 Jul 2026', amount: 480.00, status: 'awaiting', jobRef: 'JOB-2628' },
+    { id: 'SB-2026-000069', job: 'Smoke Alarm Installation', property: 'Carrington, PO Box 81490, London', supplier: 'Nadia Reid', due: '15 Jul 2026', amount: 486.00, status: 'awaiting', jobRef: 'JOB-2721' },
+    { id: 'SB-2026-000024', job: 'End of Tenancy / Deep / Regular / Communal', property: '45-47 Whitehall, London, SW1A', supplier: 'Liam Greenwood', due: '15 Jul 2026', amount: 588.96, status: 'awaiting', jobRef: 'JOB-2763' },
+    { id: 'SB-2026-000022', job: 'Boiler Service (Annual)', property: '45-47 Whitehall, London, SW1A', supplier: 'Liam Greenwood', due: '15 Jul 2026', amount: 403.20, status: 'awaiting', jobRef: 'JOB-2628' },
+    { id: 'SB-2026-000021', job: 'End of Tenancy / Deep / Regular / Communal', property: 'Apartment 3, 113 Newton Street', supplier: 'Nadia Reid', due: '\u2014', amount: 72.00, status: 'awaiting', jobRef: 'JOB-2765' },
+    { id: 'SB-2026-000020', job: 'Airbnb Turnover Clean', property: '45-47 Whitehall, London, SW1A', supplier: 'Liam Greenwood', due: '\u2014', amount: 177.12, status: 'awaiting', jobRef: 'JOB-2759' },
+
+    { id: 'SB-2026-000066', job: 'Carpet / Stair Carpet Steam Clean', property: 'Q & Q Recovery, West Road, Barnsley', supplier: 'rajat', due: '\u2014', amount: 840.00, status: 'paid', jobRef: 'JOB-2774' },
+    { id: 'DEP-2026-000019', job: 'Carpet / Stair Carpet Steam Clean', property: 'Q & Q Recovery, West Road, Barnsley', supplier: 'rajat', due: '\u2014', amount: 180.00, status: 'paid', jobRef: 'JOB-2774', isDeposit: true },
+    { id: 'SB-2026-000053', job: 'End of Tenancy / Deep / Regular / Communal', property: 'Carrington, PO Box 81490, London', supplier: 'sorogam', due: '\u2014', amount: 201.60, status: 'paid', jobRef: 'JOB-2606' },
+    { id: 'DEP-2026-000003', job: 'Carpet / Stair Carpet Steam Clean', property: 'Carrington, PO Box 81490, London', supplier: 'sorogam', due: '\u2014', amount: 360.00, status: 'paid', jobRef: 'JOB-2744', isDeposit: true },
+    { id: 'SB-2026-000035', job: 'End of Tenancy / Deep / Regular / Communal', property: 'Carrington, PO Box 81490, London', supplier: 'sorogam', due: '\u2014', amount: 288.00, status: 'paid', jobRef: 'JOB-2709' },
+    { id: 'SB-2026-000025', job: 'Boiler Service (Annual)', property: '45-47 Whitehall, London, SW1A', supplier: 'Liam Greenwood', due: '\u2014', amount: 288.00, status: 'paid', jobRef: 'JOB-2653' },
+    { id: 'SB-2026-000023', job: 'Appliance Installation (all white goods)', property: 'Carrington, PO Box 81490, London', supplier: 'Liam Greenwood', due: '\u2014', amount: 720.00, status: 'paid', jobRef: 'JOB-2628' },
+    { id: 'SB88-6000', job: null, property: null, supplier: 'Liam Greenwood', due: '28 May 2026', amount: 286.00, status: 'paid', jobRef: null },
+    { id: 'SB88-6006', job: null, property: null, supplier: 'Liam Greenwood', due: '28 Nov 2025', amount: 318.00, status: 'paid', jobRef: null },
+
+    { id: 'SB2-2026-000026', job: null, property: null, supplier: 'Owen Marsh', due: '1 Apr 2026', amount: 231.89, status: 'failed', jobRef: null },
+
+    { id: 'SB-2026-000058', job: 'Gas Safety Certificate (CP12)', property: 'Homeland 2, Barnsley', supplier: 'Liam Greenwood', due: '20 Jul 2026', amount: 95.00, status: 'escrowed', jobRef: 'JOB-2758' },
+    { id: 'SB-2026-000041', job: 'EICR \u2014 Electrical Installation', property: 'Homeland Heights, London', supplier: 'Liam Greenwood', due: '18 Jul 2026', amount: 175.68, status: 'disputed', jobRef: 'JOB-2776' }
+  ];
+  var pminvActiveTab = 'invoices'; // 'invoices' | 'consolidated'
+  var pminvActiveStatus = 'awaiting';
+  var pminvPaymentMethod = 'card';
+
   var pmdspSearchQuery = '';
   var pmdspStatusFilter = 'All Statuses';
   var pmdspActiveId = null;
@@ -30826,11 +31188,176 @@
     });
   }
 
+  /* =========================================================
+     PM INVOICES
+  ========================================================== */
+  var PMINV_SUPPLIER_CO = {
+    'rajat': { company: 'COMMUNIFY ON DEMAND LTD', addr: '77 Shaftesbury Avenue, London, W1D 5DU, United Kingdom', regNo: '15019054', vat: 'GB553557881' },
+    'sorogam': { company: 'GRIFFIN RAIL WHEEL LTD', addr: '14 Kirkstall Road, Leeds, LS4 2AB, United Kingdom', regNo: '14882201', vat: 'GB447229910' },
+    'Liam Greenwood': { company: 'Liam Greenwood Appliance Engineer', addr: '9 Ryder Street, London, SW1A 2BX, United Kingdom', regNo: '\u2014 (Sole Trader)', vat: 'Not VAT registered' },
+    'Nadia Reid': { company: 'Nadia Reid Gardener', addr: 'Flat 3, 113 Newton Street, Manchester, M1 4GH, United Kingdom', regNo: '\u2014 (Sole Trader)', vat: 'Not VAT registered' },
+    'Owen Marsh': { company: 'Owen Marsh Property Services', addr: '22 Park Avenue, Manchester, M1 4GH, United Kingdom', regNo: '\u2014 (Sole Trader)', vat: 'Not VAT registered' }
+  };
+  var PMINV_PM_CO = { company: 'KEY RIDERS LTD', addr: '60 Tottenham Court Road, Suite 3260a, Fitzrovia, London, W1T 2EW, United Kingdom', regNo: '15019055', vat: 'GB868776770' };
+
+  function pminvFilteredInvoices() {
+    return PMINV_INVOICES.filter(function (i) { return i.status === pminvActiveStatus; });
+  }
+  function pminvMoney(n) { return '\u00a3' + n.toFixed(2); }
+  function pminvRowHtml(inv) {
+    var canOpenPdf = inv.status === 'paid';
+    return '<tr class="' + (canOpenPdf ? 'clickable' : '') + '" ' + (canOpenPdf ? 'data-pminv-row="' + inv.id + '"' : '') + '>' +
+      '<td><div class="pminv-id-link">' + inv.id + '</div>' + (inv.isDeposit ? '<div class="pminv-id-sub">Deposit receipt</div>' : '') + '</td>' +
+      '<td>' + (inv.job ? pmexEscapeHtml(inv.job) : '<span class="pminv-dash-cell">\u2014</span>') + '</td>' +
+      '<td>' + (inv.property ? pmexEscapeHtml(inv.property) : '<span class="pminv-dash-cell">\u2014</span>') + '</td>' +
+      '<td>' + pmexEscapeHtml(inv.supplier) + '</td>' +
+      '<td>' + (inv.due === '\u2014' ? '<span class="pminv-dash-cell">\u2014</span>' : inv.due) + '</td>' +
+      '<td class="pminv-amount">' + pminvMoney(inv.amount) + '</td>' +
+      '<td><span class="status-pill ' + PMINV_STATUS_TONE[inv.status] + '">' + PMINV_STATUS_LABEL[inv.status] + '</span></td>' +
+      '<td>' + (inv.status === 'awaiting' ? '<button type="button" class="pminv-approve-btn" data-pminv-approve="' + inv.id + '">Approve and Pay</button>' : '<span class="pminv-dash-cell">\u2014</span>') + '</td>' +
+      '<td><button type="button" class="pminv-pdf-btn" data-pminv-pdf="' + inv.id + '" ' + (canOpenPdf ? '' : 'disabled') + ' aria-label="Download"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></td>' +
+      '</tr>';
+  }
+  function pminvRenderTable() {
+    var list = pminvFilteredInvoices();
+    var tbody = document.getElementById('pminvTableBody');
+    var wrap = document.getElementById('pminvTableWrap');
+    var empty = document.getElementById('pminvEmptyState');
+    if (!list.length) {
+      tbody.innerHTML = '';
+      wrap.querySelector('table').style.display = 'none';
+      empty.style.display = '';
+      empty.innerHTML = pminvActiveStatus === 'open'
+        ? 'No per-job invoices on the Open tab \u2014 these only appear once a job has been invoiced. Open the Awaiting or Paid tabs to see them.'
+        : 'No per-job invoices on the ' + PMINV_STATUS_LABEL[pminvActiveStatus] + ' tab right now.';
+      return;
+    }
+    wrap.querySelector('table').style.display = '';
+    empty.style.display = 'none';
+    tbody.innerHTML = list.map(pminvRowHtml).join('');
+    tbody.querySelectorAll('[data-pminv-row]').forEach(function (row) {
+      row.addEventListener('click', function () { pminvOpenPdfModal(row.getAttribute('data-pminv-row')); });
+    });
+    tbody.querySelectorAll('[data-pminv-approve]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) { e.stopPropagation(); pminvOpenPayModal(btn.getAttribute('data-pminv-approve')); });
+    });
+    tbody.querySelectorAll('[data-pminv-pdf]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (btn.disabled) return;
+        pminvOpenPdfModal(btn.getAttribute('data-pminv-pdf'));
+      });
+    });
+  }
+  function pminvSwitchStatus(status) {
+    pminvActiveStatus = status;
+    document.querySelectorAll('#pminvStatusTabs .pminv-status-tab').forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-status') === status); });
+    pminvRenderTable();
+  }
+  function pminvSwitchTopTab(tab) {
+    pminvActiveTab = tab;
+    document.querySelectorAll('.pminv-toptab').forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-inv-tab') === tab); });
+    document.getElementById('pminvInvoicesPane').style.display = tab === 'invoices' ? '' : 'none';
+    document.getElementById('pminvConsolidatedPane').style.display = tab === 'consolidated' ? '' : 'none';
+  }
+
+  var pminvActivePayId = null;
+  function pminvOpenPayModal(invId) {
+    var inv = PMINV_INVOICES.find(function (i) { return i.id === invId; });
+    if (!inv) return;
+    pminvActivePayId = invId;
+    document.getElementById('pminvPayModalJobRef').textContent = inv.jobRef || inv.id;
+    document.getElementById('pminvPayModalTotal').textContent = pminvMoney(inv.amount);
+    document.getElementById('pminvPayModalNow').textContent = pminvMoney(inv.amount);
+    pminvPaymentMethod = 'card';
+    document.querySelectorAll('.pminv-paymethod-card').forEach(function (c) { c.classList.toggle('active', c.getAttribute('data-paymethod') === 'card'); });
+    document.getElementById('pminvPayModalOverlay').classList.add('open');
+  }
+  function pminvClosePayModal() {
+    document.getElementById('pminvPayModalOverlay').classList.remove('open');
+    pminvActivePayId = null;
+  }
+  function pminvConfirmPay() {
+    if (!pminvActivePayId) return;
+    var inv = PMINV_INVOICES.find(function (i) { return i.id === pminvActivePayId; });
+    if (inv) inv.status = 'paid';
+    pminvClosePayModal();
+    pminvRenderTable();
+    showRichToast('Payment released', inv ? (inv.id + ' \u2014 ' + pminvMoney(inv.amount) + ' paid to ' + inv.supplier + '.') : '', 'success');
+  }
+
+  function pminvDocHtml(inv) {
+    var co = PMINV_SUPPLIER_CO[inv.supplier] || { company: inv.supplier, addr: 'Address on file', regNo: '\u2014', vat: 'Not VAT registered' };
+    var net = inv.amount / 1.2;
+    var vat = inv.amount - net;
+    return '<div class="pminv-doc-top-row">' +
+      '<div><div class="pminv-doc-title">Self-Billed Invoice</div><div class="pminv-doc-issuer">Issued by Keylr Ltd (trading as Keylr) as agent on behalf of the supplier named below.</div></div>' +
+      '<div class="pminv-doc-company"><strong>Keylr</strong>Keylr Ltd (trading as Keylr)<br>1 Keylr Way, London EC1A 1BB<br>Co. Reg. No. 15019055</div>' +
+      '</div>' +
+      '<hr class="pminv-doc-divider">' +
+      '<div class="pminv-doc-info-grid">' +
+      '<div class="pminv-doc-info-item"><div class="lbl">Invoice number</div><div class="val">' + (inv.jobRef || inv.id) + '</div></div>' +
+      '<div class="pminv-doc-info-item"><div class="lbl">Invoice date</div><div class="val">2026-07-06</div></div>' +
+      '<div class="pminv-doc-info-item"><div class="lbl">Tax point date</div><div class="val">2026-07-06</div></div>' +
+      '<div class="pminv-doc-info-item"><div class="lbl">Last completion date</div><div class="val">2026-07-06</div></div>' +
+      '<div class="pminv-doc-info-item"><div class="lbl">Currency</div><div class="val">GBP</div></div>' +
+      '<div class="pminv-doc-info-item"><div class="lbl">Status</div><div class="val"><span class="status-pill green">Paid</span></div></div>' +
+      '</div>' +
+      '<div class="pminv-doc-parties">' +
+      '<div><div class="pminv-doc-party-label">Supplier (on whose behalf Keylr is billing)</div><div class="pminv-doc-party-name">' + pmexEscapeHtml(co.company) + '</div><div class="pminv-doc-party-addr">' + pmexEscapeHtml(co.addr) + '<br>Company Reg. No.: ' + pmexEscapeHtml(co.regNo) + '<br>VAT No: ' + pmexEscapeHtml(co.vat) + '</div></div>' +
+      '<div><div class="pminv-doc-party-label">Keylr (issuing agent)</div><div class="pminv-doc-party-name">Keylr Ltd</div><div class="pminv-doc-party-addr">1 Keylr Way, London EC1A 1BB<em>Issued by Keylr Ltd (trading as Keylr) as agent on behalf of the supplier named in this invoice.</em></div></div>' +
+      '<div><div class="pminv-doc-party-label">PM (underlying customer)</div><div class="pminv-doc-party-name">' + pmexEscapeHtml(PMINV_PM_CO.company) + '</div><div class="pminv-doc-party-addr">' + pmexEscapeHtml(PMINV_PM_CO.addr) + '<br>Company Reg. No.: ' + PMINV_PM_CO.regNo + '<br>VAT No: ' + PMINV_PM_CO.vat + '</div></div>' +
+      '</div>' +
+      '<div class="pminv-doc-svc-label">Services supplied on behalf of the supplier:</div>' +
+      '<table class="pminv-doc-table"><thead><tr><th>Job ref</th><th>Job date</th><th>Property address</th><th>Service description</th><th>Net (\u00a3)</th><th>VAT rate</th><th>VAT amount (\u00a3)</th><th>Gross (\u00a3)</th></tr></thead>' +
+      '<tbody><tr><td>' + (inv.jobRef || '\u2014') + '</td><td>2026-07-06</td><td>' + pmexEscapeHtml(inv.property || '\u2014') + '</td><td>' + pmexEscapeHtml(inv.job || 'Service') + '</td><td>' + net.toFixed(2) + '</td><td>20%</td><td>' + vat.toFixed(2) + '</td><td>' + inv.amount.toFixed(2) + '</td></tr></tbody></table>';
+  }
+  function pminvOpenPdfModal(invId) {
+    var inv = PMINV_INVOICES.find(function (i) { return i.id === invId; });
+    if (!inv) return;
+    document.getElementById('pminvPdfHeadTitle').textContent = inv.id + ' \u00b7 KS-' + inv.id.replace(/^[A-Z]+-/, '');
+    document.getElementById('pminvPdfHeadSub').textContent = inv.job || inv.supplier;
+    document.getElementById('pminvPdfScroll').innerHTML = pminvDocHtml(inv);
+    document.getElementById('pminvPdfModalOverlay').classList.add('open');
+  }
+  function pminvClosePdfModal() {
+    document.getElementById('pminvPdfModalOverlay').classList.remove('open');
+  }
+
+  function initPmInvoicesOnce() {
+    pminvRenderTable();
+    if (pminvInitDone) return;
+    pminvInitDone = true;
+
+    document.querySelectorAll('.pminv-toptab').forEach(function (t) {
+      t.addEventListener('click', function () { pminvSwitchTopTab(t.getAttribute('data-inv-tab')); });
+    });
+    document.querySelectorAll('#pminvStatusTabs .pminv-status-tab').forEach(function (t) {
+      t.addEventListener('click', function () { pminvSwitchStatus(t.getAttribute('data-status')); });
+    });
+    document.querySelectorAll('.pminv-paymethod-card').forEach(function (c) {
+      c.addEventListener('click', function () {
+        pminvPaymentMethod = c.getAttribute('data-paymethod');
+        document.querySelectorAll('.pminv-paymethod-card').forEach(function (x) { x.classList.toggle('active', x === c); });
+      });
+    });
+    document.getElementById('pminvPayModalCancelBtn').addEventListener('click', pminvClosePayModal);
+    document.getElementById('pminvPayModalOverlay').addEventListener('click', function (e) { if (e.target === this) pminvClosePayModal(); });
+    document.getElementById('pminvPayModalContinueBtn').addEventListener('click', pminvConfirmPay);
+    document.getElementById('pminvPdfCloseBtn').addEventListener('click', pminvClosePdfModal);
+    document.getElementById('pminvPdfModalOverlay').addEventListener('click', function (e) { if (e.target === this) pminvClosePdfModal(); });
+    document.querySelector('.pminv-pdf-foot .btn').addEventListener('click', function () { showToast('Print isn\u2019t wired up in this prototype yet.'); });
+    document.querySelector('.pminv-pdf-foot .btn-primary').addEventListener('click', function () { showToast('PDF export isn\u2019t wired up in this prototype yet.'); });
+  }
+  var pminvInitDone = false;
+
   // Entry point for the Jobs table's "+ Book a Job" button — always lands on Quick Book.
-  function pmbookOpenNewBooking() {
-    document.querySelectorAll('#pmDashboard .dash-nav-item').forEach(function (i) { i.classList.remove('active'); });
-    var jobsNavItem = document.querySelector('#pmDashboard .dash-nav-item[data-nav="responses"]');
-    if (jobsNavItem) jobsNavItem.classList.add('active');
+  function pmbookOpenNewBooking(skipNavActive) {
+    if (!skipNavActive) {
+      document.querySelectorAll('#pmDashboard .dash-nav-item').forEach(function (i) { i.classList.remove('active'); });
+      var newBookingNavItem = document.querySelector('#pmDashboard .dash-nav-item[data-nav="newbooking"]');
+      if (newBookingNavItem) newBookingNavItem.classList.add('active');
+    }
     showPMView('newbooking');
     initPmBookOnce();
     pmbookSwitchTab('quick');
@@ -31036,7 +31563,7 @@
   function pmtkSwitchTab(tab) {
     pmtkCurrentTab = tab;
     pmtkCurrentPage = 1;
-    document.querySelectorAll('#pmtkTabs .pmjr-tab').forEach(function (el) {
+    document.querySelectorAll('#pmtkTabs .pm-tab-pill').forEach(function (el) {
       el.classList.toggle('active', el.getAttribute('data-pmtk-tab') === tab);
     });
     pmtkRenderTable();
@@ -31049,7 +31576,7 @@
     pmtkUpdateTabCounts();
     pmtkRenderTable();
 
-    document.querySelectorAll('#pmtkTabs .pmjr-tab').forEach(function (tabEl) {
+    document.querySelectorAll('#pmtkTabs .pm-tab-pill').forEach(function (tabEl) {
       tabEl.addEventListener('click', function () { pmtkSwitchTab(tabEl.getAttribute('data-pmtk-tab')); });
     });
 
@@ -31355,7 +31882,7 @@
 
   /* ---- PM Settings view ---- */
   function showPMView(view) {
-    var viewIds = { home: 'pmHomeView', settings: 'pmSettingsView', explore: 'pmExploreView', responses: 'pmJobsView', quotes: 'pmQuotesView', jobdetail: 'pmJobDetailView', newbooking: 'pmNewBookingView', properties: 'pmPropertiesView', propertyform: 'pmPropertyFormView', propertyjobs: 'pmPropertyJobsView', compliancesettings: 'pmComplianceSettingsView', tickets: 'pmTicketsView', servicespricing: 'pmServicesPricingView', servicetemplate: 'pmServiceTemplateView', inbox: 'pmInboxView', suppliers: 'pmPrefSuppliersView', disputes: 'pmDisputesView', disputedetail: 'pmDisputeDetailView' };
+    var viewIds = { home: 'pmHomeView', settings: 'pmSettingsView', explore: 'pmExploreView', responses: 'pmJobsView', quotes: 'pmQuotesView', jobdetail: 'pmJobDetailView', newbooking: 'pmNewBookingView', properties: 'pmPropertiesView', propertyform: 'pmPropertyFormView', propertyjobs: 'pmPropertyJobsView', compliancesettings: 'pmComplianceSettingsView', tickets: 'pmTicketsView', servicespricing: 'pmServicesPricingView', servicetemplate: 'pmServiceTemplateView', inbox: 'pmInboxView', suppliers: 'pmPrefSuppliersView', disputes: 'pmDisputesView', disputedetail: 'pmDisputeDetailView', invoices: 'pmInvoicesView', 'quotes-new': 'pmQuotesNewView', 'service-checklists': 'pmServiceChecklistsView', billing: 'pmBillingView', 'credit-notes': 'pmCreditNotesView', sla: 'pmSlaView', retainers: 'pmRetainersView' };
     Object.keys(viewIds).forEach(function (key) {
       var el = document.getElementById(viewIds[key]);
       if (key === view) {
@@ -31369,7 +31896,7 @@
     });
     var pmDashContent = document.querySelector('#pmDashboard .dash-content');
     if (pmDashContent) pmDashContent.classList.toggle('dash-content-full', view === 'quotes');
-    if (pmDashContent) pmDashContent.classList.toggle('dash-content-narrow-pad', view === 'properties' || view === 'propertyform' || view === 'propertyjobs' || view === 'compliancesettings' || view === 'servicespricing' || view === 'servicetemplate' || view === 'jobdetail' || view === 'newbooking' || view === 'responses' || view === 'suppliers' || view === 'disputes' || view === 'disputedetail');
+    if (pmDashContent) pmDashContent.classList.toggle('dash-content-narrow-pad', view === 'properties' || view === 'propertyform' || view === 'propertyjobs' || view === 'compliancesettings' || view === 'servicespricing' || view === 'servicetemplate' || view === 'jobdetail' || view === 'newbooking' || view === 'responses' || view === 'suppliers' || view === 'disputes' || view === 'disputedetail' || view === 'invoices');
     if (pmDashContent) pmDashContent.classList.toggle('dash-content-full-bleed', view === 'inbox');
     // The topbar's title area shows exactly one of five things at a time: the Dashboard-only
     // "Good afternoon" greeting, the Properties module heading (Properties view now leads with
@@ -31397,6 +31924,14 @@
     var prefSuppliersTitleWrap = document.getElementById('pmPrefSuppliersTopbarTitle');
     var disputesTitleWrap = document.getElementById('pmDisputesTopbarTitle');
     var disputeDetailTitleWrap = document.getElementById('pmDisputeDetailTopbarTitle');
+    var invoicesTitleWrap = document.getElementById('pmInvoicesTopbarTitle');
+    var quotesNewTitleWrap = document.getElementById('pmQuotesNewTopbarTitle');
+    var serviceChecklistsTitleWrap = document.getElementById('pmServiceChecklistsTopbarTitle');
+    var billingTitleWrap = document.getElementById('pmBillingTopbarTitle');
+    var creditNotesTitleWrap = document.getElementById('pmCreditNotesTopbarTitle');
+    var slaTitleWrap = document.getElementById('pmSlaTopbarTitle');
+    var retainersTitleWrap = document.getElementById('pmRetainersTopbarTitle');
+    var ticketsTitleWrap = document.getElementById('pmTicketsTopbarTitle');
     var bookTitleWrap = document.getElementById('pmBookTopbarTitle');
     var isDetailPage = (view === 'propertyform' || view === 'propertyjobs' || view === 'compliancesettings');
     if (greetingWrap) greetingWrap.style.display = (view === 'home') ? '' : 'none';
@@ -31421,6 +31956,14 @@
     if (prefSuppliersTitleWrap) prefSuppliersTitleWrap.style.display = (view === 'suppliers') ? '' : 'none';
     if (disputesTitleWrap) disputesTitleWrap.style.display = (view === 'disputes') ? '' : 'none';
     if (disputeDetailTitleWrap) disputeDetailTitleWrap.style.display = (view === 'disputedetail') ? '' : 'none';
+    if (invoicesTitleWrap) invoicesTitleWrap.style.display = (view === 'invoices') ? '' : 'none';
+    if (quotesNewTitleWrap) quotesNewTitleWrap.style.display = (view === 'quotes-new') ? '' : 'none';
+    if (serviceChecklistsTitleWrap) serviceChecklistsTitleWrap.style.display = (view === 'service-checklists') ? '' : 'none';
+    if (billingTitleWrap) billingTitleWrap.style.display = (view === 'billing') ? '' : 'none';
+    if (creditNotesTitleWrap) creditNotesTitleWrap.style.display = (view === 'credit-notes') ? '' : 'none';
+    if (slaTitleWrap) slaTitleWrap.style.display = (view === 'sla') ? '' : 'none';
+    if (retainersTitleWrap) retainersTitleWrap.style.display = (view === 'retainers') ? '' : 'none';
+    if (ticketsTitleWrap) ticketsTitleWrap.style.display = (view === 'tickets') ? '' : 'none';
     if (bookTitleWrap) bookTitleWrap.style.display = (view === 'newbooking') ? '' : 'none';
     if (svcBackBtn) svcBackBtn.style.display = (view === 'servicetemplate') ? '' : 'none';
     if (svcDetailTitleWrap) svcDetailTitleWrap.style.display = (view === 'servicetemplate') ? '' : 'none';
@@ -33620,6 +34163,28 @@
       } else if (item.getAttribute('data-nav') === 'disputes') {
         showPMView('disputes');
         initPmDisputesOnce();
+      } else if (item.getAttribute('data-nav') === 'newbooking') {
+        pmbookOpenNewBooking();
+      } else if (item.getAttribute('data-nav') === 'job-templates') {
+        pmbookOpenNewBooking(true);
+        initPmBookOnce();
+        pmbookSwitchTab('templates');
+        pmbookOpenTplCreate();
+      } else if (item.getAttribute('data-nav') === 'quotes-new') {
+        showPMView('quotes-new');
+      } else if (item.getAttribute('data-nav') === 'service-checklists') {
+        showPMView('service-checklists');
+      } else if (item.getAttribute('data-nav') === 'billing') {
+        showPMView('billing');
+      } else if (item.getAttribute('data-nav') === 'credit-notes') {
+        showPMView('credit-notes');
+      } else if (item.getAttribute('data-nav') === 'sla') {
+        showPMView('sla');
+      } else if (item.getAttribute('data-nav') === 'retainers') {
+        showPMView('retainers');
+      } else if (item.getAttribute('data-nav') === 'invoices') {
+        showPMView('invoices');
+        initPmInvoicesOnce();
       } else if (item.getAttribute('data-nav') === 'explore') {
         showPMView('explore');
         initPmExploreOnce();
