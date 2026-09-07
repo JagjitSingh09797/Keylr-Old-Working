@@ -2789,10 +2789,12 @@
   ========================================================== */
 
   /* ---- Inbox module ---- */
-  .sinb-shell { display: flex; flex-direction: column; height: calc(100vh - 200px); max-height: calc(100vh); min-height: 480px; background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; overflow: hidden; position: relative; }
+  .sinb-shell { display: flex; flex-direction: column; max-height: calc(100vh); min-height: 480px; background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; overflow: hidden; position: relative; }
   /* Account Settings > Chat (PM and Supplier) sits below an extra stat row + tab bar that the
-     base offset above doesn't account for — without this, the composer sits past the viewport
-     edge. Dashboard > Inbox (#supInboxView) has no such extra chrome, so it keeps the base offset. */
+     max-height above doesn't account for — left alone, the shell would still try to grow toward
+     100vh and push the composer past the viewport edge, so this context sets its own explicit,
+     smaller height instead. Dashboard > Inbox (#supInboxView) has no such extra chrome, so it's
+     the one place max-height: calc(100vh) above is left to do the sizing on its own. */
   #supSettingsPanelInbox .sinb-shell, #pmSettingsPanelChat .sinb-shell { height: calc(100vh - 270px); }
   .sinb-titlebar { display: flex; align-items: center; gap: 12px; padding: 16px 28px; border-bottom: 1px solid var(--border-subtle); flex-shrink: 0; }
   .sinb-titlebar h1 { font-weight: 800; color: var(--text-heading); }
