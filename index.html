@@ -2789,7 +2789,11 @@
   ========================================================== */
 
   /* ---- Inbox module ---- */
-  .sinb-shell { display: flex; flex-direction: column; height: 70vh; min-height: 480px; background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; overflow: hidden; position: relative; }
+  .sinb-shell { display: flex; flex-direction: column; height: calc(100vh - 200px); max-height: calc(100vh); min-height: 480px; background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; overflow: hidden; position: relative; }
+  /* Account Settings > Chat (PM and Supplier) sits below an extra stat row + tab bar that the
+     base offset above doesn't account for — without this, the composer sits past the viewport
+     edge. Dashboard > Inbox (#supInboxView) has no such extra chrome, so it keeps the base offset. */
+  #supSettingsPanelInbox .sinb-shell, #pmSettingsPanelChat .sinb-shell { height: calc(100vh - 270px); }
   .sinb-titlebar { display: flex; align-items: center; gap: 12px; padding: 16px 28px; border-bottom: 1px solid var(--border-subtle); flex-shrink: 0; }
   .sinb-titlebar h1 { font-weight: 800; color: var(--text-heading); }
   .sinb-unread-pill { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; background: #fef3e2; color: #b45309; font-size: 12.5px; font-weight: 700; padding: 6px 12px; border-radius: 999px; }
@@ -3403,6 +3407,31 @@
     #pmOwnChatScroll .sinb-jump-btn, #ainChatScroll .sinb-jump-btn { align-self: flex-start; }
   }
 
+  /* The Inbox's chat column now grows past its old ~700-800px ceiling on large screens (dash-content
+     no longer caps it at 1240px — see dash-content-full-bleed / showSupplierView), so its cards get
+     their own fixed widths that step up at wider breakpoints instead of looking small and lost
+     against all the extra space, or (for the plain bubble wrapper) stretching to an oversized
+     percentage of a much wider column. max-width is set alongside width at every tier because the
+     base rules above pair width:100% with a max-width cap — overriding width alone would still get
+     silently capped back down by that untouched max-width. Scoped to #supInboxChatScroll — the
+     other sinb-* chat mounts (Settings > Chat, PM's own chat, Admin Inbox, onboarding) still sit
+     inside a capped container, so their cards keep the base sizing above unchanged. */
+  #supInboxChatScroll .sinb-msg-stack.sinb-msg-stack-wide { width: 400px; max-width: 400px; }
+  #supInboxChatScroll .sinb-system-card { width: 560px; max-width: 560px; }
+  #supInboxChatScroll .sinb-fo-card { width: 260px; max-width: 260px; }
+  @media (min-width: 1440px) {
+    #supInboxChatScroll .sinb-msg-stack { max-width: 640px; }
+    #supInboxChatScroll .sinb-msg-stack.sinb-msg-stack-wide { width: 460px; max-width: 460px; }
+    #supInboxChatScroll .sinb-system-card { width: 620px; max-width: 620px; }
+    #supInboxChatScroll .sinb-fo-card { width: 300px; max-width: 300px; }
+  }
+  @media (min-width: 1920px) {
+    #supInboxChatScroll .sinb-msg-stack { max-width: 720px; }
+    #supInboxChatScroll .sinb-msg-stack.sinb-msg-stack-wide { width: 520px; max-width: 520px; }
+    #supInboxChatScroll .sinb-system-card { width: 680px; max-width: 680px; }
+    #supInboxChatScroll .sinb-fo-card { width: 320px; max-width: 320px; }
+  }
+
   /* Hides the visible scrollbar on the main content scroll area for every dashboard (PM, Supplier,
      Admin all share .dash-scroll-area) while leaving scrolling itself fully functional — same
      technique already used for the onboarding wizard and chat scroll areas. */
@@ -3442,6 +3471,37 @@
   .sinb-dtl-activity-date { color: var(--text-body-muted); margin-top: 2px; font-size: 11px; }
   .sinb-dtl-related-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border: 1px solid var(--border-subtle); border-radius: 9px; margin-bottom: 8px; font-size: 12.5px; font-weight: 700; color: var(--text-heading); }
   .sinb-dtl-related-row span.count { font-weight: 600; color: var(--text-body-muted); }
+  .sinb-dtl-related-icon { color: var(--text-body-muted); display: inline-flex; margin-right: 7px; vertical-align: -3px; }
+  .sinb-dtl-empty-card { display: flex; align-items: flex-start; gap: 12px; background: var(--surface-soft); border: 1px dashed var(--border-subtle); border-radius: 12px; padding: 14px; }
+  .sinb-dtl-empty-card-icon { width: 34px; height: 34px; border-radius: 9px; background: #fff; border: 1px solid var(--border-subtle); color: var(--text-body-muted); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .sinb-dtl-empty-card-title { font-size: 12.5px; font-weight: 700; color: var(--text-heading); margin-bottom: 3px; }
+  .sinb-dtl-empty-card-desc { font-size: 11.5px; color: var(--text-body-muted); line-height: 1.4; }
+  .sinb-dtl-footnote { font-size: 11px; color: var(--text-body-muted); line-height: 1.4; margin-top: 8px; }
+  .sinb-details-close-btn { background: none; border: none; color: var(--text-body-muted); cursor: pointer; display: flex; padding: 4px; border-radius: 6px; transition: background-color 130ms ease-out, color 130ms ease-out; }
+  .sinb-details-close-btn:hover { background: var(--surface-soft); color: var(--text-heading); }
+
+  /* ---- Inbox module: conversation-list job-code label (shown instead of the Job pill once a
+     job-linked conversation no longer needs a reply) ---- */
+  .sinb-conv-jobcode { font-size: 11.5px; font-weight: 700; color: var(--text-body-muted); margin-top: 3px; }
+  .sinb-conv-item.active .sinb-conv-jobcode { color: #22447f; }
+
+  /* ---- Inbox module: list sort dropdown (same shape as the PM Inbox filter sub-menu) ---- */
+  .sinb-sort-menu { display: none; position: absolute; top: calc(100% + 6px); right: 0; width: 170px; background: #fff; border: 1px solid var(--border-subtle); border-radius: 12px; box-shadow: 0 12px 32px rgba(16,24,40,0.14); padding: 6px; z-index: 45; }
+  .sinb-sort-menu.open { display: block; }
+  .sinb-sort-menu-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; border-radius: 8px; font-size: 12.5px; font-weight: 600; color: var(--text-heading); cursor: pointer; }
+  .sinb-sort-menu-item:hover { background: var(--surface-soft); }
+  .sinb-sort-menu-item.selected { color: var(--accent-blue); font-weight: 700; }
+  .sinb-sort-menu-item svg { width: 13px; height: 13px; visibility: hidden; flex-shrink: 0; color: var(--accent-blue); }
+  .sinb-sort-menu-item.selected svg { visibility: visible; }
+
+  /* ---- Inbox module: Saved Replies popover, opened from the first composer icon ---- */
+  .sinb-saved-replies-popover { position: fixed; width: 340px; max-height: 70vh; overflow-y: auto; background: #fff; border-radius: 16px; box-shadow: 0 16px 40px rgba(16,24,40,0.18); padding: 16px 20px; z-index: 200; opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity 180ms ease-out, transform 180ms ease-out, visibility 180ms; }
+  .sinb-saved-replies-popover.open { opacity: 1; visibility: visible; transform: translateY(0); }
+  .sinb-saved-replies-title { font-size: 12.5px; font-weight: 600; color: var(--text-body-muted); margin-bottom: 8px; }
+  .sinb-saved-reply-item { padding: 8px; margin: 0 -8px; cursor: pointer; border-radius: 8px; transition: background-color 130ms ease-out; }
+  .sinb-saved-reply-item:hover { background: var(--surface-soft); }
+  .sinb-saved-reply-title { font-size: 13.5px; font-weight: 700; color: var(--text-heading); margin-bottom: 2px; }
+  .sinb-saved-reply-body { font-size: 12.5px; color: var(--text-body-muted); line-height: 1.45; }
 
   /* =========================================================
      SUPPLIER DASHBOARD — unique components
@@ -5571,7 +5631,7 @@
   .pm-dropdown-menu button svg, .app-dropdown-menu button svg, .supplier-dropdown-menu button svg { color: var(--text-body-muted); flex-shrink: 0; }
 
   /* Table view */
-  .pm-table-wrap { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; max-height: calc(100vh - 330px); min-height: 300px; }
+  .pm-table-wrap { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; max-height: calc(100vh); min-height: 300px; }
   .pm-table-scroll { overflow: auto; flex: 1; }
   .pm-table-wrap table thead th { position: sticky; top: 0; background: #fff; z-index: 2; padding-top: 16px !important; padding-bottom: 14px !important; }
   .pm-name-cell { display: flex; align-items: center; gap: 10px; }
@@ -6528,7 +6588,7 @@
   @media (max-width: 960px) { .pmjr-list-col { width: 100%; } }
   .pmjr-detail-wrap { position: relative; background: #fff; border: 1px solid var(--border-subtle); border-radius: 16px; padding: 24px; min-width: 0; overflow: hidden; }
 
-  .pmjr-list { display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 320px); min-height: 300px; overflow-y: auto; padding-right: 4px; }
+  .pmjr-list { display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh); min-height: 300px; overflow-y: auto; padding-right: 4px; }
   .pmjr-job-card { border: 1.5px solid var(--border-subtle); border-radius: 14px; padding: 14px 16px; cursor: pointer; background: #fff; transition: border-color 120ms ease-out, background-color 120ms ease-out; }
   .pmjr-job-card:hover:not(.active) { border-color: #90a8c8; }
   .pmjr-job-card.active { background: var(--icon-tint-bg); border-color: var(--accent-blue); }
@@ -19749,9 +19809,32 @@
           </div>
 
           <div id="supInboxView" style="display:none;">
-            <div class="sinb-shell">
-              <div class="sinb-body sinb-body-solo">
-                <div class="sinb-chat-col sinb-chat-col-full" id="supInboxChatCol">
+            <div class="sinb-shell" id="supInboxShell">
+              <div class="sinb-body">
+                <div class="sinb-list-col" id="supInboxListCol">
+                  <div class="sinb-search-wrap">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" id="supInboxSearchInput" placeholder="Search name, job or message...">
+                  </div>
+                  <div class="sinb-tabs" id="supInboxTabsRow">
+                    <div class="sinb-tab active" data-supinb-tab="active">Active</div>
+                    <div class="sinb-tab" data-supinb-tab="archived">Archived</div>
+                    <div class="sinb-tab" data-supinb-tab="completed">Completed</div>
+                  </div>
+                  <div class="sinb-count-sort-row">
+                    <span id="supInboxConvCount">0 conversations</span>
+                    <div style="position:relative;">
+                      <button type="button" class="sinb-sort-btn" id="supInboxSortBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h6"/></svg><span id="supInboxSortLabel">Most recent</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                      <div class="sinb-sort-menu" id="supInboxSortMenu">
+                        <div class="sinb-sort-menu-item selected" data-supinb-sort="recent">Most recent<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <div class="sinb-sort-menu-item" data-supinb-sort="oldest">Oldest first<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <div class="sinb-sort-menu-item" data-supinb-sort="unread">Unread first<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="sinb-conv-scroll" id="supInboxConvScroll"></div>
+                </div>
+                <div class="sinb-chat-col" id="supInboxChatCol">
                   <div class="sinb-chat-header" id="supInboxChatHeader"></div>
                   <div class="sinb-chat-thread-wrap">
                     <div class="sinb-chat-scroll" id="supInboxChatScroll">
@@ -19766,6 +19849,13 @@
                       <button type="button" class="sinb-reply-preview-close" id="supInboxReplyPreviewClose"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
                     </div>
                     <div class="sinb-composer-icons">
+                      <div style="position:relative;">
+                        <button type="button" class="sinb-icon-btn" id="supInboxSavedRepliesBtn" data-tooltip="Saved replies"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></button>
+                        <div class="sinb-saved-replies-popover" id="supInboxSavedRepliesPopover">
+                          <div class="sinb-saved-replies-title">Saved Replies</div>
+                          <div id="supInboxSavedRepliesList"></div>
+                        </div>
+                      </div>
                       <div style="position:relative;">
                         <button type="button" class="sinb-icon-btn" id="supInboxEmojiBtn" data-tooltip="Add emoji"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/></svg></button>
                         <div class="sinb-emoji-popover" id="supInboxEmojiPopover">
@@ -19782,6 +19872,12 @@
                     </div>
                     <div class="sinb-composer-hint">Enter to send · Shift + Enter for new line · Images, videos + PDFs up to 10 MB.</div>
                   </div>
+                </div>
+              </div>
+              <div class="sinb-details-overlay" id="supInboxDetailsOverlay">
+                <div class="sinb-details-col">
+                  <div class="sinb-details-head"><span>Details</span><button type="button" class="sinb-details-close-btn" id="supInboxDetailsCloseBtn" aria-label="Close details"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+                  <div class="sinb-details-scroll" id="supInboxDetailsScroll"></div>
                 </div>
               </div>
             </div>
@@ -36465,13 +36561,20 @@
     'payment-setup': { title: 'Payment Setup', sub: 'Manage your VAT, bank account, Stripe Connect, and self-billing agreement.' },
     'payouts': { title: 'Payouts', sub: 'Manage your payouts, remittances and payment history.' },
     'sup-disputes': { title: 'Disputes', sub: 'Disputes opened on jobs you\u2019ve completed.' },
-    'inbox': { title: 'Inbox', sub: 'Chat directly with Keylr Support.' },
+    'inbox': { title: 'Inbox', sub: 'Messages with property managers, quotes, jobs & support — all in one place.' },
     'profile-settings': { title: 'Account Settings', sub: 'Manage your profile, business & subscription.' }
   };
   function showSupplierView(view) {
     Object.keys(SUP_VIEW_IDS).forEach(function (key) {
       document.getElementById(SUP_VIEW_IDS[key]).style.display = (key === view) ? '' : 'none';
     });
+    // Inbox needs the full viewport width for its three-pane layout (list + chat + Details) —
+    // dash-content-full-bleed drops the shared 1240px cap and auto-centering margin for just this
+    // view, the same class PM's own Inbox already toggles on its dash-content (see showPMView).
+    // It leaves dash-content's padding alone, which #supInboxView's own negative margin (below)
+    // still exactly cancels, so this doesn't disturb that existing padding-cancellation trick.
+    var supDashContent = document.querySelector('#supplierDashboard .dash-content');
+    if (supDashContent) supDashContent.classList.toggle('dash-content-full-bleed', view === 'inbox');
     // The greeting only makes sense on the Home dashboard — everywhere else, the topbar shows that
     // module's own heading/subheading instead (same pattern as the PM side), so the greeting is
     // swapped out rather than the module repeating its own title in-page underneath it too.
@@ -37065,9 +37168,11 @@
   }
 
   /* ==================== SUPPLIER INBOX MODULE ==================== */
-  /* Simplified to a single, direct channel with Keylr Support — suppliers don't manage
-     multiple conversations here, so there's no list, no archive/star/pin, no sort/search,
-     no contact details panel, and no final offer flow. */
+  /* SINB_SUPPORT_CONV is the one real, live-synced "Keylr Support" thread — the same object
+     rendered by Account Settings > Chat, the Dashboard > Inbox conversation list (see the
+     SUPINB_* list/details code further down), and both onboarding widgets, so a message sent
+     from any of those mounts is instantly visible in the others and in Admin's view of this
+     supplier. There's still no final-offer flow here (that's a PM Inbox concept only). */
   var SINB_SUPPORT_CONV = {
     id: 'support', name: 'Keylr Support', initials: 'KS', type: 'support',
     presence: 'Active now', lastActivityLabel: '05/07/2026', unread: 0,
@@ -37417,7 +37522,7 @@
 
   var SINB_MOUNTS = [
     { header: 'sinbChatHeader', scroll: 'sinbChatScroll', inner: 'sinbMessagesInner', scrollBtn: 'sinbScrollBottomBtn', replyPreview: 'sinbReplyPreview', replyPreviewField: 'sinbReplyPreviewField', replyPreviewClose: 'sinbReplyPreviewClose', messageInput: 'sinbMessageInput', sendBtn: 'sinbSendBtn', emojiBtn: 'sinbEmojiBtn', emojiPopover: 'sinbEmojiPopover', attachBtn: 'sinbAttachBtn', attachInput: 'sinbAttachInput', getConv: sinbGetActiveConv },
-    { header: 'supInboxChatHeader', scroll: 'supInboxChatScroll', inner: 'supInboxMessagesInner', scrollBtn: 'supInboxScrollBottomBtn', replyPreview: 'supInboxReplyPreview', replyPreviewField: 'supInboxReplyPreviewField', replyPreviewClose: 'supInboxReplyPreviewClose', messageInput: 'supInboxMessageInput', sendBtn: 'supInboxSendBtn', emojiBtn: 'supInboxEmojiBtn', emojiPopover: 'supInboxEmojiPopover', attachBtn: 'supInboxAttachBtn', attachInput: 'supInboxAttachInput', getConv: sinbGetActiveConv },
+    { header: 'supInboxChatHeader', scroll: 'supInboxChatScroll', inner: 'supInboxMessagesInner', scrollBtn: 'supInboxScrollBottomBtn', replyPreview: 'supInboxReplyPreview', replyPreviewField: 'supInboxReplyPreviewField', replyPreviewClose: 'supInboxReplyPreviewClose', messageInput: 'supInboxMessageInput', sendBtn: 'supInboxSendBtn', emojiBtn: 'supInboxEmojiBtn', emojiPopover: 'supInboxEmojiPopover', attachBtn: 'supInboxAttachBtn', attachInput: 'supInboxAttachInput', savedRepliesBtn: 'supInboxSavedRepliesBtn', savedRepliesPopover: 'supInboxSavedRepliesPopover', getConv: function () { return (typeof supInboxGetSelectedConv === 'function') ? supInboxGetSelectedConv() : sinbGetActiveConv(); } },
     { header: 'obChatHeader', scroll: 'obChatScroll', inner: 'obChatMessagesInner', scrollBtn: 'obChatScrollBottomBtn', replyPreview: 'obChatReplyPreview', replyPreviewField: 'obChatReplyPreviewField', replyPreviewClose: 'obChatReplyPreviewClose', messageInput: 'obChatMessageInput', sendBtn: 'obChatSendBtn', emojiBtn: 'obChatEmojiBtn', emojiPopover: 'obChatEmojiPopover', attachBtn: 'obChatAttachBtn', attachInput: 'obChatAttachInput', getConv: obChatGetConv, standalone: true },
     { header: 'pmObChatHeader', scroll: 'pmObChatScroll', inner: 'pmObChatMessagesInner', scrollBtn: 'pmObChatScrollBottomBtn', replyPreview: 'pmObChatReplyPreview', replyPreviewField: 'pmObChatReplyPreviewField', replyPreviewClose: 'pmObChatReplyPreviewClose', messageInput: 'pmObChatMessageInput', sendBtn: 'pmObChatSendBtn', emojiBtn: 'pmObChatEmojiBtn', emojiPopover: 'pmObChatEmojiPopover', attachBtn: 'pmObChatAttachBtn', attachInput: 'pmObChatAttachInput', getConv: pmObChatGetConv, standalone: true }
   ]; // Account Settings > Chat and the Dashboard > Inbox page both show the exact same live "Keylr
@@ -37609,13 +37714,26 @@
     if (typeof loadSinbMessages === 'function') loadSinbMessages();
     if (typeof loadChangeRequestsFromStorage === 'function') loadChangeRequestsFromStorage();
     SINB_MOUNTS.forEach(function (mount) { sinbRenderChatMount(mount); });
+    if (typeof supInboxSyncUI === 'function') supInboxSyncUI();
   }
 
   var sinbInitDone = false;
   var sinbReplyingTo = null;
   function initSupInboxOnce() {
-    if (sinbInitDone) { sinbRenderChat(); return; }
+    if (sinbInitDone) { sinbRenderChat(); if (typeof supInboxListInit === 'function') supInboxListInit(); return; }
     sinbInitDone = true;
+    // Illustrative platform notifications so the Keylr Support thread isn't empty the first time
+    // this expanded Inbox is opened — guarded so it never overwrites real saved history.
+    if (SINB_SUPPORT_CONV.messages.length === 0) {
+      [
+        supInboxSysMsg(false, 'AC Service / Repair / Refrigerant Top-Up', 'A property manager has invited you to accept a job.', 13, 11, 3),
+        supInboxSysMsg(false, '\u00a3192.00 has been deposited', 'Your early payment payout of \u00a3192.00 for IP-51 has been successfully credited to your bank account.', 12, 17, 52),
+        supInboxSysMsg(false, '\u00a3240.00 has been deposited', 'Your early payment payout of \u00a3240.00 for JB-2653 has been successfully credited to your bank account.', 11, 9, 23),
+        supInboxSysMsg(true, 'Boiler Repair / No Hot Water / Gas Leak Emergency', 'The property manager has selected a supplier for this job.', 11, 16, 34),
+        supInboxSysMsg(false, '\u00a3180.00 has been deposited', 'Your deposit payout of \u00a3180.00 for JB-2675 has been successfully credited to your bank account.', 9, 14, 51)
+      ].forEach(function (m) { SINB_SUPPORT_CONV.messages.push(m); });
+      saveSinbMessages();
+    }
     if (typeof seedChangeRequestsIfNeeded === 'function') seedChangeRequestsIfNeeded({ name: SUP_OWN_DEMO_NAME });
     var existingBatches = (supplierChangeRequests && supplierChangeRequests[SUP_OWN_DEMO_NAME]) || [];
     var alreadyMessaged = SINB_SUPPORT_CONV.messages.filter(function (m) { return m.kind === 'edit-request'; }).map(function (m) { return m.batchId; });
@@ -37660,7 +37778,402 @@
         });
       });
     }
+    if (typeof supInboxListInit === 'function') supInboxListInit();
   }
+  /* ---------------- Dashboard > Inbox: full conversation list + Details panel ----------------
+     Additive on top of the sinb-* chat/composer system above: the Keylr Support thread keeps
+     rendering through SINB_SUPPORT_CONV exactly as before (see SINB_MOUNTS' getConv for the
+     supInboxChatCol mount), while SUPINB_MOCK_CONVERSATIONS gives the list real PM job threads
+     to show around it — same PM (Thomas Davies) and service names already used in Job Requests,
+     plus fotatap, so this reads as one consistent product rather than an invented parallel cast. */
+
+  var SINB_SAVED_REPLIES = [
+    { title: 'Acknowledge', body: 'Thanks for the message \u2014 I\u2019ve got this and will get back to you shortly.' },
+    { title: 'Need more info', body: 'Could you share a quick photo and a bit more detail so I can scope this accurately?' },
+    { title: 'On my way', body: 'On my way \u2014 should be with you in about 15 minutes.' },
+    { title: 'Booked in', body: 'I\u2019ve got you booked in \u2014 I\u2019ll confirm the exact time once I lock in my schedule.' },
+    { title: 'Job complete', body: 'All done \u2014 photos are attached. Let me know if anything needs touching up.' }
+  ];
+
+  var SINB_JOB_PILL_ICON = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94L14.7 6.3z"/></svg>';
+  var SINB_SUPPORT_PILL_ICON = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/></svg>';
+  var SINB_SUPPORT_ICON_14 = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>';
+  var SINB_FOLDER_ICON = '<span class="sinb-dtl-related-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></span>';
+  var SINB_DOC_ICON = '<span class="sinb-dtl-related-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6M9 9h1"/></svg></span>';
+  var SINB_INVOICE_ICON = '<span class="sinb-dtl-related-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>';
+  var SINB_SHIELD_ICON = '<span class="sinb-dtl-related-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>';
+
+  function supInboxSysMsg(warn, title, body, daysAgo, hh, mm) {
+    var d = new Date(); d.setDate(d.getDate() - daysAgo); d.setHours(hh, mm, 0, 0);
+    return { kind: 'system', warn: !!warn, title: title, body: body, ts: d.getTime(), time: sinbFormatTimestamp(d) };
+  }
+  function supInboxTextMsg(mine, text, daysAgo, hh, mm) {
+    var d = new Date(); d.setDate(d.getDate() - daysAgo); d.setHours(hh, mm, 0, 0);
+    return { kind: 'text', mine: !!mine, text: text, ts: d.getTime(), time: sinbFormatTimestamp(d) };
+  }
+  function sinbInitialsFrom(name) {
+    var parts = (name || '').trim().split(/\s+/);
+    if (!parts[0]) return '?';
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+  var SUPINB_PM = 'Thomas Davies';
+  var SUPINB_JOB_ID_SEQ = 2800; // well clear of the specific JOB-266x/272x ids referenced below
+  function supInboxNextJobId() { return 'JOB-' + (SUPINB_JOB_ID_SEQ++); }
+  function supInboxMakeConv(opts) {
+    return {
+      id: opts.id, kind: 'job', name: opts.name || SUPINB_PM, initials: opts.initials || sinbInitialsFrom(opts.name || SUPINB_PM),
+      jobTitle: opts.jobTitle, jobId: opts.jobId, tabStatus: opts.tabStatus || 'active',
+      unread: opts.unread || 0, needsReply: !!opts.needsReply, pinned: false,
+      messages: opts.messages
+    };
+  }
+
+  var SUPINB_MOCK_CONVERSATIONS = [
+    supInboxMakeConv({ id: 'j-fotatap-clean', name: 'fotatap', initials: 'F', jobTitle: 'Cleaning', jobId: supInboxNextJobId(),
+      needsReply: true, unread: 1, tabStatus: 'active',
+      messages: [ supInboxTextMsg(false, 'Hi \u2014 conversation started for Cleaning. Could you confirm you\u2019re still able to take this on?', 1, 9, 40) ] }),
+    supInboxMakeConv({ id: 'j-eot-1', jobTitle: 'End of Tenancy Clean', jobId: supInboxNextJobId(),
+      needsReply: true, unread: 1, tabStatus: 'active',
+      messages: [ supInboxTextMsg(false, 'Conversation started for End of Tenancy Clean \u2014 let me know if you need access instructions for the property.', 1, 10, 6) ] }),
+    supInboxMakeConv({ id: 'j-appliance', jobTitle: 'Appliance Installation', jobId: supInboxNextJobId(),
+      needsReply: true, unread: 1, tabStatus: 'active',
+      messages: [
+        supInboxSysMsg(false, '\u00a31,019.98 has been deposited', 'Your deposit payout of \u00a31,019.98 has been successfully credited to your bank account.', 3, 9, 5),
+        supInboxTextMsg(false, 'Deposit of \u00a31,019.98 received \u2014 the order can go ahead whenever you\u2019re ready to schedule.', 3, 9, 6)
+      ] }),
+    supInboxMakeConv({ id: 'j-eicr-1', jobTitle: 'EICR \u2014 Electrical Installation Condition Report', jobId: supInboxNextJobId(),
+      needsReply: true, unread: 2, tabStatus: 'active',
+      messages: [
+        supInboxSysMsg(true, 'You\u2019ve been marked as a no-show', 'You were marked as a no-show for this appointment. Please respond to avoid this affecting your reliability score.', 3, 14, 20),
+        supInboxTextMsg(false, 'You were marked as a no-show \u2014 can you let us know what happened so we can get this rebooked?', 3, 14, 21)
+      ] }),
+    supInboxMakeConv({ id: 'j-boiler-1', jobTitle: 'Boiler Repair / No Hot Water / Gas Leak Emergency', jobId: supInboxNextJobId(),
+      needsReply: true, unread: 1, tabStatus: 'active',
+      messages: [ supInboxTextMsg(false, 'Hi \u2014 following up on the emergency boiler repair. Are you still able to attend today?', 8, 16, 40) ] }),
+    supInboxMakeConv({ id: 'j-airbnb-1', jobTitle: 'Airbnb Turnover Clean', jobId: supInboxNextJobId(),
+      needsReply: true, unread: 8, tabStatus: 'active',
+      messages: [
+        supInboxSysMsg(true, 'Airbnb Turnover Clean', 'The supplier has marked this job as unable to complete on time.', 9, 8, 10),
+        supInboxTextMsg(false, 'The next guest checks in at 4pm \u2014 can you give us an update on timing?', 9, 8, 15)
+      ] }),
+    supInboxMakeConv({ id: 'j-airbnb-2', jobTitle: 'Airbnb Turnover Clean', jobId: 'JOB-2727',
+      needsReply: false, unread: 0, tabStatus: 'active',
+      messages: [
+        supInboxSysMsg(true, 'Airbnb Turnover Clean', 'The supplier has marked this job as unable to complete on time.', 9, 11, 30),
+        supInboxTextMsg(true, 'Apologies for the delay \u2014 all done now, photos attached.', 9, 13, 0)
+      ] }),
+    supInboxMakeConv({ id: 'j-airbnb-3', jobTitle: 'Airbnb Turnover Clean', jobId: supInboxNextJobId(),
+      needsReply: true, unread: 1, tabStatus: 'active',
+      messages: [ supInboxSysMsg(false, '\u00a34.80 has been deposited', 'Your deposit payout of \u00a34.80 has been successfully credited to your bank account.', 9, 17, 0) ] }),
+    supInboxMakeConv({ id: 'j-carpet-1', jobTitle: 'Carpet / Stair Carpet Steam Clean', jobId: 'JOB-2723',
+      needsReply: false, unread: 0, tabStatus: 'active',
+      messages: [ supInboxSysMsg(false, 'Quote of \u00a3350.00 has been accepted', 'Your quote of \u00a3350.00 has been accepted \u2014 you\u2019re booked in for this job.', 9, 12, 0) ] }),
+    supInboxMakeConv({ id: 'j-airbnb-4', jobTitle: 'Airbnb Turnover Clean', jobId: 'JOB-2668',
+      needsReply: false, unread: 0, tabStatus: 'active',
+      messages: [ supInboxSysMsg(true, 'You\u2019ve been marked as a no-show', 'You were marked as a no-show for this appointment.', 9, 9, 0) ] }),
+    supInboxMakeConv({ id: 'j-doorentry-1', jobTitle: 'Door Entry / Intercom / Smart Doorbell', jobId: 'JOB-2694',
+      needsReply: false, unread: 0, tabStatus: 'active',
+      messages: [ supInboxSysMsg(true, 'You\u2019ve been marked as a no-show', 'You were marked as a no-show for this appointment.', 9, 9, 30) ] }),
+    supInboxMakeConv({ id: 'j-radiator', jobTitle: 'Radiator Repair', jobId: supInboxNextJobId(),
+      needsReply: false, unread: 0, tabStatus: 'active',
+      messages: [ supInboxSysMsg(false, 'Radiator Repair', 'Job marked complete \u2014 payout scheduled.', 16, 10, 0) ] }),
+    supInboxMakeConv({ id: 'j-pat', jobTitle: 'PAT Testing', jobId: supInboxNextJobId(),
+      needsReply: false, unread: 0, tabStatus: 'active',
+      messages: [ supInboxSysMsg(false, 'PAT Testing', 'Job marked complete \u2014 payout scheduled.', 19, 10, 0) ] }),
+    supInboxMakeConv({ id: 'j-rewiring', jobTitle: 'Rewiring', jobId: supInboxNextJobId(),
+      needsReply: false, unread: 0, tabStatus: 'active',
+      messages: [ supInboxSysMsg(false, 'Rewiring', 'Job marked complete \u2014 payout scheduled.', 23, 10, 0) ] }),
+    supInboxMakeConv({ id: 'j-legionella', jobTitle: 'Legionella Risk Assessment', jobId: supInboxNextJobId(),
+      needsReply: false, unread: 0, tabStatus: 'active',
+      messages: [ supInboxSysMsg(false, 'Legionella Risk Assessment', 'Job marked complete \u2014 payout scheduled.', 27, 10, 0) ] }),
+    supInboxMakeConv({ id: 'j-deepclean-arch', jobTitle: 'Deep Clean', jobId: supInboxNextJobId(),
+      needsReply: false, unread: 0, tabStatus: 'archived',
+      messages: [ supInboxSysMsg(false, 'Deep Clean', 'This conversation was archived.', 12, 10, 0) ] }),
+    supInboxMakeConv({ id: 'j-drainage-arch', jobTitle: 'Drainage Clearance', jobId: supInboxNextJobId(),
+      needsReply: false, unread: 0, tabStatus: 'archived',
+      messages: [ supInboxSysMsg(false, 'Drainage Clearance', 'This conversation was archived.', 18, 10, 0) ] }),
+    supInboxMakeConv({ id: 'j-structural-done', jobTitle: 'Structural Survey', jobId: supInboxNextJobId(),
+      needsReply: false, unread: 0, tabStatus: 'completed',
+      messages: [ supInboxSysMsg(false, 'Structural Survey', 'Job marked complete \u2014 payout released.', 14, 10, 0) ] }),
+    supInboxMakeConv({ id: 'j-epc-done', jobTitle: 'EPC Assessment', jobId: supInboxNextJobId(),
+      needsReply: false, unread: 0, tabStatus: 'completed',
+      messages: [ supInboxSysMsg(false, 'EPC Assessment', 'Job marked complete \u2014 payout released.', 21, 10, 0) ] }),
+    supInboxMakeConv({ id: 'j-communal-done', name: 'fotatap', initials: 'F', jobTitle: 'Communal Area Clean', jobId: supInboxNextJobId(),
+      needsReply: false, unread: 0, tabStatus: 'completed',
+      messages: [ supInboxSysMsg(false, 'Communal Area Clean', 'Job marked complete \u2014 payout released.', 25, 10, 0) ] })
+  ];
+
+  function supInboxSupportEntry() {
+    return { id: 'support', kind: 'support', name: 'Keylr Support', initials: 'KS', tagline: 'We\u2019re here when you need us.', tabStatus: 'active', unread: 0, needsReply: false, pinned: true, jobTitle: null, jobId: null, messages: SINB_SUPPORT_CONV.messages };
+  }
+  function supInboxAllConversations() { return [supInboxSupportEntry()].concat(SUPINB_MOCK_CONVERSATIONS); }
+  function supInboxFindConv(id) {
+    if (id === 'support') return supInboxSupportEntry();
+    var found = null;
+    SUPINB_MOCK_CONVERSATIONS.forEach(function (c) { if (c.id === id) found = c; });
+    return found;
+  }
+  function supInboxGetSelectedConv() {
+    var c = supInboxFindConv(supInboxSelectedId);
+    if (!c) { supInboxSelectedId = 'support'; c = supInboxSupportEntry(); }
+    return (c.kind === 'support') ? SINB_SUPPORT_CONV : c;
+  }
+  function supInboxLastTs(conv) {
+    var max = 0;
+    (conv.messages || []).forEach(function (m) { if (m.ts && m.ts > max) max = m.ts; });
+    return max || Date.now();
+  }
+  function supInboxPreviewText(conv) {
+    var msgs = conv.messages || [];
+    for (var i = msgs.length - 1; i >= 0; i--) {
+      var m = msgs[i];
+      if (m.kind === 'system') return (m.title ? m.title + ' \u2014 ' : '') + (m.body || '');
+      if (m.kind === 'text') return m.text;
+      if (m.kind === 'attachment') return 'Sent an attachment: ' + m.fileName;
+    }
+    return '';
+  }
+  function supInboxDayDiff(ts) {
+    var now = new Date(), d = new Date(ts);
+    var startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var startD = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    return Math.round((startToday - startD) / 86400000);
+  }
+  function supInboxDateGroupLabel(ts) {
+    var diff = supInboxDayDiff(ts);
+    if (diff <= 0) return 'Today';
+    if (diff === 1) return 'Yesterday';
+    if (diff <= 7) return 'Previous 7 Days';
+    if (diff <= 30) return 'Previous 30 Days';
+    return 'Older';
+  }
+  function supInboxRelDate(ts) {
+    var diff = supInboxDayDiff(ts), d = new Date(ts);
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+    if (diff <= 0) { var hh = d.getHours(), mm = d.getMinutes(); return ((hh % 12) || 12) + ':' + pad(mm) + (hh < 12 ? 'am' : 'pm'); }
+    if (diff === 1) return 'Yesterday';
+    if (diff <= 7) { var wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; return wd[d.getDay()]; }
+    return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear();
+  }
+  function supInboxLongDate(ts) {
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var d = new Date(ts);
+    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  var supInboxActiveTab = 'active';
+  var supInboxSearchQuery = '';
+  var supInboxSortMode = 'recent';
+  var supInboxSelectedId = 'support'; // matches the reference: Keylr Support opens by default
+  var supInboxListInitDone = false;
+
+  function supInboxFilteredSorted() {
+    var q = supInboxSearchQuery.trim().toLowerCase();
+    var list = supInboxAllConversations().filter(function (c) {
+      if (c.tabStatus !== supInboxActiveTab) return false;
+      if (q) {
+        var hay = (c.name + ' ' + (c.jobTitle || '') + ' ' + (c.jobId || '') + ' ' + supInboxPreviewText(c)).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+    list.forEach(function (c) { c._lastTs = supInboxLastTs(c); });
+    list.sort(function (a, b) {
+      if (!!b.pinned !== !!a.pinned) return b.pinned ? 1 : -1;
+      if (supInboxSortMode === 'oldest') return a._lastTs - b._lastTs;
+      if (supInboxSortMode === 'unread') return (b.unread || 0) - (a.unread || 0) || (b._lastTs - a._lastTs);
+      return b._lastTs - a._lastTs;
+    });
+    return list;
+  }
+  function supInboxConvItemHtml(c) {
+    var titleLine = c.kind === 'support' ? c.name : (c.name + ' \u2014 ' + (c.jobTitle || ''));
+    var metaRow;
+    if (c.kind === 'support') metaRow = '<div class="sinb-conv-pill-row"><span class="sinb-conv-pill support">' + SINB_SUPPORT_PILL_ICON + 'Support</span></div>';
+    else if (c.needsReply) metaRow = '<div class="sinb-conv-pill-row"><span class="sinb-conv-pill job">' + SINB_JOB_PILL_ICON + 'Job</span><span class="sinb-conv-needs-reply">Needs reply</span></div>';
+    else if (c.jobId) metaRow = '<div class="sinb-conv-jobcode">' + sinbEsc(c.jobId) + '</div>';
+    else metaRow = '';
+    var preview = c.kind === 'support' ? c.tagline : supInboxPreviewText(c);
+    return '<div class="sinb-conv-item' + (c.id === supInboxSelectedId ? ' active' : '') + '" data-supinb-conv="' + c.id + '">' +
+      '<div class="sinb-conv-avatar">' + sinbEsc(c.initials) + (c.kind === 'support' ? '<span class="presence-dot"></span>' : '') + '</div>' +
+      '<div class="sinb-conv-body">' +
+        '<div class="sinb-conv-top-row"><span class="sinb-conv-name">' + sinbEsc(titleLine) + '</span><span class="sinb-conv-time">' + supInboxRelDate(c._lastTs) + '</span></div>' +
+        metaRow +
+        '<div class="sinb-conv-preview"><span class="sinb-conv-preview-text">' + sinbEsc(preview) + '</span>' + (c.unread ? '<span class="sinb-conv-unread-badge">' + c.unread + '</span>' : '') + '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  function supInboxRenderList() {
+    var scrollEl = document.getElementById('supInboxConvScroll');
+    var countEl = document.getElementById('supInboxConvCount');
+    if (!scrollEl || !countEl) return;
+    var items = supInboxFilteredSorted();
+    countEl.textContent = items.length + (items.length === 1 ? ' conversation' : ' conversations');
+    if (!items.length) { scrollEl.innerHTML = '<div class="sinb-dtl-empty" style="padding:24px 4px;">No conversations match this search.</div>'; return; }
+    var html = '', lastGroup = null;
+    items.forEach(function (c) {
+      if (supInboxSortMode === 'recent') {
+        var group = supInboxDateGroupLabel(c._lastTs);
+        if (group !== lastGroup) { html += '<div class="sinb-conv-date-label">' + group + '</div>'; lastGroup = group; }
+      }
+      html += supInboxConvItemHtml(c);
+    });
+    scrollEl.innerHTML = html;
+    scrollEl.querySelectorAll('[data-supinb-conv]').forEach(function (el) {
+      el.addEventListener('click', function () { supInboxOpenConversation(el.getAttribute('data-supinb-conv')); });
+    });
+  }
+  function supInboxOpenConversation(id) {
+    supInboxSelectedId = id;
+    var c = supInboxFindConv(id);
+    if (c && c.kind !== 'support') c.unread = 0;
+    sinbRenderChat();
+    supInboxUpdateNavBadge();
+  }
+  function supInboxSwitchTab(tab) {
+    supInboxActiveTab = tab;
+    document.querySelectorAll('#supInboxTabsRow .sinb-tab').forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-supinb-tab') === tab); });
+    supInboxRenderList();
+    var stillVisible = supInboxFilteredSorted().some(function (c) { return c.id === supInboxSelectedId; });
+    if (!stillVisible) { var first = supInboxFilteredSorted()[0]; supInboxOpenConversation(first ? first.id : 'support'); }
+  }
+  function supInboxSetSort(mode, label) {
+    supInboxSortMode = mode;
+    document.getElementById('supInboxSortLabel').textContent = label;
+    document.querySelectorAll('#supInboxSortMenu .sinb-sort-menu-item').forEach(function (i) { i.classList.toggle('selected', i.getAttribute('data-supinb-sort') === mode); });
+    document.getElementById('supInboxSortMenu').classList.remove('open');
+    supInboxRenderList();
+  }
+  function supInboxUpdateNavBadge() {
+    var total = SUPINB_MOCK_CONVERSATIONS.reduce(function (sum, c) { return sum + (c.unread || 0); }, 0);
+    var badge = document.getElementById('supInboxNavBadge');
+    if (badge) { badge.textContent = total; badge.hidden = total === 0; }
+  }
+
+  function supInboxRenderHeader() {
+    var headerEl = document.getElementById('supInboxChatHeader');
+    if (!headerEl) return;
+    var meta = supInboxFindConv(supInboxSelectedId) || supInboxSupportEntry();
+    var isSupport = meta.kind === 'support';
+    var titleText = isSupport ? meta.name : (meta.name + ' \u2014 ' + (meta.jobTitle || ''));
+    var subtitle = isSupport ? meta.tagline : ('Job ' + (meta.jobId || ''));
+    var statusPill = isSupport ? '<span class="sinb-open-pill" style="margin-left:8px;"><span class="dot"></span>Open</span>' : (meta.needsReply ? '<span class="sinb-conv-needs-reply" style="margin-left:8px;">Needs reply</span>' : '');
+    var presenceLine = isSupport ? '<span class="online">Active now</span>' : subtitle;
+    headerEl.innerHTML =
+      '<div class="sinb-conv-avatar">' + sinbEsc(meta.initials) + (isSupport ? '<span class="presence-dot"></span>' : '') + '</div>' +
+      '<div style="min-width:0;flex:1;">' +
+        '<div class="sinb-chat-header-name-row"><h3>' + sinbEsc(titleText) + '</h3>' + statusPill + '</div>' +
+        '<div class="sinb-chat-header-sub">' + presenceLine + '</div>' +
+      '</div>' +
+      '<div class="sinb-chat-header-actions">' +
+        '<button type="button" class="sinb-header-support-btn" id="supInboxHeaderSupportBtn">' + SINB_SUPPORT_ICON_14 + 'Support</button>' +
+        '<button type="button" class="sinb-icon-btn' + (meta.pinned ? ' starred' : '') + '" id="supInboxHeaderStarBtn" data-tooltip="Star conversation"><svg width="16" height="16" viewBox="0 0 24 24" fill="' + (meta.pinned ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></button>' +
+        '<button type="button" class="sinb-icon-btn" id="supInboxHeaderArchiveBtn" data-tooltip="Archive conversation"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8M1 3h22v5H1z"/><path d="M10 12h4"/></svg></button>' +
+        '<button type="button" class="sinb-icon-btn" id="supInboxHeaderDetailsBtn" data-tooltip="View details"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>' +
+      '</div>';
+    var supportBtn = document.getElementById('supInboxHeaderSupportBtn');
+    if (supportBtn) supportBtn.addEventListener('click', function () { if (meta.kind === 'support') { showToast('You\u2019re already chatting with Keylr Support.'); return; } supInboxOpenConversation('support'); });
+    var starBtn = document.getElementById('supInboxHeaderStarBtn');
+    if (starBtn) starBtn.addEventListener('click', function () { var c = supInboxFindConv(supInboxSelectedId); if (!c || c.kind === 'support') return; c.pinned = !c.pinned; supInboxRenderHeader(); supInboxRenderList(); });
+    var archiveBtn = document.getElementById('supInboxHeaderArchiveBtn');
+    if (archiveBtn) archiveBtn.addEventListener('click', function () {
+      var c = supInboxFindConv(supInboxSelectedId);
+      if (!c || c.kind === 'support') { showToast('The Keylr Support conversation can\u2019t be archived.'); return; }
+      c.tabStatus = c.tabStatus === 'archived' ? 'active' : 'archived';
+      showToast(c.tabStatus === 'archived' ? 'Conversation archived.' : 'Conversation restored to Active.');
+      supInboxSwitchTab(supInboxActiveTab);
+    });
+    var detailsBtn = document.getElementById('supInboxHeaderDetailsBtn');
+    if (detailsBtn) detailsBtn.addEventListener('click', function () { supInboxToggleDetails(true); });
+  }
+
+  function supInboxRelatedRow(label, icon) { return '<div class="sinb-dtl-related-row"><span>' + icon + sinbEsc(label) + '</span><span class="count">None linked</span></div>'; }
+  function supInboxToggleDetails(open) {
+    var overlay = document.getElementById('supInboxDetailsOverlay');
+    if (!overlay) return;
+    if (open) { supInboxRenderDetails(); overlay.classList.add('open'); } else overlay.classList.remove('open');
+  }
+  function supInboxRenderDetails() {
+    var scrollEl = document.getElementById('supInboxDetailsScroll');
+    if (!scrollEl) return;
+    var meta = supInboxFindConv(supInboxSelectedId) || supInboxSupportEntry();
+    var isSupport = meta.kind === 'support';
+    var conv = isSupport ? SINB_SUPPORT_CONV : meta;
+    var msgs = conv.messages || [];
+    var startedTs = msgs.length ? Math.min.apply(null, msgs.map(function (m) { return m.ts || Date.now(); })) : Date.now();
+    var lastTs = supInboxLastTs(conv);
+    var titleText = isSupport ? meta.name : (meta.name + ' \u2014 ' + (meta.jobTitle || ''));
+    var subtitle = isSupport ? meta.tagline : ('Reference ' + (meta.jobId || '\u2014'));
+    var typeLabel = isSupport ? 'Support' : 'Job';
+    var statusValue = (!isSupport && meta.tabStatus === 'archived') ? 'Archived' : ((!isSupport && meta.tabStatus === 'completed') ? 'Completed' : 'Open');
+    var activityHtml = msgs.slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); }).map(function (m) {
+      var title = m.kind === 'system' ? m.title : (m.kind === 'text' ? ((m.mine ? 'You: ' : '') + m.text) : (m.kind === 'attachment' ? ('Attachment: ' + m.fileName) : null));
+      if (!title) return '';
+      var body = m.kind === 'system' ? (m.body || '') : '';
+      return '<div class="sinb-dtl-activity-item"><div class="sinb-dtl-activity-dot"></div><div class="sinb-dtl-activity-body"><div class="sinb-dtl-activity-title">' + sinbEsc(title) + (body ? ' ' + sinbEsc(body) : '') + '</div><div class="sinb-dtl-activity-date">' + sinbFormatTimestamp(new Date(m.ts || Date.now())) + '</div></div></div>';
+    }).join('') || '<div class="sinb-dtl-empty">Nothing has happened in this conversation yet.</div>';
+    var attachmentMsgs = msgs.filter(function (m) { return m.kind === 'attachment'; });
+    scrollEl.innerHTML =
+      '<div class="sinb-dtl-avatar-wrap">' +
+        '<div class="sinb-conv-avatar">' + sinbEsc(meta.initials) + (isSupport ? '<span class="presence-dot"></span>' : '') + '</div>' +
+        '<div class="sinb-dtl-name">' + sinbEsc(titleText) + '</div>' +
+        '<div class="sinb-dtl-sub">' + sinbEsc(subtitle) + '</div>' +
+        '<div class="sinb-dtl-pill-row"><span class="sinb-open-pill"><span class="dot"></span>' + statusValue + '</span><span class="sinb-conv-pill ' + (isSupport ? 'support' : 'job') + '">' + (isSupport ? SINB_SUPPORT_PILL_ICON : SINB_JOB_PILL_ICON) + typeLabel + '</span></div>' +
+      '</div>' +
+      '<div class="sinb-dtl-action-row">' +
+        '<button type="button" class="sinb-dtl-action-btn" id="supInboxDtlCallBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>Call</button>' +
+        '<button type="button" class="sinb-dtl-action-btn" id="supInboxDtlEmailBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>Email</button>' +
+        '<button type="button" class="sinb-dtl-action-btn" id="supInboxDtlScheduleBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Schedule</button>' +
+      '</div>' +
+      '<div class="sinb-dtl-divider"></div>' +
+      '<div class="sinb-dtl-section-label">Conversation</div>' +
+      '<div class="sinb-dtl-row"><span class="sinb-dtl-row-label">Type</span><span class="sinb-dtl-row-value">' + typeLabel + '</span></div>' +
+      '<div class="sinb-dtl-row"><span class="sinb-dtl-row-label">Status</span><span class="sinb-dtl-row-value">' + statusValue + '</span></div>' +
+      '<div class="sinb-dtl-row"><span class="sinb-dtl-row-label">Messages</span><span class="sinb-dtl-row-value">' + msgs.length + '</span></div>' +
+      (isSupport ? '<div class="sinb-dtl-row"><span class="sinb-dtl-row-label">Presence</span><span class="sinb-dtl-row-value green">Active now</span></div>' : '') +
+      '<div class="sinb-dtl-row"><span class="sinb-dtl-row-label">Started</span><span class="sinb-dtl-row-value">' + supInboxLongDate(startedTs) + '</span></div>' +
+      '<div class="sinb-dtl-row"><span class="sinb-dtl-row-label">Last Activity</span><span class="sinb-dtl-row-value">' + supInboxRelDate(lastTs) + '</span></div>' +
+      '<div class="sinb-dtl-divider"></div>' +
+      '<div class="sinb-dtl-section-label">Files &amp; Attachments</div>' +
+      (attachmentMsgs.length ? attachmentMsgs.map(function (m) { return '<div class="sinb-dtl-row"><span class="sinb-dtl-row-label">' + sinbEsc(m.fileName) + '</span><span class="sinb-dtl-row-value">' + sinbFormatTimestamp(new Date(m.ts || Date.now())) + '</span></div>'; }).join('') : '<div class="sinb-dtl-empty">No files shared in this conversation yet.</div>') +
+      '<div class="sinb-dtl-divider"></div>' +
+      '<div class="sinb-dtl-section-label">Activity</div>' + activityHtml +
+      '<div class="sinb-dtl-divider"></div>' +
+      '<div class="sinb-dtl-section-label">Linked Property</div>' +
+      '<div class="sinb-dtl-empty-card"><div class="sinb-dtl-empty-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></div><div><div class="sinb-dtl-empty-card-title">No property linked</div><div class="sinb-dtl-empty-card-desc">Address, type and status will appear here once a property is attached to this thread.</div></div></div>' +
+      '<div class="sinb-dtl-divider"></div>' +
+      '<div class="sinb-dtl-section-label">Related Records</div>' +
+      supInboxRelatedRow('Open Jobs', SINB_FOLDER_ICON) + supInboxRelatedRow('Quotes', SINB_DOC_ICON) + supInboxRelatedRow('Invoices', SINB_INVOICE_ICON) + supInboxRelatedRow('Compliance', SINB_SHIELD_ICON) +
+      '<div class="sinb-dtl-footnote">Linked jobs, quotes and invoices surface here automatically once the conversation is tied to a record.</div>';
+    var callBtn = document.getElementById('supInboxDtlCallBtn'); if (callBtn) callBtn.addEventListener('click', function () { showToast('Calling \u2014 click-to-call isn\u2019t connected yet.'); });
+    var emailBtn = document.getElementById('supInboxDtlEmailBtn'); if (emailBtn) emailBtn.addEventListener('click', function () { showToast('Opening email isn\u2019t connected yet.'); });
+    var schedBtn = document.getElementById('supInboxDtlScheduleBtn'); if (schedBtn) schedBtn.addEventListener('click', function () { showToast('Scheduling isn\u2019t connected yet.'); });
+  }
+
+  function supInboxSyncUI() {
+    supInboxRenderHeader();
+    supInboxRenderList();
+    var ov = document.getElementById('supInboxDetailsOverlay');
+    if (ov && ov.classList.contains('open')) supInboxRenderDetails();
+  }
+  function supInboxListInit() {
+    if (!supInboxListInitDone) {
+      supInboxListInitDone = true;
+      document.getElementById('supInboxSearchInput').addEventListener('input', function (e) { supInboxSearchQuery = e.target.value; supInboxRenderList(); });
+      document.querySelectorAll('#supInboxTabsRow .sinb-tab').forEach(function (t) { t.addEventListener('click', function () { supInboxSwitchTab(t.getAttribute('data-supinb-tab')); }); });
+      var sortBtn = document.getElementById('supInboxSortBtn');
+      var sortMenu = document.getElementById('supInboxSortMenu');
+      sortBtn.addEventListener('click', function (e) { e.stopPropagation(); sortMenu.classList.toggle('open'); });
+      sortMenu.querySelectorAll('[data-supinb-sort]').forEach(function (item) { item.addEventListener('click', function () { supInboxSetSort(item.getAttribute('data-supinb-sort'), item.textContent.trim()); }); });
+      document.addEventListener('click', function () { sortMenu.classList.remove('open'); });
+      document.getElementById('supInboxDetailsCloseBtn').addEventListener('click', function () { supInboxToggleDetails(false); });
+      document.getElementById('supInboxDetailsOverlay').addEventListener('click', function (e) { if (e.target === e.currentTarget) supInboxToggleDetails(false); });
+    }
+    supInboxSyncUI();
+    supInboxUpdateNavBadge();
+  }
+
   function wireSinbComposer(mount) {
     var msgInput = document.getElementById(mount.messageInput);
     var sendBtn = document.getElementById(mount.sendBtn);
@@ -37688,13 +38201,14 @@
       var msg = { kind: 'text', mine: true, text: text, ts: Date.now(), time: sinbNowTimestamp() };
       if (sinbReplyingTo) { msg.replyToChangeId = sinbReplyingTo.changeId; msg.replyToFieldLabel = sinbReplyingTo.fieldLabel; }
       c.messages.push(msg);
+      if (c.needsReply) c.needsReply = false;
       sinbReplyingTo = null;
       msgInput.value = '';
       updateSendState();
       saveSinbMessages();
       sinbRenderChat();
       sinbUpdateAllReplyPreviews();
-      notifyAdminOfSupplierMessage(mount);
+      if (c === SINB_SUPPORT_CONV) notifyAdminOfSupplierMessage(mount);
     }
     sendBtn.addEventListener('click', sendMessage);
     msgInput.addEventListener('keydown', function (e) {
@@ -37745,9 +38259,48 @@
         saveSinbMessages();
         sinbRenderChat();
         sinbUpdateAllReplyPreviews();
-        notifyAdminOfSupplierMessage(mount);
+        if (c === SINB_SUPPORT_CONV) notifyAdminOfSupplierMessage(mount);
         showToast(file.name + ' attached.');
       });
+    }
+
+    // Saved Replies — only present on mounts that declare it (currently just the Dashboard >
+    // Inbox composer). Clicking an item inserts its body into the message box rather than
+    // sending immediately, so the supplier can still tweak it first.
+    var savedRepliesBtn = mount.savedRepliesBtn ? document.getElementById(mount.savedRepliesBtn) : null;
+    var savedRepliesPopover = mount.savedRepliesPopover ? document.getElementById(mount.savedRepliesPopover) : null;
+    if (savedRepliesBtn && savedRepliesPopover) {
+      var savedRepliesListEl = savedRepliesPopover.querySelector('[id$="SavedRepliesList"]') || savedRepliesPopover;
+      if (!savedRepliesListEl.dataset.built) {
+        savedRepliesListEl.dataset.built = '1';
+        savedRepliesListEl.innerHTML = SINB_SAVED_REPLIES.map(function (r, i) {
+          return '<div class="sinb-saved-reply-item" data-saved-reply="' + i + '"><div class="sinb-saved-reply-title">' + sinbEsc(r.title) + '</div><div class="sinb-saved-reply-body">' + sinbEsc(r.body) + '</div></div>';
+        }).join('');
+        savedRepliesListEl.querySelectorAll('[data-saved-reply]').forEach(function (item) {
+          item.addEventListener('click', function () {
+            var reply = SINB_SAVED_REPLIES[Number(item.getAttribute('data-saved-reply'))];
+            if (!reply) return;
+            msgInput.value = reply.body;
+            updateSendState();
+            savedRepliesPopover.classList.remove('open');
+            savedRepliesBtn.classList.remove('open');
+            msgInput.focus();
+          });
+        });
+      }
+      savedRepliesBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var wasOpen = savedRepliesPopover.classList.contains('open');
+        if (!wasOpen) {
+          var rect = savedRepliesBtn.getBoundingClientRect();
+          savedRepliesPopover.style.left = rect.left + 'px';
+          savedRepliesPopover.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+          savedRepliesPopover.style.top = 'auto';
+        }
+        savedRepliesPopover.classList.toggle('open');
+        savedRepliesBtn.classList.toggle('open');
+      });
+      document.addEventListener('click', function () { savedRepliesPopover.classList.remove('open'); savedRepliesBtn.classList.remove('open'); });
     }
   }
   // The onboarding floating widget is a deliberately separate conversation (see OB_CHAT_CONV) that
