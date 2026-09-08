@@ -3003,7 +3003,7 @@
      ========================================================================== */
   .ain-layout { display: flex; gap: 0; background: #fff; border: 1px solid var(--border-subtle); border-radius: 16px; overflow: hidden; height: calc(100vh - 200px); min-height: 480px; }
   .ain-list-panel { width: 360px; flex-shrink: 0; border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column; min-height: 0; }
-  .ain-search-row { display: flex; align-items: center; gap: 8px; padding: 16px; flex-shrink: 0; }
+  .ain-search-row { display: flex; align-items: center; gap: 8px; padding: 18px 16px 14px; flex-shrink: 0; }
   .ain-search-box { flex: 1; position: relative; }
   .ain-search-box svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; }
   .ain-search-box input { width: 100%; padding: 9px 12px 9px 34px; border: 1px solid var(--border-subtle); border-radius: 10px; font-size: 13px; background: var(--surface-soft); }
@@ -3113,6 +3113,12 @@
   .adlog-page-btn.active { background: var(--btn-grad-start); color: #fff; border-color: transparent; }
   .adlog-page-btn:disabled { opacity: 0.4; cursor: default; }
   .adlog-page-ellipsis { color: var(--text-body-muted); padding: 0 4px; }
+
+  /* ---- Admin Messages: visible scrollbar under the filter tabs, matching the reference's
+     thick rounded gray bar (replaces the earlier hidden-scrollbar + separate button approach) ---- */
+  .ain-filter-tabs::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 999px; }
+  .ain-filter-tabs::-webkit-scrollbar-thumb:hover { background: #7c8ba1; }
+  .ain-filter-tabs::-webkit-scrollbar-track { background: transparent; }
 
   /* ---- Admin Invoices: View Invoice modal ---- */
   .adinv-modal-card { background: #fff; border-radius: 16px; width: 100%; max-width: 980px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -3252,8 +3258,8 @@
   .admq-btn-outline.danger { color: #c0392b; border-color: #fbd9d6; }
   .admq-btn-outline.danger:hover { background: #fef2f2; }
   @keyframes ainSpin { to { transform: rotate(360deg); } }
-  .ain-filter-tabs { display: flex; gap: 6px; padding: 0 16px 12px; flex-shrink: 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
-  .ain-filter-tabs::-webkit-scrollbar { display: none; }
+  .ain-filter-tabs { display: flex; gap: 6px; padding: 0 16px 14px; flex-shrink: 0; overflow-x: auto; scrollbar-width: thin; }
+  .ain-filter-tabs::-webkit-scrollbar { height: 6px; }
   .ain-filter-tab { flex-shrink: 0; padding: 7px 13px; border-radius: 999px; font-size: 12.5px; font-weight: 600; color: var(--text-body-muted); background: var(--surface-soft); cursor: pointer; white-space: nowrap; transition: background-color 150ms ease-out, color 150ms ease-out; }
   .ain-filter-tab:hover { background: #e2e8f0; }
   .ain-filter-tab.active { background: var(--icon-tint-bg); color: var(--accent-blue); font-weight: 700; }
@@ -10481,7 +10487,7 @@
   @media (max-width: 900px) { .pmqr-detail-layout { grid-template-columns: 1fr; } }
   /* Sized to the list content itself (up to a sensible scroll cap) rather than a large viewport-
      relative calc() that left mostly-empty space whenever there were only a handful of cards. */
-  .pmqr-list-col { display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 420px); min-height: 0; overflow-y: auto; padding-right: 4px; }
+  .pmqr-list-col { display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 220px); min-height: 0; overflow-y: auto; padding-right: 4px; }
 
   .pmqr-card { background: #fff; border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; cursor: pointer; transition: border-color 140ms ease-out, background-color 140ms ease-out; }
   .pmqr-card:hover { border-color: #c9d8ee; }
@@ -20313,11 +20319,6 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
             <span class="nav-label">Overview</span>
           </div>
-          <div class="dash-nav-item" data-nav="inbox">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-            <span class="nav-label">Inbox</span>
-            <span class="dash-nav-badge" id="adminInboxNavBadge">0</span>
-          </div>
         </div>
 
         <div class="dash-nav-group">
@@ -20381,6 +20382,11 @@
           <div class="dash-nav-item" data-nav="teams">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
             <span class="nav-label">Teams</span>
+          </div>
+          <div class="dash-nav-item" data-nav="inbox">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <span class="nav-label">Messages</span>
+            <span class="dash-nav-badge" id="adminInboxNavBadge">0</span>
           </div>
           <div class="dash-nav-item" data-nav="activity-logs">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 106 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
@@ -21612,34 +21618,40 @@
 
           <!-- ============ INBOX VIEW ============ -->
           <div id="adminInboxView" style="display:none;">
-            <div class="dash-content-head">
-              <div><h2>Inbox</h2><div class="dash-content-sub">Chat directly with suppliers and property managers.</div></div>
-
-            </div>
-
-            <!-- Primary filter — WHAT is the conversation about? The WHO tabs inside the list
-                 panel then narrow within whichever topic is selected here. -->
-            <div class="ain-filter-tabs ain-topic-tabs" id="ainTopicTabs">
-              <div class="ain-filter-tab active" data-aintopic="all">All</div>
-              <div class="ain-filter-tab" data-aintopic="support">Support</div>
-              <div class="ain-filter-tab" data-aintopic="profile-updates">Profile Updates (<span id="ainTabPuCount">0</span>)</div>
-              <div class="ain-filter-tab" data-aintopic="unread">Unread (<span id="ainTabUnreadCount">0</span>)</div>
-            </div>
+            <div class="dash-section">
+              <div class="adern-stat-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;">
+                <div class="adern-stat-card">
+                  <div class="lbl">OPEN THREADS</div>
+                  <div class="val" id="ainStatOpenThreads">0</div>
+                </div>
+                <div class="adern-stat-card">
+                  <div class="lbl">UNREAD</div>
+                  <div class="val" id="ainStatUnread" style="color:var(--accent-blue);">0</div>
+                </div>
+                <div class="adern-stat-card">
+                  <div class="lbl">SUPPLIERS</div>
+                  <div class="val" id="ainStatSuppliers">0</div>
+                </div>
+                <div class="adern-stat-card">
+                  <div class="lbl">PROPERTY MANAGERS</div>
+                  <div class="val" id="ainStatPMs">0</div>
+                </div>
+              </div>
 
             <div class="ain-layout">
               <div class="ain-list-panel">
-                <!-- Level 1 — WHO am I talking to? -->
-                <div class="ain-filter-tabs" id="ainFilterTabs">
-                  <div class="ain-filter-tab active" data-ainfilter="all">All (<span id="ainTabAllCount">0</span>)</div>
-                  <div class="ain-filter-tab" data-ainfilter="suppliers">Suppliers (<span id="ainTabSuppliersCount">0</span>)</div>
-                  <div class="ain-filter-tab" data-ainfilter="pms">PMs (<span id="ainTabPMsCount">0</span>)</div>
-                </div>
                 <div class="ain-search-row">
                   <div class="ain-search-box">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                     <input type="text" id="ainSearchInput" placeholder="Search conversations">
                   </div>
                   <button type="button" class="ain-refresh-btn" id="ainRefreshBtn" aria-label="Refresh"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg></button>
+                </div>
+                <div class="ain-filter-tabs" id="ainFilterTabs">
+                  <div class="ain-filter-tab active" data-ainfilter="all">All (<span id="ainTabAllCount">0</span>)</div>
+                  <div class="ain-filter-tab" data-ainfilter="unread">Unread (<span id="ainTabUnreadCount">0</span>)</div>
+                  <div class="ain-filter-tab" data-ainfilter="suppliers">Suppliers (<span id="ainTabSuppliersCount">0</span>)</div>
+                  <div class="ain-filter-tab" data-ainfilter="pms">PMs (<span id="ainTabPMsCount">0</span>)</div>
                 </div>
                 <div class="ain-conv-list" id="ainConvList"></div>
               </div>
@@ -21654,7 +21666,6 @@
                   <div class="ain-thread-header">
                     <button type="button" class="ain-icon-btn ain-back-btn" id="ainBackBtn" aria-label="Back to conversations"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
                     <div class="sinb-chat-header" id="ainThreadHeaderInner"></div>
-                    <button type="button" class="ain-icon-btn" id="ainActivityBtn" data-tooltip="Activity log"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg></button>
                     <button type="button" class="ain-icon-btn" id="ainPinBtn" data-tooltip="Pin conversation"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 3h6l-1 7 4 3H6l4-3-1-7z"/></svg></button>
                     <button type="button" class="ain-icon-btn" id="ainStarBtn" data-tooltip="Star conversation"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></button>
                     <button type="button" class="ain-icon-btn" id="ainExpandBtn" data-tooltip="View full profile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button>
@@ -21691,6 +21702,7 @@
                   </div>
                 </div>
               </div>
+            </div>
             </div>
           </div>
 
@@ -47613,12 +47625,9 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
     var all = adminInboxBuildConversations();
     var q = adminInboxSearchQuery.trim().toLowerCase();
     return all.filter(function (c) {
-      // Level 1 — WHO
+      if (adminInboxFilter === 'unread' && !(c.unread > 0)) return false;
       if (adminInboxFilter === 'suppliers' && c.type !== 'supplier') return false;
       if (adminInboxFilter === 'pms' && c.type !== 'pm') return false;
-      // Primary topic filter (the bar under the Inbox heading) — same predicate the WHO
-      // counts use, so list contents and tab numbers can never disagree.
-      if (!adminInboxConvMatchesTopic(c)) return false;
       if (q && c.name.toLowerCase().indexOf(q) === -1) return false;
       return true;
     });
@@ -47633,30 +47642,31 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
   }
   function adminInboxRenderStats() {
     var all = adminInboxBuildConversations();
-    var suppliers = 0, pms = 0, allCount = 0, unread = 0, puCount = 0;
+    var totalSuppliers = 0, totalPMs = 0, totalUnread = 0;
     all.forEach(function (c) {
-      // Topic counts are global — the top bar describes the whole inbox.
-      if (c.unread > 0) unread++;
-      var info = adminInboxConvTopicInfo(c);
-      if (info.topic === 'profile-update') puCount++;
-      // WHO counts follow the selected topic — with "Profile Updates" active up top,
-      // "Suppliers (2)" means two supplier profile-update conversations.
-      if (!adminInboxConvMatchesTopic(c)) return;
-      allCount++;
-      if (c.type === 'supplier') suppliers++;
-      if (c.type === 'pm') pms++;
+      if (c.unread > 0) totalUnread++;
+      if (c.type === 'supplier') totalSuppliers++;
+      if (c.type === 'pm') totalPMs++;
     });
-    document.getElementById('ainTabAllCount').textContent = allCount;
-    document.getElementById('ainTabUnreadCount').textContent = unread;
-    document.getElementById('ainTabSuppliersCount').textContent = suppliers;
-    document.getElementById('ainTabPMsCount').textContent = pms;
-    var puCountEl = document.getElementById('ainTabPuCount');
-    if (puCountEl) puCountEl.textContent = puCount;
+    // Top stat cards are always global counts — they don't change as the tabs below are switched.
+    var elOpenThreads = document.getElementById('ainStatOpenThreads');
+    if (elOpenThreads) elOpenThreads.textContent = all.length;
+    var elUnread = document.getElementById('ainStatUnread');
+    if (elUnread) elUnread.textContent = totalUnread;
+    var elSuppliers = document.getElementById('ainStatSuppliers');
+    if (elSuppliers) elSuppliers.textContent = totalSuppliers;
+    var elPMs = document.getElementById('ainStatPMs');
+    if (elPMs) elPMs.textContent = totalPMs;
+
+    document.getElementById('ainTabAllCount').textContent = all.length;
+    document.getElementById('ainTabUnreadCount').textContent = totalUnread;
+    document.getElementById('ainTabSuppliersCount').textContent = totalSuppliers;
+    document.getElementById('ainTabPMsCount').textContent = totalPMs;
     var badge = document.getElementById('adminInboxNavBadge');
     // Uses the hidden attribute (not an inline style) specifically so the .collapsed sidebar's own
     // "always hide nav badges" rule can still win when the sidebar is collapsed — an inline
     // style.display here would override that stylesheet rule regardless of the sidebar's state.
-    if (badge) { badge.textContent = unread; badge.hidden = !unread; }
+    if (badge) { badge.textContent = totalUnread; badge.hidden = !totalUnread; }
   }
   function adminInboxRenderList() {
     var listEl = document.getElementById('ainConvList');
@@ -47676,10 +47686,6 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
       // An honest preview for profile-update conversations — what changed, not just the last
       // chat line — so the admin understands the conversation without opening it.
       var previewText = (isPu && info.preview) ? info.preview : c.lastMessageText;
-      var topicRow = '<div class="ain-conv-topic-row">' +
-        '<span class="ain-conv-topic-pill' + (isPu ? ' pu' : '') + '">' + (isPu ? 'Profile Update' : 'Support') + '</span>' +
-        (info.statusLabel ? '<span class="ain-conv-status' + (info.needsAction ? ' needs-action' : '') + '">' + sinbEsc(info.statusLabel) + '</span>' : '') +
-      '</div>';
       return '<div class="ain-conv-item' + (c.unread ? ' unread' : '') + (c.id === adminInboxActiveId ? ' active' : '') + '" data-ain-conv="' + c.id + '">' +
         '<div class="ain-conv-avatar">' + supAppAvatarHtml(c) + '</div>' +
         '<div class="ain-conv-body">' +
@@ -47688,7 +47694,6 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
             '<span class="ain-conv-role-badge ' + c.type + '">' + (c.type === 'pm' ? 'PM' : 'SUPPLIER') + '</span>' +
             '<span class="ain-conv-time">' + adminInboxRelTime(c.lastTs) + '</span>' +
           '</div>' +
-          topicRow +
           '<div class="ain-conv-preview">' + sinbEsc(previewText) + '</div>' +
           '<div class="ain-conv-meta-row">' +
             '<svg class="ain-conv-icon-btn' + (c.pinned ? ' active' : '') + '" data-ain-pin="' + c.id + '" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 3h6l-1 7 4 3H6l4-3-1-7z"/></svg>' +
@@ -48058,16 +48063,6 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
         adminInboxRenderList();
       });
     });
-    // Level 2 — topic tabs filter within whichever WHO slice is currently active.
-    document.querySelectorAll('#ainTopicTabs .ain-filter-tab').forEach(function (tab) {
-      tab.addEventListener('click', function () {
-        document.querySelectorAll('#ainTopicTabs .ain-filter-tab').forEach(function (t) { t.classList.remove('active'); });
-        tab.classList.add('active');
-        adminInboxTopicFilter = tab.getAttribute('data-aintopic');
-        adminInboxRenderList();
-        adminInboxRenderStats(); // WHO counts are scoped to the selected topic, so refresh them
-      });
-    });
     document.getElementById('ainPinBtn').addEventListener('click', function () {
       var c = adminInboxConv(adminInboxActiveId);
       if (!c) return;
@@ -48090,19 +48085,6 @@ var SUPSA_REAL_BOUNDARIES = {"E1":[[51.51072,-0.05207],[51.51206,-0.04137],[51.5
     if (ainNaChipEl) ainNaChipEl.addEventListener('click', function () {
       ainNaOnly = !ainNaOnly;
       adminInboxRenderThread();
-    });
-    document.getElementById('ainActivityBtn').addEventListener('click', function () {
-      var c = adminInboxConv(adminInboxActiveId);
-      if (!c) return;
-      // Same per-name activity stores the detail pages read/write — one log per person,
-      // identical from the Inbox and from the profile's Chat tab.
-      if (c.type === 'pm') {
-        if (typeof renderClientChatActivityLog === 'function') renderClientChatActivityLog(c.name);
-        document.getElementById('clientChatActivityLogOverlay').classList.add('open');
-      } else {
-        if (typeof renderSupChatActivityLog === 'function') renderSupChatActivityLog(c.name);
-        document.getElementById('supChatActivityLogOverlay').classList.add('open');
-      }
     });
     document.getElementById('ainBackBtn').addEventListener('click', adminInboxCloseThreadMobile);
     var ainInput = document.getElementById('ainMessageInput');
